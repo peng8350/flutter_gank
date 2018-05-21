@@ -12,13 +12,32 @@ class _MainActivityState extends State<MainActivity>
     with TickerProviderStateMixin {
   MenuController _menuController;
 
+  TabController _tabController;
+
   int selectIndex = 0;
+
+  Widget _buildViewPagerIndicator() {
+    return selectIndex == 1
+        ? new TabBar(
+            isScrollable: true,
+            tabs: <Widget>[
+              new Tab(text: STRING_GANK_WEB),
+              new Tab(text: STRING_GANK_ANDROID),
+              new Tab(text: STRING_GANK_IOS),
+              new Tab(text: STRING_GANK_TUIJIAN),
+              new Tab(text: STRING_GANK_EXTRA),
+              new Tab(text: STRING_GANK_APP),
+              new Tab(text: STRING_GANK_VIDEO)
+            ],
+            controller: _tabController)
+        : null;
+  }
 
   Widget _buildMenuItem(String title, IconData iconName, Function callback) {
     return new InkWell(
       child: new ResideMenuItem(
           title: title,
-          titleStyle: new TextStyle(inherit: true,color: Colors.white),
+          titleStyle: new TextStyle(inherit: true, color: Colors.white),
           icon: new Icon(
             iconName,
             color: Colors.white,
@@ -37,37 +56,37 @@ class _MainActivityState extends State<MainActivity>
           ),
         ),
         children: <Widget>[
-          _buildMenuItem(STRING_HOME, Icons.home, () {
+          _buildMenuItem(STRING_HOME, Icons.apps, () {
             setState(() {
               selectIndex = 0;
             });
             _menuController.closeMenu();
           }),
-          _buildMenuItem(STRING_GANK, Icons.home, () {
+          _buildMenuItem(STRING_GANK, Icons.explore, () {
             setState(() {
               selectIndex = 1;
             });
             _menuController.closeMenu();
           }),
-          _buildMenuItem(STRING_GIRL, Icons.home, () {
+          _buildMenuItem(STRING_GIRL, Icons.insert_photo, () {
             setState(() {
               selectIndex = 2;
             });
             _menuController.closeMenu();
           }),
-          _buildMenuItem(STRING_LIKE, Icons.home, () {
+          _buildMenuItem(STRING_LIKE, Icons.favorite, () {
             setState(() {
               selectIndex = 3;
             });
             _menuController.closeMenu();
           }),
-          _buildMenuItem(STRING_SETTING, Icons.home, () {
+          _buildMenuItem(STRING_SETTING, Icons.settings, () {
             setState(() {
               selectIndex = 4;
             });
             _menuController.closeMenu();
           }),
-          _buildMenuItem(STRING_ABOUTME, Icons.home, () {
+          _buildMenuItem(STRING_ABOUTME, Icons.info, () {
             setState(() {
               selectIndex = 5;
             });
@@ -78,6 +97,7 @@ class _MainActivityState extends State<MainActivity>
 
   @override
   Widget build(BuildContext context) {
+    print(_tabController.index);
     return new Scaffold(
         body: new ResideMenu.scafford(
       controller: _menuController,
@@ -99,6 +119,7 @@ class _MainActivityState extends State<MainActivity>
               _menuController.openMenu(true);
             },
           ),
+          bottom: _buildViewPagerIndicator(),
         ),
       ),
       direction: ScrollDirection.LEFT,
@@ -113,6 +134,7 @@ class _MainActivityState extends State<MainActivity>
   void initState() {
     // TODO: implement initState
     super.initState();
+    _tabController = new TabController(length: 7, vsync: this,initialIndex: 0);
     _menuController = new MenuController(vsync: this);
   }
 }
