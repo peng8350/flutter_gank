@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
+import 'package:flutter_gank/pages/GankPage.dart';
 import 'package:residemenu/residemenu.dart';
 
 class MainActivity extends StatefulWidget {
@@ -10,6 +11,15 @@ class MainActivity extends StatefulWidget {
 
 class _MainActivityState extends State<MainActivity>
     with TickerProviderStateMixin {
+  final List<String> _gankTitles = [
+    STRING_GANK_WEB,
+    STRING_GANK_ANDROID,
+    STRING_GANK_IOS,
+    STRING_GANK_TUIJIAN,
+    STRING_GANK_EXTRA,
+    STRING_GANK_APP,
+    STRING_GANK_VIDEO
+  ];
   MenuController _menuController;
 
   TabController _tabController;
@@ -31,6 +41,48 @@ class _MainActivityState extends State<MainActivity>
             ],
             controller: _tabController)
         : null;
+  }
+
+  Widget _buildBody() {
+    return new Stack(
+      children: <Widget>[
+        new Offstage(
+          offstage: selectIndex != 0,
+          child: new Text('1'),
+        ),
+        new Offstage(
+          offstage: selectIndex != 1,
+          child: new TabBarView(
+            children: <Widget>[
+              new GankPage(title: _gankTitles[0]),
+              new GankPage(title: _gankTitles[1]),
+              new GankPage(title: _gankTitles[2]),
+              new GankPage(title: _gankTitles[3]),
+              new GankPage(title: _gankTitles[4]),
+              new GankPage(title: _gankTitles[5])
+            ],
+            controller: _tabController,
+            physics: const NeverScrollableScrollPhysics()
+          ),
+        ),
+        new Offstage(
+          offstage: selectIndex != 2,
+          child: new Text('3'),
+        ),
+        new Offstage(
+          offstage: selectIndex != 3,
+          child: new Text('4'),
+        ),
+        new Offstage(
+          offstage: selectIndex != 4,
+          child: new Text('5'),
+        ),
+        new Offstage(
+          offstage: selectIndex != 5,
+          child: new Text('6'),
+        )
+      ],
+    );
   }
 
   Widget _buildMenuItem(String title, IconData iconName, Function callback) {
@@ -97,7 +149,6 @@ class _MainActivityState extends State<MainActivity>
 
   @override
   Widget build(BuildContext context) {
-    print(_tabController.index);
     return new Scaffold(
         body: new ResideMenu.scafford(
       controller: _menuController,
@@ -121,6 +172,7 @@ class _MainActivityState extends State<MainActivity>
           ),
           bottom: _buildViewPagerIndicator(),
         ),
+        body: _buildBody(),
       ),
       direction: ScrollDirection.LEFT,
       decoration: new BoxDecoration(
@@ -134,7 +186,7 @@ class _MainActivityState extends State<MainActivity>
   void initState() {
     // TODO: implement initState
     super.initState();
-    _tabController = new TabController(length: 7, vsync: this,initialIndex: 0);
+    _tabController = new TabController(length: 7, vsync: this, initialIndex: 0);
     _menuController = new MenuController(vsync: this);
   }
 }
