@@ -1,7 +1,14 @@
+/*
+ * Author: Jpeng
+ * Email: peng8350@gmail.com
+ * Time: 2018/5/21 下午10:19
+ */
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
-import 'package:flutter_gank/pages/GankPage.dart';
+import 'package:flutter_gank/pages/page_gank.dart';
 import 'package:residemenu/residemenu.dart';
 
 class MainActivity extends StatefulWidget {

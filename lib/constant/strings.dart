@@ -1,3 +1,10 @@
+/*
+ * Author: Jpeng
+ * Email: peng8350@gmail.com
+ * Time: 2018/5/21 下午10:43
+ */
+
+
 import 'package:flutter/material.dart';
 
 
@@ -28,3 +35,5 @@ const String STRING_GANK_EXTRA= '拓展资源';
 const String STRING_GANK_TUIJIAN ='瞎推荐';
 
 const String STRING_GANK_WEB = '前端';
+
+const String URL_GANK_FETCH = 'http://gank.io/api/data/';

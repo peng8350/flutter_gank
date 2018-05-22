@@ -1,5 +1,12 @@
+/*
+ * Author: Jpeng
+ * Email: peng8350@gmail.com
+ * Time: 2018/5/21 下午10:18
+ */
+
+
 import 'package:flutter/material.dart';
-import 'package:flutter_gank/MainActivity.dart';
+import 'package:flutter_gank/activity_main.dart';
 import 'package:flutter_gank/constant/strings.dart';
 
 
