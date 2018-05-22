@@ -25,58 +25,76 @@ class _GankPageState extends State<GankPage> with HttpUtils {
   int _pageIndex = 1;
 
   Widget _buildRow(BuildContext context, int index) {
-    return new Text(_dataList[index].url);
+    return new Card(
+      child: new Text(_dataList[index].url),
+    );
   }
-  
-  void _fetchMoreData(){
-    getGankfromNet(URL_GANK_FETCH+widget.title+"/20/$_pageIndex").then((List<GankInfo> data){
-      if(data.isEmpty){
+
+  void _fetchMoreData() {
+    getGankfromNet(URL_GANK_FETCH + widget.title + "/20/$_pageIndex")
+        .then((List<GankInfo> data) {
+      if (data.isEmpty) {
         //空数据
         _refreshController.sendBack(false, RefreshStatus.noMore);
-      }
-      else {
+      } else {
         for (var item in data) {
           _dataList.add(item);
         }
         _pageIndex++;
-        setState(() {
-
-        });
+        setState(() {});
         _refreshController.sendBack(false, RefreshStatus.idle);
       }
-    }).catchError((){
+    }).catchError(() {
       _refreshController.sendBack(false, RefreshStatus.failed);
     });
   }
 
-  void _onRefresh(bool up){
-    if(!up){
+  void _onRefresh(bool up) {
+    if (!up) {
       //上拉加载
       _fetchMoreData();
     }
   }
 
   Widget _buildContent() {
-    return new SmartRefresher(
-      enablePullDown: false,
-      enablePullUp: true,
-      headerBuilder: (context, mode) => new ClassicIndicator(mode: mode),
-      footerBuilder: (context, mode) => new ClassicIndicator(mode: mode),
-      controller: _refreshController,
-      child: new ListView.builder(
-          itemBuilder: _buildRow,
-          itemExtent: 50.0,
-          itemCount: _dataList.length,
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true
+    return new Container(
+      color: const Color.fromRGBO(249, 249, 249, 100.0),
+      child: new SmartRefresher(
+
+        enablePullDown: false,
+        enablePullUp: true,
+        headerBuilder: (context, mode) => new ClassicIndicator(mode: mode),
+        footerBuilder: (context, mode) => new ClassicIndicator(
+            mode: mode,
+            idleIcon: const Icon(Icons.arrow_upward,color:Colors.grey),
+            refreshingText: '',
+            idleText: '上拉加载',
+            failedText: '加载失败,网络异常'),
+        controller: _refreshController,
+        child: new Container(
+          color: Colors.white,
+          child: new ListView.builder(
+              itemBuilder: _buildRow,
+              itemExtent: 50.0,
+              itemCount: _dataList.length,
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true),
+        ),
+        onRefresh: _onRefresh,
       ),
-      onRefresh: _onRefresh,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return _buildContent();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    print("销毁");
+    super.dispose();
   }
 
   @override

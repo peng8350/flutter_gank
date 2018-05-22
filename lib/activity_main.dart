@@ -4,11 +4,11 @@
  * Time: 2018/5/21 下午10:19
  */
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
 import 'package:flutter_gank/pages/page_gank.dart';
+import 'package:flutter_gank/pages/page_girl.dart';
 import 'package:residemenu/residemenu.dart';
 
 class MainActivity extends StatefulWidget {
@@ -33,6 +33,9 @@ class _MainActivityState extends State<MainActivity>
 
   int selectIndex = 0;
 
+  int _gankSelectIndex = 0;
+
+
   Widget _buildViewPagerIndicator() {
     return selectIndex == 1
         ? new TabBar(
@@ -46,7 +49,8 @@ class _MainActivityState extends State<MainActivity>
               new Tab(text: STRING_GANK_APP),
               new Tab(text: STRING_GANK_VIDEO)
             ],
-            controller: _tabController)
+            controller: _tabController,
+          )
         : null;
   }
 
@@ -59,22 +63,20 @@ class _MainActivityState extends State<MainActivity>
         ),
         new Offstage(
           offstage: selectIndex != 1,
-          child: new TabBarView(
+          child: new Stack(
             children: <Widget>[
-              new GankPage(title: _gankTitles[0]),
-              new GankPage(title: _gankTitles[1]),
-              new GankPage(title: _gankTitles[2]),
-              new GankPage(title: _gankTitles[3]),
-              new GankPage(title: _gankTitles[4]),
-              new GankPage(title: _gankTitles[5])
+              new Offstage(offstage: _gankSelectIndex!=0,child: new GankPage(title: _gankTitles[0])),
+              new Offstage(offstage: _gankSelectIndex!=1,child: new GankPage(title: _gankTitles[1])),
+              new Offstage(offstage: _gankSelectIndex!=2,child: new GankPage(title: _gankTitles[2])),
+              new Offstage(offstage: _gankSelectIndex!=3,child: new GankPage(title: _gankTitles[3])),
+              new Offstage(offstage: _gankSelectIndex!=4,child: new GankPage(title: _gankTitles[4])),
+              new Offstage(offstage: _gankSelectIndex!=5,child: new GankPage(title: _gankTitles[5]))
             ],
-            controller: _tabController,
-            physics: const NeverScrollableScrollPhysics()
           ),
         ),
         new Offstage(
           offstage: selectIndex != 2,
-          child: new Text('3'),
+          child: new GirlPage(),
         ),
         new Offstage(
           offstage: selectIndex != 3,
@@ -194,6 +196,12 @@ class _MainActivityState extends State<MainActivity>
     // TODO: implement initState
     super.initState();
     _tabController = new TabController(length: 7, vsync: this, initialIndex: 0);
+    _tabController.addListener((){
+      _gankSelectIndex = _tabController.index;
+      setState(() {
+
+      });
+    });
     _menuController = new MenuController(vsync: this);
   }
 }
