@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
 import 'package:flutter_gank/constant/strings.dart';
+import 'package:flutter_gank/widget/item_gank.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_gank/utils/utils_http.dart';
 
@@ -23,12 +24,6 @@ class _GankPageState extends State<GankPage> with HttpUtils {
   List<GankInfo> _dataList = [];
   RefreshController _refreshController;
   int _pageIndex = 1;
-
-  Widget _buildRow(BuildContext context, int index) {
-    return new Card(
-      child: new Text(_dataList[index].url),
-    );
-  }
 
   void _fetchMoreData() {
     getGankfromNet(URL_GANK_FETCH + widget.title + "/20/$_pageIndex")
@@ -74,8 +69,7 @@ class _GankPageState extends State<GankPage> with HttpUtils {
         child: new Container(
           color: Colors.white,
           child: new ListView.builder(
-              itemBuilder: _buildRow,
-              itemExtent: 50.0,
+              itemBuilder: (context,index) => new GankItem(info: _dataList[index]),
               itemCount: _dataList.length,
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true),
@@ -88,13 +82,6 @@ class _GankPageState extends State<GankPage> with HttpUtils {
   @override
   Widget build(BuildContext context) {
     return _buildContent();
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    print("销毁");
-    super.dispose();
   }
 
   @override
