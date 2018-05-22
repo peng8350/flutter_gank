@@ -36,13 +36,11 @@ class HttpUtils{
 
   Future<List<GankInfo>> getGankfromNet(String url) async{
     final responseStr = await get(url);
-
     return toGankList(responseStr);
   }
 
   Future<List<GirlInfo>> getGirlfromNet(String url) async{
     final responseStr = await get(url);
-
     return toGirlList(responseStr);
   }
 

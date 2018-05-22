@@ -17,9 +17,20 @@ class GankInfo {
       this.img});
 
   factory GankInfo.fromJson(Map<String, dynamic> json) {
+
+    if(json['images']!=null){
+      return new GankInfo(
+        desc: json['desc'],
+        img: json['images'][0],
+        publishedAt: json['publishedAt'],
+        source: json['source'],
+        type: json['type'],
+        who: json['who'],
+        url: json['url'],
+      );
+    }
     return new GankInfo(
       desc: json['desc'],
-      img: json['images'][0],
       publishedAt: json['publishedAt'],
       source: json['source'],
       type: json['type'],

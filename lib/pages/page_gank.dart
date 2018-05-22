@@ -30,10 +30,20 @@ class _GankPageState extends State<GankPage> with HttpUtils {
   
   void _fetchMoreData(){
     getGankfromNet(URL_GANK_FETCH+widget.title+"/20/$_pageIndex").then((List<GankInfo> data){
-      for(var item in data){
-        _dataList.add(item);
+      if(data.isEmpty){
+        //空数据
+        _refreshController.sendBack(false, RefreshStatus.noMore);
       }
-      _refreshController.sendBack(false, RefreshStatus.idle);
+      else {
+        for (var item in data) {
+          _dataList.add(item);
+        }
+        _pageIndex++;
+        setState(() {
+
+        });
+        _refreshController.sendBack(false, RefreshStatus.idle);
+      }
     }).catchError((){
       _refreshController.sendBack(false, RefreshStatus.failed);
     });
@@ -42,12 +52,13 @@ class _GankPageState extends State<GankPage> with HttpUtils {
   void _onRefresh(bool up){
     if(!up){
       //上拉加载
-
+      _fetchMoreData();
     }
   }
 
   Widget _buildContent() {
     return new SmartRefresher(
+      enablePullDown: false,
       enablePullUp: true,
       headerBuilder: (context, mode) => new ClassicIndicator(mode: mode),
       footerBuilder: (context, mode) => new ClassicIndicator(mode: mode),
