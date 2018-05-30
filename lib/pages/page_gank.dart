@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
 import 'package:flutter_gank/constant/strings.dart';
+import 'package:flutter_gank/utils/utils_indicator.dart';
 import 'package:flutter_gank/widget/CircleClipper.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -23,7 +24,7 @@ class GankPage extends StatefulWidget {
   _GankPageState createState() => new _GankPageState();
 }
 
-class _GankPageState extends State<GankPage> with HttpUtils {
+class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory {
   List<GankInfo> _dataList = [];
   RefreshController _refreshController;
   int _pageIndex = 1;
@@ -46,14 +47,13 @@ class _GankPageState extends State<GankPage> with HttpUtils {
       }
       return false;
     }).catchError((error) {
-
       _refreshController.sendBack(false, 4);
       return false;
     });
   }
 
-  void _onOffsetCall(bool up,double offset){
-    if(up){
+  void _onOffsetCall(bool up, double offset) {
+    if (up) {
       offsetLis.value = offset;
     }
   }
@@ -74,7 +74,9 @@ class _GankPageState extends State<GankPage> with HttpUtils {
       color: const Color.fromRGBO(249, 249, 249, 100.0),
       child: new Stack(
         children: <Widget>[
-          new ArcIndicator(offsetLis: offsetLis,),
+          new ArcIndicator(
+            offsetLis: offsetLis,
+          ),
           new SmartRefresher(
             controller: _refreshController,
             child: new ListView.builder(
@@ -82,15 +84,11 @@ class _GankPageState extends State<GankPage> with HttpUtils {
                   new GankItem(info: _dataList[index]),
               itemCount: _dataList.length,
             ),
-            headerBuilder: (context, mode) => new ClassicIndicator(
-                  mode: mode,
-                ),
+            headerBuilder: buildDefaultHeader,
+            footerBuilder: buildDefaultFooter,
             onRefresh: _onRefresh,
             enablePullUp: true,
             onOffsetChange: _onOffsetCall,
-            footerBuilder: (context, mode) => new ClassicIndicator(
-                  mode: mode,
-                ),
           )
         ],
       ),
@@ -100,7 +98,7 @@ class _GankPageState extends State<GankPage> with HttpUtils {
   @override
   Widget build(BuildContext context) {
     return new RepaintBoundary(
-      child:  _buildContent(),
+      child: _buildContent(),
     );
   }
 

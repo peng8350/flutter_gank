@@ -31,10 +31,9 @@ class _MainActivityState extends State<MainActivity>
 
   TabController _tabController;
 
-  int selectIndex = 1;
+  int selectIndex = 0;
 
   int _gankSelectIndex = 0;
-
 
   Widget _buildViewPagerIndicator() {
     return selectIndex == 1
@@ -65,7 +64,27 @@ class _MainActivityState extends State<MainActivity>
           offstage: selectIndex != 1,
           child: new Stack(
             children: <Widget>[
-              new Offstage(offstage: _gankSelectIndex!=0,child: new GankPage(title: _gankTitles[0])),
+              new Offstage(
+                  offstage: _gankSelectIndex != 0,
+                  child: new GankPage(title: _gankTitles[0])),
+              new Offstage(
+                  offstage: _gankSelectIndex != 1,
+                  child: new GankPage(title: _gankTitles[1])),
+              new Offstage(
+                  offstage: _gankSelectIndex != 2,
+                  child: new GankPage(title: _gankTitles[2])),
+              new Offstage(
+                  offstage: _gankSelectIndex != 3,
+                  child: new GankPage(title: _gankTitles[3])),
+              new Offstage(
+                  offstage: _gankSelectIndex != 4,
+                  child: new GankPage(title: _gankTitles[4])),
+              new Offstage(
+                  offstage: _gankSelectIndex != 5,
+                  child: new GankPage(title: _gankTitles[5])),
+              new Offstage(
+                  offstage: _gankSelectIndex != 6,
+                  child: new GankPage(title: _gankTitles[6])),
             ],
           ),
         ),
@@ -90,11 +109,11 @@ class _MainActivityState extends State<MainActivity>
   }
 
   Widget _buildMenuItem(String title, IconData iconName, Function callback) {
-
     return new InkWell(
       child: new ResideMenuItem(
           title: title,
-          titleStyle: new TextStyle(inherit: true, color: Colors.white,fontSize: 14.0),
+          titleStyle:
+              new TextStyle(inherit: true, color: Colors.white, fontSize: 14.0),
           icon: new Icon(
             iconName,
             color: Colors.white,
@@ -103,11 +122,9 @@ class _MainActivityState extends State<MainActivity>
     );
   }
 
-
   Widget _buildMiddleMenu() {
-
     return new MenuScaffold(
-      itemExtent: 50.0,
+        itemExtent: 50.0,
         header: new Container(
           margin: new EdgeInsets.only(bottom: 20.0),
           child: new CircleAvatar(
@@ -159,7 +176,7 @@ class _MainActivityState extends State<MainActivity>
   Widget build(BuildContext context) {
     return new Scaffold(
         body: new ResideMenu.scafford(
-          enableScale: false,
+      enableScale: false,
       controller: _menuController,
       leftScaffold: _buildMiddleMenu(),
       child: new Scaffold(
@@ -191,17 +208,14 @@ class _MainActivityState extends State<MainActivity>
     ));
   }
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _tabController = new TabController(length: 7, vsync: this, initialIndex: 1);
-    _tabController.addListener((){
+    _tabController = new TabController(length: 7, vsync: this, initialIndex: 0);
+    _tabController.addListener(() {
       _gankSelectIndex = _tabController.index;
-      setState(() {
-
-      });
+      setState(() {});
     });
     _menuController = new MenuController(vsync: this);
   }

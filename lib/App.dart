@@ -17,7 +17,6 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: STRING_APP_NAME,
-      showPerformanceOverlay: true,
       theme: new ThemeData(
         // This is the theme of your application.
         //

@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
+import 'package:flutter_gank/constant/colors.dart';
 
 class GankItem extends StatefulWidget {
   final GankInfo info;
@@ -81,7 +82,10 @@ class _GankItemState extends State<GankItem> {
 
   @override
   Widget build(BuildContext context) {
-    return  new Card(
+    return  new Container(
+      color: COLOR_BG,
+      child: new Card(
+
         margin: new EdgeInsets.all(5.0),
         elevation: 3.0,
         color: Colors.white,
@@ -95,6 +99,7 @@ class _GankItemState extends State<GankItem> {
           ),
           onTap: () {},
         ),
-      );
+      ),
+    );
   }
 }
