@@ -12,10 +12,10 @@ dependencies:
       ^0.1.4
 
   pull_to_refresh:
-      ^1.1.1
+      ^1.1.3
 
   residemenu:
-    ^1.1.8
+    ^1.2.5
 
 
 flutter:
@@ -27,6 +27,7 @@ flutter:
 
   assets:
     - images/gank.jpg
+    - images/empty.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

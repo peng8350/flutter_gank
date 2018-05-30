@@ -17,6 +17,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: STRING_APP_NAME,
+      showPerformanceOverlay: true,
       theme: new ThemeData(
         // This is the theme of your application.
         //
@@ -27,7 +28,12 @@ class App extends StatelessWidget {
         // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
         // counter didn't reset back to zero; the application is not restarted.
         primarySwatch: Colors.blue,
+        textTheme: new TextTheme(
+          body1: new TextStyle(inherit: true,fontSize: 12.0),
+          body2: new TextStyle(inherit: true,fontSize: 10.0,color:Colors.grey),
+        )
       ),
+
       home: new MainActivity(),
     );
   }
