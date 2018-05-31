@@ -63,7 +63,7 @@ class _SettingPageState extends State<SettingPage> {
               decoration: new BoxDecoration(
                   border: new Border(
                       bottom: const BorderSide(
-                          color: COLOR_DIVIDER, width: 0.2)))),
+                          color: COLOR_DIVIDER, width: 0.4)))),
           _buildSwitch("夜间模式", Icons.brightness_2, Colors.blueGrey, isNight,
                   (val) {
                 this.isNight = val;
@@ -79,9 +79,9 @@ class _SettingPageState extends State<SettingPage> {
             height: 30.0,
             decoration: new BoxDecoration(
                 border: new Border(
-                    top: const BorderSide(color: COLOR_DIVIDER, width: 0.2),
+                    top: const BorderSide(color: COLOR_DIVIDER, width: 0.4),
                     bottom:
-                    const BorderSide(color: COLOR_DIVIDER, width: 0.2))),
+                    const BorderSide(color: COLOR_DIVIDER, width: 0.4))),
           ),
           _buildInter("主题颜色", Icons.border_color, Colors.cyanAccent,
               _clickColorSelect),
@@ -93,7 +93,7 @@ class _SettingPageState extends State<SettingPage> {
               decoration: new BoxDecoration(
                   border: new Border(
                       top: const BorderSide(
-                          color: COLOR_DIVIDER, width: 0.2))))
+                          color: COLOR_DIVIDER, width: 0.4))))
         ],
       ),
     );

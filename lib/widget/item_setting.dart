@@ -40,7 +40,7 @@ class _SettingItemState extends State<SettingItem> {
       child: new Container(
         decoration: new BoxDecoration(
             border: new Border(
-                bottom: new BorderSide(color: COLOR_DIVIDER, width: 0.3))),
+                bottom: new BorderSide(color: COLOR_DIVIDER, width: 0.4))),
         child: new ListTile(
           onTap: () {
             if (widget.onClick != null) {

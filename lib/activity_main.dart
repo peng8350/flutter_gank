@@ -9,6 +9,7 @@ import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
 import 'package:flutter_gank/pages/page_gank.dart';
 import 'package:flutter_gank/pages/page_girl.dart';
+import 'package:flutter_gank/pages/page_home.dart';
 import 'package:flutter_gank/pages/page_setting.dart';
 import 'package:residemenu/residemenu.dart';
 
@@ -59,7 +60,7 @@ class _MainActivityState extends State<MainActivity>
       children: <Widget>[
         new Offstage(
           offstage: selectIndex != 0,
-          child: new Text('1'),
+          child: new HomePage(),
         ),
         new Offstage(
           offstage: selectIndex != 1,
