@@ -28,6 +28,8 @@ class App extends StatelessWidget {
         // counter didn't reset back to zero; the application is not restarted.
         primarySwatch: Colors.blue,
         textTheme: new TextTheme(
+          title: new TextStyle(inherit: true,fontSize: 14.0),
+          subhead: new TextStyle(inherit: true,fontSize: 13.0),
           body1: new TextStyle(inherit: true,fontSize: 12.0),
           body2: new TextStyle(inherit: true,fontSize: 10.0,color:Colors.grey),
         )

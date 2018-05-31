@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gank/constant/colors.dart';
 
 class SettingItem extends StatefulWidget {
   final bool isSwitch;
@@ -22,7 +23,7 @@ class SettingItem extends StatefulWidget {
       this.isSwitch: false,
       this.title,
       this.icon,
-      this.right: const Icon(Icons.arrow_right, color: Colors.grey)});
+      this.right: const Icon(Icons.arrow_forward, color: Colors.grey)});
 
   @override
   _SettingItemState createState() => new _SettingItemState();
@@ -32,9 +33,15 @@ class _SettingItemState extends State<SettingItem> {
   @override
   Widget build(BuildContext context) {
     return new Container(
+
+      decoration: new BoxDecoration(
+        color: Colors.white,
+          border: new Border(
+
+              bottom: new BorderSide(color: COLOR_DIVIDER, width: 0.3))),
       child: new ListTile(
         onTap: () {
-          if(widget.onClick!=null){
+          if (widget.onClick != null) {
             widget.onClick();
           }
         },
