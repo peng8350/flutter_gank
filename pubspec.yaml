@@ -27,6 +27,8 @@ dependencies:
 
   share: "^0.5.0"
 
+  flutter_html_view: "^0.5.1"
+
 
 
 
