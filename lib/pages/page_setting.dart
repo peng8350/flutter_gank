@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/widget/item_setting.dart';
+import 'package:share/share.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -48,7 +49,10 @@ class _SettingPageState extends State<SettingPage> {
 
   void _clickEmail() {}
 
-  void _clickShare() {}
+  void _clickShare() {
+    print("doit");
+    Share.share('这是一个使用flutter写的干货集中营客户端');
+  }
 
   void _clickColorSelect() {}
 

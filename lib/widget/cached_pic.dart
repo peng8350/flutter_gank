@@ -19,33 +19,34 @@ class CachedPic extends StatefulWidget {
   _CachedPicState createState() => new _CachedPicState();
 }
 
-class _CachedPicState extends State<CachedPic>  {
+class _CachedPicState extends State<CachedPic> {
   OverlayEntry _scaleImg;
-  bool showScale=false;
+  bool showScale = false;
 
-  Future<bool> _onWillPop(){
-    if(showScale){
+  Future<bool> _onWillPop() {
+    if (showScale) {
       _scaleImg.remove();
-      showScale= false;
+      showScale = false;
       return new Future.value(false);
-    }
-    else{
+    } else {
       return new Future.value(true);
     }
   }
 
   Widget _buildGirlItem() {
-    return new WillPopScope(child: new GestureDetector(
-      child: new FadeInImage.assetNetwork(
-        placeholder: widget.placeholder,
-        image: widget.url,
-        fit: BoxFit.cover,
-      ),
-      onTap: () {
-        Overlay.of(context).insert(_scaleImg);
-        showScale= true;
-      },
-    ), onWillPop: _onWillPop);
+    return new WillPopScope(
+        child: new GestureDetector(
+          child: new FadeInImage.assetNetwork(
+            placeholder: widget.placeholder,
+            image: widget.url,
+            fit: BoxFit.cover,
+          ),
+          onTap: () {
+            Overlay.of(context).insert(_scaleImg);
+            showScale = true;
+          },
+        ),
+        onWillPop: _onWillPop);
   }
 
   @override
@@ -54,7 +55,15 @@ class _CachedPicState extends State<CachedPic>  {
     super.initState();
     _scaleImg = new OverlayEntry(builder: (context) {
       return new GestureDetector(
-        child: new PhotoView(imageProvider: new NetworkImage(widget.url),loadingChild: new CircularProgressIndicator(),),
+        child: new Container(
+          color: Colors.black,
+          padding: new EdgeInsets.only(top: 100.0,bottom: 100.0),
+          child: new PhotoView(
+            imageProvider: new NetworkImage(widget.url),
+
+            loadingChild: new Image.asset(widget.placeholder,width: double.infinity,height: double.infinity,fit: BoxFit.cover,),
+          ),
+        ),
         onTap: () {
           _scaleImg.remove();
           showScale = false;
@@ -62,7 +71,6 @@ class _CachedPicState extends State<CachedPic>  {
       );
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
