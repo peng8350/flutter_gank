@@ -4,12 +4,14 @@
  * Time: 2018/5/22 上午11:26
  */
 import 'dart:async';
-
 import 'package:flutter_gank/bean/info_gank.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http ;
 import 'dart:convert';
 
 class HttpUtils {
+
+
+
   Future<String> get(String url, [Map params]) async {
     http.Response response = await http.get(url, headers: params);
     return response.body.toString();
@@ -43,4 +45,7 @@ class HttpUtils {
     final String responseStr = await get(url);
     return toGirlList(responseStr);
   }
+
+
+
 }

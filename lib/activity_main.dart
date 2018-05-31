@@ -9,6 +9,7 @@ import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
 import 'package:flutter_gank/pages/page_gank.dart';
 import 'package:flutter_gank/pages/page_girl.dart';
+import 'package:flutter_gank/pages/page_setting.dart';
 import 'package:residemenu/residemenu.dart';
 
 class MainActivity extends StatefulWidget {
@@ -98,12 +99,8 @@ class _MainActivityState extends State<MainActivity>
         ),
         new Offstage(
           offstage: selectIndex != 4,
-          child: new Text('5'),
+          child: new SettingPage(),
         ),
-        new Offstage(
-          offstage: selectIndex != 5,
-          child: new Text('6'),
-        )
       ],
     );
   }
@@ -163,12 +160,6 @@ class _MainActivityState extends State<MainActivity>
             });
             _menuController.closeMenu();
           }),
-          _buildMenuItem(STRING_ABOUTME, Icons.info, () {
-            setState(() {
-              selectIndex = 5;
-            });
-            _menuController.closeMenu();
-          })
         ]);
   }
 

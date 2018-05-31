@@ -1,20 +1,21 @@
-import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_gank/bean/info_gank.dart';
-import 'package:flutter_gank/constant/strings.dart';
-import 'package:flutter_gank/utils/utils_http.dart';
-import 'package:flutter_gank/utils/utils_indicator.dart';
-import 'package:flutter_gank/widget/item_gank.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import '../widget/CircleClipper.dart';
-
 /*
  * Author: Jpeng
  * Email: peng8350@gmail.com
  * Time: 2018/5/22 下午1:16
  */
+
+import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
+import 'package:flutter_gank/bean/info_gank.dart';
+import 'package:flutter_gank/constant/strings.dart';
+import 'package:flutter_gank/utils/utils_http.dart';
+import 'package:flutter_gank/utils/utils_indicator.dart';
+import 'package:flutter_gank/widget/cached_pic.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../widget/CircleClipper.dart';
 
 class GirlPage extends StatefulWidget {
   @override
@@ -30,20 +31,21 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
 
   ValueNotifier<double> offsetLis = new ValueNotifier(0.0);
 
-  void _fetchMoreData() {
+  void _fetchMoreData() async {
     getGirlfromNet(URL_GANK_FETCH + "福利" + "/20/$_pageIndex")
         .then((List<GirlInfo> data) {
       if (data.isEmpty) {
         //空数据
         _refreshController.sendBack(false, RefreshStatus.noMore);
       } else {
-        setState(() {
-          for (var item in data) {
-            _dataList.add(item);
-          }
-          _pageIndex++;
-        });
+        for (var item in data) {
+          _dataList.add(item);
+        }
+
+        _pageIndex++;
+
         _refreshController.sendBack(false, RefreshStatus.idle);
+        setState(() {});
       }
       return false;
     }).catchError((error) {
@@ -77,16 +79,6 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
     }
   }
 
-  Widget _buildGirlItem(BuildContext context, int index) {
-    return new RepaintBoundary(
-      child: new FadeInImage.assetNetwork(
-          placeholder: 'images/empty.png',
-          image: _dataList[index].url,
-          fit: BoxFit.cover,
-          imageScale: 0.2),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return new Container(
@@ -101,7 +93,9 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
             child: new StaggeredGridView.countBuilder(
               crossAxisCount: 6,
               itemCount: _dataList.length,
-              itemBuilder: _buildGirlItem,
+              itemBuilder:(context,index) =>  new CachedPic(
+                url: _dataList[index].url,
+              ),
               staggeredTileBuilder: (int index) =>
                   new StaggeredTile.count(3, index.isEven ? 3 : 2),
               mainAxisSpacing: 4.0,
