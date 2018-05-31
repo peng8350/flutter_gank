@@ -23,6 +23,8 @@ dependencies:
   photo_view:
     ^0.0.2
 
+  shared_preferences: "^0.4.1"
+
   share: "^0.5.0"
 
 

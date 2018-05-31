@@ -9,13 +9,15 @@ import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/widget/dialogs.dart';
 import 'package:flutter_gank/widget/item_setting.dart';
 import 'package:share/share.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 class SettingPage extends StatefulWidget {
   @override
   _SettingPageState createState() => new _SettingPageState();
 }
 
 class _SettingPageState extends State<SettingPage> {
+
+  SharedPreferences preferences ;
   bool isNight = false;
   bool autoRefresh = false;
 
@@ -56,7 +58,6 @@ class _SettingPageState extends State<SettingPage> {
   void _clickEmail() {}
 
   void _clickShare() {
-    print("doit");
     Share.share('这是一个使用flutter写的干货集中营客户端');
   }
 
@@ -77,12 +78,14 @@ class _SettingPageState extends State<SettingPage> {
           _buildSwitch("夜间模式", Icons.brightness_2, Colors.blueGrey, isNight,
                   (val) {
                 this.isNight = val;
+                preferences.setBool("isNight", isNight);
                 setState(() {});
               }),
           _buildSwitch(
               "进入刷新数据", Icons.wb_cloudy, Colors.orangeAccent, autoRefresh,
                   (val) {
                 this.autoRefresh = val;
+                preferences.setBool("autoRefresh", autoRefresh);
                 setState(() {});
               }),
           new Container(
@@ -107,5 +110,18 @@ class _SettingPageState extends State<SettingPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SharedPreferences.getInstance().then((val){
+
+      preferences = val;
+      isNight = preferences.getBool("isNight") ?? false;
+      autoRefresh = preferences.getBool("autoRefresh") ?? false;
+
+    });
   }
 }
