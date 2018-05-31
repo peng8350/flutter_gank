@@ -18,6 +18,7 @@ import 'package:flutter_gank/utils/utils_http.dart';
 class GankPage extends StatefulWidget {
   final String title;
 
+
   GankPage({this.title, Key key}) : super(key: key);
 
   @override

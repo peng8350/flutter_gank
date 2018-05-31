@@ -37,6 +37,34 @@ class _MainActivityState extends State<MainActivity>
 
   int _gankSelectIndex = 0;
 
+  bool isCard = false;
+
+  Widget _buildRight(){
+    if(selectIndex==1){
+      return new Container(
+        child: new Icon(Icons.search,color:Colors.white),
+        margin: new EdgeInsets.only(right: 10.0),
+      );
+    }
+    else if(selectIndex==2){
+      return new GestureDetector(
+        onTap: (){
+          isCard= !isCard;
+          setState(() {
+
+          });
+        },
+        child: new Container(
+          alignment: Alignment.center,
+          margin: new EdgeInsets.only(right: 10.0),
+
+          child: new Text(isCard?"缩略图":"卡片"),
+        ),
+      );
+    }
+    return null;
+  }
+
   Widget _buildViewPagerIndicator() {
     return selectIndex == 1
         ? new TabBar(
@@ -92,7 +120,7 @@ class _MainActivityState extends State<MainActivity>
         ),
         new Offstage(
           offstage: selectIndex != 2,
-          child: new GirlPage(),
+          child: new GirlPage(isCard: isCard),
         ),
         new Offstage(
           offstage: selectIndex != 3,
@@ -188,7 +216,9 @@ class _MainActivityState extends State<MainActivity>
               _menuController.openMenu(true);
             },
           ),
+
           bottom: _buildViewPagerIndicator(),
+          actions:_buildRight()!=null?[_buildRight()]:null,
         ),
         body: _buildBody(),
       ),

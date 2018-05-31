@@ -16,8 +16,12 @@ import 'package:flutter_gank/widget/cached_pic.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../widget/CircleClipper.dart';
-
+import 'package:flutter/scheduler.dart';
 class GirlPage extends StatefulWidget {
+  final bool isCard;
+
+  GirlPage({this.isCard});
+
   @override
   _GirlPageState createState() => new _GirlPageState();
 }
@@ -68,6 +72,7 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
     }
   }
 
+
   void _onRefresh(bool up) {
     if (!up) {
       //上拉加载
@@ -79,8 +84,41 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
     }
   }
 
+
+  Widget _buildList() {
+    if (widget.isCard) {
+      return new ListView.builder(
+          itemCount: _dataList.length,
+          itemBuilder: (context, index) => new CachedPic(
+                url: _dataList[index].url,
+              ));
+    }
+    return new StaggeredGridView.countBuilder(
+      crossAxisCount: 6,
+      itemCount: _dataList.length,
+      itemBuilder: (context, index) => new CachedPic(
+            url: _dataList[index].url,
+          ),
+      staggeredTileBuilder: (int index) =>
+          new StaggeredTile.count(3, index.isEven ? 3 : 2),
+      mainAxisSpacing: 4.0,
+      crossAxisSpacing: 4.0,
+    );
+  }
+
+  @override
+  void didUpdateWidget(GirlPage oldWidget) {
+    // TODO: implement didUpdateWidget
+
+    super.didUpdateWidget(oldWidget);
+    SchedulerBinding.instance.addPostFrameCallback((val){
+      _refreshController.scrollTo(0.0);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("build");
     return new Container(
       color: const Color.fromRGBO(249, 249, 249, 100.0),
       child: new Stack(
@@ -90,17 +128,7 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
           ),
           new SmartRefresher(
             controller: _refreshController,
-            child: new StaggeredGridView.countBuilder(
-              crossAxisCount: 6,
-              itemCount: _dataList.length,
-              itemBuilder:(context,index) =>  new CachedPic(
-                url: _dataList[index].url,
-              ),
-              staggeredTileBuilder: (int index) =>
-                  new StaggeredTile.count(3, index.isEven ? 3 : 2),
-              mainAxisSpacing: 4.0,
-              crossAxisSpacing: 4.0,
-            ),
+            child: _buildList(),
             headerBuilder: buildDefaultHeader,
             footerBuilder: buildDefaultFooter,
             onRefresh: _onRefresh,
