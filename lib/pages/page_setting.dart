@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/widget/item_setting.dart';
 
 class SettingPage extends StatefulWidget {
@@ -16,66 +17,85 @@ class _SettingPageState extends State<SettingPage> {
   bool isNight = false;
   bool autoRefresh = false;
 
-  Widget _buildSwitch(
-      String title, IconData icon, bool value, Function onChange) {
+  Widget _buildSwitch(String title, IconData icon, Color iconColor, bool value,
+      Function onChange) {
     return new SettingItem(
-        title: new Text(title,style: Theme.of(context).textTheme.subhead,),
-        icon: new Icon(icon),
+        iconBgColor: iconColor,
+        title: new Text(
+          title,
+          style: Theme.of(context).textTheme.subhead,
+        ),
+        icon: new Icon(icon, color: Colors.white, size: 18.0),
         isSwitch: true,
         value: value,
         onChange: onChange);
   }
 
-
-
-  Widget _buildInter(String title, IconData icon, Function onClick) {
+  Widget _buildInter(
+      String title, IconData icon, Color iconColor, Function onClick) {
     return new SettingItem(
-        title: new Text(title), icon: new Icon(icon), onClick: onClick);
+        iconBgColor: iconColor,
+        title: new Text(title),
+        icon: new Icon(
+          icon,
+          color: Colors.white,
+          size: 18.0,
+        ),
+        onClick: onClick);
   }
 
-  void _clickAboutMe(){
+  void _clickAboutMe() {}
 
-  }
+  void _clickEmail() {}
 
-  void _clickEmail(){
+  void _clickShare() {}
 
-  }
-
-  void _clickShare(){
-
-  }
-
-  void _clickColorSelect(){
-
-  }
+  void _clickColorSelect() {}
 
   @override
   Widget build(BuildContext context) {
-    return new Column(
-      children: <Widget>[new Column(
+    return new Container(
+      color:COLOR_BG,
+      child:         new ListView(
         children: <Widget>[
           new Container(
-            height: 30.0,
-          )
-          ,
-          _buildSwitch("夜间模式", Icons.brightness_2, isNight, (val) {
-            this.isNight = val;
-            setState(() {});
-          }),
-          _buildSwitch("进入刷新数据", Icons.wb_cloudy, autoRefresh, (val) {
-            this.autoRefresh = val;
-            setState(() {});
-          }),
+              height: 30.0,
+              decoration: new BoxDecoration(
+                  border: new Border(
+                      bottom: const BorderSide(
+                          color: COLOR_DIVIDER, width: 0.2)))),
+          _buildSwitch("夜间模式", Icons.brightness_2, Colors.blueGrey, isNight,
+                  (val) {
+                this.isNight = val;
+                setState(() {});
+              }),
+          _buildSwitch(
+              "进入刷新数据", Icons.wb_cloudy, Colors.orangeAccent, autoRefresh,
+                  (val) {
+                this.autoRefresh = val;
+                setState(() {});
+              }),
           new Container(
             height: 30.0,
-          )
-          ,
-          _buildInter("主题颜色", Icons.border_color, _clickColorSelect),
-          _buildInter("反馈", Icons.email, _clickEmail),
-          _buildInter("分享", Icons.share, _clickShare),
-          _buildInter("关于我", Icons.person , _clickAboutMe)
+            decoration: new BoxDecoration(
+                border: new Border(
+                    top: const BorderSide(color: COLOR_DIVIDER, width: 0.2),
+                    bottom:
+                    const BorderSide(color: COLOR_DIVIDER, width: 0.2))),
+          ),
+          _buildInter("主题颜色", Icons.border_color, Colors.cyanAccent,
+              _clickColorSelect),
+          _buildInter("反馈", Icons.email, Colors.purpleAccent, _clickEmail),
+          _buildInter("分享", Icons.share, Colors.teal, _clickShare),
+          _buildInter("关于我", Icons.person, Colors.redAccent, _clickAboutMe),
+          new Container(
+              height: 30.0,
+              decoration: new BoxDecoration(
+                  border: new Border(
+                      top: const BorderSide(
+                          color: COLOR_DIVIDER, width: 0.2))))
         ],
-      )],
+      ),
     );
   }
 }

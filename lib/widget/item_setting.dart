@@ -12,6 +12,8 @@ class SettingItem extends StatefulWidget {
 
   final Widget title, icon, right;
 
+  final Color iconBgColor;
+
   final bool value;
 
   final Function onChange, onClick;
@@ -20,6 +22,7 @@ class SettingItem extends StatefulWidget {
       {this.value,
       this.onChange,
       this.onClick,
+      this.iconBgColor,
       this.isSwitch: false,
       this.title,
       this.icon,
@@ -32,25 +35,33 @@ class SettingItem extends StatefulWidget {
 class _SettingItemState extends State<SettingItem> {
   @override
   Widget build(BuildContext context) {
-    return new Container(
-
-      decoration: new BoxDecoration(
-        color: Colors.white,
-          border: new Border(
-
-              bottom: new BorderSide(color: COLOR_DIVIDER, width: 0.3))),
-      child: new ListTile(
-        onTap: () {
-          if (widget.onClick != null) {
-            widget.onClick();
-          }
-        },
-        enabled: true,
-        title: widget.title,
-        leading: widget.icon,
-        trailing: widget.isSwitch
-            ? new Switch(value: widget.value, onChanged: widget.onChange)
-            : widget.right,
+    return new Material(
+      color: Colors.white,
+      child: new Container(
+        decoration: new BoxDecoration(
+            border: new Border(
+                bottom: new BorderSide(color: COLOR_DIVIDER, width: 0.3))),
+        child: new ListTile(
+          onTap: () {
+            if (widget.onClick != null) {
+              widget.onClick();
+            }
+          },
+          enabled: true,
+          title: widget.title,
+          leading: new ClipRRect(
+            borderRadius: new BorderRadius.all(new Radius.circular(5.0)),
+            child: new Container(
+              width: 30.0,
+              height: 30.0,
+              color: widget.iconBgColor,
+              child: widget.icon,
+            ),
+          ),
+          trailing: widget.isSwitch
+              ? new Switch(value: widget.value, onChanged: widget.onChange)
+              : widget.right,
+        ),
       ),
     );
   }
