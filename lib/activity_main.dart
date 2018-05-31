@@ -11,6 +11,7 @@ import 'package:flutter_gank/pages/page_gank.dart';
 import 'package:flutter_gank/pages/page_girl.dart';
 import 'package:flutter_gank/pages/page_home.dart';
 import 'package:flutter_gank/pages/page_setting.dart';
+import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:residemenu/residemenu.dart';
 
 class MainActivity extends StatefulWidget {
@@ -19,7 +20,7 @@ class MainActivity extends StatefulWidget {
 }
 
 class _MainActivityState extends State<MainActivity>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin,DbUtils {
   final List<String> _gankTitles = [
     STRING_GANK_WEB,
     STRING_GANK_ANDROID,
@@ -231,8 +232,16 @@ class _MainActivityState extends State<MainActivity>
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    close();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
+    open();
     super.initState();
     _tabController = new TabController(length: 7, vsync: this, initialIndex: 0);
     _tabController.addListener(() {

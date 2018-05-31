@@ -12,6 +12,7 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class GankItem extends StatefulWidget {
   final GankInfo info;
+  
 
   GankItem({this.info});
 
@@ -181,8 +182,9 @@ class GirlCardItem extends StatefulWidget {
   final String time;
   final String who;
   final String url;
+  final bool isLike;
 
-  GirlCardItem({this.time, this.url, this.who});
+  GirlCardItem({this.time, this.url, this.who,this.isLike});
 
   @override
   _GirlCardItemState createState() => new _GirlCardItemState();
@@ -193,6 +195,7 @@ class _GirlCardItemState extends State<GirlCardItem> {
   Widget build(BuildContext context) {
     final time = widget.time;
     final who = widget.who;
+    final bool isLike = widget.isLike;
     return new Card(
       child: new Column(
         children: <Widget>[
@@ -229,7 +232,12 @@ class _GirlCardItemState extends State<GirlCardItem> {
           ),
           new Align(
             alignment: Alignment.centerRight,
-            child: new Text('收藏'),
+            child: new Row(
+              children: <Widget>[
+                  new Icon(!isLike?Icons.favorite_border:Icons.favorite,color:Colors.redAccent),
+                new Text(!isLike?"取消收藏":"收藏")
+              ],
+            ),
           )
         ],
       ),

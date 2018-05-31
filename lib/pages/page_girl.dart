@@ -5,6 +5,7 @@
  */
 
 import 'dart:async';
+import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../widget/CircleClipper.dart';
 import 'package:flutter/scheduler.dart';
+
 class GirlPage extends StatefulWidget {
   final bool isCard;
 
@@ -26,7 +28,8 @@ class GirlPage extends StatefulWidget {
   _GirlPageState createState() => new _GirlPageState();
 }
 
-class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
+class _GirlPageState extends State<GirlPage>
+    with IndicatorFactory, HttpUtils, DbUtils {
   List<GirlInfo> _dataList = [];
 
   RefreshController _refreshController;
@@ -42,8 +45,10 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
         //空数据
         _refreshController.sendBack(false, RefreshStatus.noMore);
       } else {
-        for (var item in data) {
+        for (GirlInfo item in data){
           _dataList.add(item);
+          insert("Girl", item.toMap()).then((val) {
+          });
         }
 
         _pageIndex++;
@@ -53,16 +58,45 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
       }
       return false;
     }).catchError((error) {
+      print(error);
       _refreshController.sendBack(false, 4);
       return false;
     });
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     _refreshController = new RefreshController();
+    open().then((val) {
 
+      getList("Girl").then((List<dynamic> list){
+        if(list.isEmpty){
+          SharedPreferences.getInstance().then((SharedPreferences preferences) {
+            if (preferences.getBool("autoRefresh") ?? false) {
+              _fetchMoreData();
+            }
+
+          });
+        }
+        else{
+          for(Map map in list){
+            _dataList.add(new GirlInfo.fromMap(map));
+          }
+          int aa = list.length~/20;
+          _pageIndex = aa+1;
+
+
+        }
+      });
+
+    });
     super.initState();
   }
 
@@ -71,7 +105,6 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
       offsetLis.value = offset;
     }
   }
-
 
   void _onRefresh(bool up) {
     if (!up) {
@@ -84,14 +117,13 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
     }
   }
 
-
   Widget _buildList() {
     if (widget.isCard) {
       return new ListView.builder(
           itemCount: _dataList.length,
           itemBuilder: (context, index) => new GirlCardItem(
                 who: _dataList[index].who,
-                time:_dataList[index].desc,
+                time: _dataList[index].desc,
                 url: _dataList[index].url,
               ));
     }
@@ -113,23 +145,16 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
     // TODO: implement didUpdateWidget
 
     super.didUpdateWidget(oldWidget);
-    SharedPreferences.getInstance().then((SharedPreferences preferences){
-      if(preferences.getBool("autoRefresh")){
-        _fetchMoreData();
-      }
-    });
 
-    if(widget.isCard!=oldWidget.isCard) {
+    if (widget.isCard != oldWidget.isCard) {
       SchedulerBinding.instance.addPostFrameCallback((val) {
         _refreshController.scrollTo(0.0);
       });
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    print("build");
     return new Container(
       color: const Color.fromRGBO(249, 249, 249, 100.0),
       child: new Stack(

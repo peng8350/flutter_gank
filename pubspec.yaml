@@ -18,6 +18,9 @@ dependencies:
   residemenu:
     ^1.2.5
 
+  sqflite:
+    ^0.8.9
+
   flutter_webview_plugin: "^0.1.6"
 
   photo_view:

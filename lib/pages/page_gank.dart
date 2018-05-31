@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
 import 'package:flutter_gank/constant/strings.dart';
+import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:flutter_gank/utils/utils_indicator.dart';
 import 'package:flutter_gank/widget/CircleClipper.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
@@ -26,7 +27,7 @@ class GankPage extends StatefulWidget {
   _GankPageState createState() => new _GankPageState();
 }
 
-class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory {
+class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory ,DbUtils{
   List<GankInfo> _dataList = [];
   RefreshController _refreshController;
   int _pageIndex = 1;
@@ -39,13 +40,21 @@ class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory {
         //空数据
         _refreshController.sendBack(false, RefreshStatus.noMore);
       } else {
-        setState(() {
-          for (var item in data) {
-            _dataList.add(item);
-          }
-          _pageIndex++;
-        });
+
+        for (GankInfo item in data){
+          _dataList.add(item);
+          insert("Gank", item.toMap()).then((val) {
+          }).catchError((error){
+            print(error);
+          });
+        }
+        _pageIndex++;
+
         _refreshController.sendBack(false, RefreshStatus.idle);
+        setState(() {
+
+
+        });
       }
       return false;
     }).catchError((error) {
@@ -105,14 +114,39 @@ class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    SharedPreferences.getInstance().then((SharedPreferences preferences){
-      if(preferences.getBool("autoRefresh")){
-        _fetchMoreData();
-      }
-    });
     _refreshController = new RefreshController();
+
+    open().then((val) {
+      getList("Gank","type = ?",[widget.title]).then((List<dynamic> list){
+        if(list.isEmpty){
+          SharedPreferences.getInstance().then((SharedPreferences preferences) {
+            if (preferences.getBool("autoRefresh") ?? false) {
+              _fetchMoreData();
+            }
+
+          });
+        }
+        else{
+          for(Map map in list){
+            _dataList.add(new GankInfo.fromMap(map));
+          }
+          int aa = list.length~/20;
+          _pageIndex = aa+1;
+
+
+        }
+      });
+
+    });
   }
 }
