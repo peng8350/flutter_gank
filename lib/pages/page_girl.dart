@@ -5,14 +5,14 @@
  */
 
 import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
 import 'package:flutter_gank/constant/strings.dart';
 import 'package:flutter_gank/utils/utils_http.dart';
 import 'package:flutter_gank/utils/utils_indicator.dart';
 import 'package:flutter_gank/widget/cached_pic.dart';
+import 'package:flutter_gank/widget/item_gank.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../widget/CircleClipper.dart';
@@ -89,7 +89,9 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
     if (widget.isCard) {
       return new ListView.builder(
           itemCount: _dataList.length,
-          itemBuilder: (context, index) => new CachedPic(
+          itemBuilder: (context, index) => new GirlCardItem(
+                who: _dataList[index].who,
+                time:_dataList[index].desc,
                 url: _dataList[index].url,
               ));
     }
@@ -111,10 +113,19 @@ class _GirlPageState extends State<GirlPage> with IndicatorFactory, HttpUtils {
     // TODO: implement didUpdateWidget
 
     super.didUpdateWidget(oldWidget);
-    SchedulerBinding.instance.addPostFrameCallback((val){
-      _refreshController.scrollTo(0.0);
+    SharedPreferences.getInstance().then((SharedPreferences preferences){
+      if(preferences.getBool("autoRefresh")){
+        _fetchMoreData();
+      }
     });
+
+    if(widget.isCard!=oldWidget.isCard) {
+      SchedulerBinding.instance.addPostFrameCallback((val) {
+        _refreshController.scrollTo(0.0);
+      });
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {

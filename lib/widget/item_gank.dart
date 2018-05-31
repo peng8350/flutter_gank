@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
 import 'package:flutter_gank/constant/colors.dart';
+import 'package:flutter_gank/widget/cached_pic.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class GankItem extends StatefulWidget {
@@ -111,6 +112,126 @@ class _GankItemState extends State<GankItem> {
             }));
           },
         ),
+      ),
+    );
+  }
+}
+
+class SettingItem extends StatefulWidget {
+  final bool isSwitch;
+
+  final Widget title, icon, right;
+
+  final Color iconBgColor;
+
+  final bool value;
+
+  final Function onChange, onClick;
+
+  SettingItem(
+      {this.value,
+      this.onChange,
+      this.onClick,
+      this.iconBgColor,
+      this.isSwitch: false,
+      this.title,
+      this.icon,
+      this.right: const Icon(Icons.arrow_forward, color: Colors.grey)});
+
+  @override
+  _SettingItemState createState() => new _SettingItemState();
+}
+
+class _SettingItemState extends State<SettingItem> {
+  @override
+  Widget build(BuildContext context) {
+    return new Material(
+      color: Colors.white,
+      child: new Container(
+        decoration: new BoxDecoration(
+            border: new Border(
+                bottom: new BorderSide(color: COLOR_DIVIDER, width: 0.4))),
+        child: new ListTile(
+          onTap: () {
+            if (widget.onClick != null) {
+              widget.onClick();
+            }
+          },
+          enabled: true,
+          title: widget.title,
+          leading: new ClipRRect(
+            borderRadius: new BorderRadius.all(new Radius.circular(5.0)),
+            child: new Container(
+              width: 30.0,
+              height: 30.0,
+              color: widget.iconBgColor,
+              child: widget.icon,
+            ),
+          ),
+          trailing: widget.isSwitch
+              ? new Switch(value: widget.value, onChanged: widget.onChange)
+              : widget.right,
+        ),
+      ),
+    );
+  }
+}
+
+class GirlCardItem extends StatefulWidget {
+  final String time;
+  final String who;
+  final String url;
+
+  GirlCardItem({this.time, this.url, this.who});
+
+  @override
+  _GirlCardItemState createState() => new _GirlCardItemState();
+}
+
+class _GirlCardItemState extends State<GirlCardItem> {
+  @override
+  Widget build(BuildContext context) {
+    final time = widget.time;
+    final who = widget.who;
+    return new Card(
+      child: new Column(
+        children: <Widget>[
+          new Stack(
+            alignment: Alignment.bottomLeft,
+            children: <Widget>[
+              new CachedPic(
+                url: widget.url,
+              ),
+              new Container(
+                height: 40.0,
+                color: const Color(0x66666666),
+                child: new Padding(
+                  padding: new EdgeInsets.only(left: 10.0, right: 10.0),
+                  child: new Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      new Text(
+                        time,
+                        style:
+                            const TextStyle(inherit: true, color: Colors.white),
+                      ),
+                      new Text(
+                        "by:$who",
+                        style:
+                            const TextStyle(inherit: true, color: Colors.white),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+          new Align(
+            alignment: Alignment.centerRight,
+            child: new Text('收藏'),
+          )
+        ],
       ),
     );
   }

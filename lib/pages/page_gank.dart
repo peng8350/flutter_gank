@@ -14,6 +14,7 @@ import 'package:flutter_gank/widget/CircleClipper.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_gank/utils/utils_http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GankPage extends StatefulWidget {
   final String title;
@@ -107,7 +108,11 @@ class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _fetchMoreData();
+    SharedPreferences.getInstance().then((SharedPreferences preferences){
+      if(preferences.getBool("autoRefresh")){
+        _fetchMoreData();
+      }
+    });
     _refreshController = new RefreshController();
   }
 }

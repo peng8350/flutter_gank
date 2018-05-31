@@ -7,7 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/widget/dialogs.dart';
-import 'package:flutter_gank/widget/item_setting.dart';
+import 'package:flutter_gank/widget/item_gank.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class SettingPage extends StatefulWidget {
