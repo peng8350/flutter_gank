@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gank/activity_main.dart';
 import 'package:flutter_gank/constant/strings.dart';
 
-
 class App extends StatelessWidget {
 
   // This widget is the root of your application.

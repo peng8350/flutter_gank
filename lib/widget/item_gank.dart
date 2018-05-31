@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
 import 'package:flutter_gank/constant/colors.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class GankItem extends StatefulWidget {
   final GankInfo info;
@@ -18,24 +19,27 @@ class GankItem extends StatefulWidget {
 }
 
 class _GankItemState extends State<GankItem> {
-
-  Widget _buildImg(){
+  Widget _buildImg() {
     return widget.info.img == ''
         ? new Image.asset('images/empty.png',
-        width: 50.0, height: 80.0, fit: BoxFit.cover)
+            width: 50.0, height: 80.0, fit: BoxFit.cover)
         : new Image.network(
-      widget.info.img+"?imageView2/0/w/100",
-      height: 80.0,
-      fit: BoxFit.cover,
-      width: 50.0,
-    );
+            widget.info.img + "?imageView2/0/w/100",
+            height: 80.0,
+            fit: BoxFit.cover,
+            width: 50.0,
+          );
   }
 
-  Widget _buildDesc(){
-    return new Expanded(child: new Container(
+  Widget _buildDesc() {
+    return new Expanded(
+        child: new Container(
       alignment: Alignment.topLeft,
       margin: const EdgeInsets.only(left: 10.0),
-      child: new Text(widget.info.desc,maxLines: 10,),
+      child: new Text(
+        widget.info.desc,
+        maxLines: 10,
+      ),
     ));
   }
 
@@ -44,7 +48,6 @@ class _GankItemState extends State<GankItem> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-
         _buildImg(),
         _buildDesc(),
         new Container(
@@ -82,22 +85,31 @@ class _GankItemState extends State<GankItem> {
 
   @override
   Widget build(BuildContext context) {
-    return  new Container(
+    return new Container(
       color: COLOR_BG,
       child: new Card(
-
         margin: new EdgeInsets.all(5.0),
         elevation: 3.0,
         color: Colors.white,
         child: new InkWell(
           child: new Container(
-
             padding: new EdgeInsets.all(5.0),
             child: new Column(
               children: <Widget>[_buildTop(), _buildBottom()],
             ),
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator
+                .of(context)
+                .push(new MaterialPageRoute(builder: (context) {
+              return new WebviewScaffold(
+                url: widget.info.url,
+                appBar: new AppBar(
+                  title: new Text("Widget webview"),
+                ),
+              );
+            }));
+          },
         ),
       ),
     );
