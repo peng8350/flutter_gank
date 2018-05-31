@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/constant/colors.dart';
+import 'package:flutter_gank/widget/dialogs.dart';
 import 'package:flutter_gank/widget/item_setting.dart';
 import 'package:share/share.dart';
 
@@ -45,7 +46,12 @@ class _SettingPageState extends State<SettingPage> {
         onClick: onClick);
   }
 
-  void _clickAboutMe() {}
+  void _clickAboutMe() {
+    showDialog(context: context,child: new SimpleDialog(title: new Text("作者"),
+    children: <Widget>[
+      new AboutMeDialog()
+    ],contentPadding: new EdgeInsets.all(10.0)));
+  }
 
   void _clickEmail() {}
 
