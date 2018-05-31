@@ -241,7 +241,6 @@ class _MainActivityState extends State<MainActivity>
   @override
   void initState() {
     // TODO: implement initState
-    open();
     super.initState();
     _tabController = new TabController(length: 7, vsync: this, initialIndex: 0);
     _tabController.addListener(() {

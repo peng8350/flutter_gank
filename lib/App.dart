@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/activity_main.dart';
+import 'package:flutter_gank/activity_spalsh.dart';
 import 'package:flutter_gank/constant/strings.dart';
 
 class App extends StatelessWidget {
@@ -33,8 +34,12 @@ class App extends StatelessWidget {
           body2: new TextStyle(inherit: true,fontSize: 10.0,color:Colors.grey),
         )
       ),
-
-      home: new MainActivity(),
+      routes: {
+        "main": (BuildContext context){
+          return new MainActivity();
+        }
+      },
+      home: new SpalshActivity(),
     );
   }
 }
