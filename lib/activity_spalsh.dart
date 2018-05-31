@@ -17,16 +17,19 @@ class _SpalshActivityState extends State<SpalshActivity>
 
   @override
   Widget build(BuildContext context) {
-    return new ScaleTransition(
-        scale: _controller,
-        alignment: Alignment.center,
-        child: new Image.asset(
-          "images/gank.jpg",
-          width: double.infinity,
-          height: double.infinity,
+    return new Scaffold(
+      body: new Container(
 
-          centerSlice: new Rect.fromLTWH(200.0, 200.0, 300.0, 300.0),
-        ));
+        decoration: new BoxDecoration(
+            image: new DecorationImage(image: new AssetImage("images/splash.jpg"))
+        ),
+        alignment: Alignment.center,
+        child: new ScaleTransition(
+            scale: _controller,
+            alignment: Alignment.center,
+            child: new Text('干货集中营',style: new TextStyle(inherit: true,color: Colors.white70,fontSize: 16.0))),
+      ),
+    );
   }
 
   @override
@@ -36,7 +39,7 @@ class _SpalshActivityState extends State<SpalshActivity>
     _controller = new AnimationController(
         vsync: this,
         lowerBound: 1.0,
-        upperBound: 1.5,
+        upperBound: 2.0,
         value: 1.0,
         duration: const Duration(milliseconds: 1000));
     open().then((val) {
