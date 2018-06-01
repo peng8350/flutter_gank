@@ -58,7 +58,6 @@ class _GirlPageState extends State<GirlPage>
       }
       return false;
     }).catchError((error) {
-      print(error);
       _refreshController.sendBack(false, 4);
       return false;
     });
@@ -94,7 +93,6 @@ class _GirlPageState extends State<GirlPage>
 
   void _onOffsetCall(bool up, double offset) {
     if (up) {
-      print(offset);
       offsetLis.value = offset;
     }
   }
@@ -112,7 +110,6 @@ class _GirlPageState extends State<GirlPage>
 
   void _onClickLike(int index) {
     _dataList[index].like = !_dataList[index].like;
-    setState(() {});
     update("Girl", _dataList[index].toMap(), "id = ? ", [_dataList[index].id]);
   }
 

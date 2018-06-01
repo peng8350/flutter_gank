@@ -45,7 +45,6 @@ class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory ,D
           _dataList.add(item);
           insert("Gank", item.toMap()).then((val) {
           }).catchError((error){
-            print(error);
           });
         }
         _pageIndex++;
@@ -67,6 +66,12 @@ class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory ,D
     if (up) {
       offsetLis.value = offset;
     }
+  }
+
+  void _onClickLike(int index) {
+    _dataList[index].like = !_dataList[index].like;
+    setState(() {});
+    update("Gank", _dataList[index].toMap(), "id = ? ", [_dataList[index].id]);
   }
 
   void _onRefresh(bool up) {
@@ -92,7 +97,9 @@ class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory ,D
             controller: _refreshController,
             child: new ListView.builder(
               itemBuilder: (context, index) =>
-                  new GankItem(info: _dataList[index]),
+                  new GankItem(info: _dataList[index],onChange:(){
+                    _onClickLike(index);
+                  },),
               itemCount: _dataList.length,
             ),
             headerBuilder: buildDefaultHeader,
