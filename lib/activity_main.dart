@@ -10,6 +10,7 @@ import 'package:flutter_gank/constant/strings.dart';
 import 'package:flutter_gank/pages/page_gank.dart';
 import 'package:flutter_gank/pages/page_girl.dart';
 import 'package:flutter_gank/pages/page_home.dart';
+import 'package:flutter_gank/pages/page_like.dart';
 import 'package:flutter_gank/pages/page_setting.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:residemenu/residemenu.dart';
@@ -134,7 +135,7 @@ class _MainActivityState extends State<MainActivity>
         ),
         new Offstage(
           offstage: selectIndex != 3,
-          child: new Text('4'),
+          child: new LikePage(),
         ),
         new Offstage(
           offstage: selectIndex != 4,
@@ -208,6 +209,7 @@ class _MainActivityState extends State<MainActivity>
   Widget build(BuildContext context) {
     return new Scaffold(
         body: new ResideMenu.scafford(
+      enableFade: false,
       controller: _menuController,
       leftScaffold: _buildMiddleMenu(),
       child: new Scaffold(

@@ -8,7 +8,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/utils/utils_http.dart';
-import 'package:flutter_html_view/flutter_html_view.dart';
 import 'dart:convert';
 
 class HomePage extends StatefulWidget {
@@ -16,29 +15,34 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => new _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>  with HttpUtils{
+class _HomePageState extends State<HomePage>
+    with HttpUtils, SingleTickerProviderStateMixin {
   bool showAlignmentCards = false;
+  TabController _controller;
 
-  Future<String> getData(){
-    return get("http://gank.io/api/history/content/1/1");
+  @override
+  void initState() {
+    // TODO: implement initState
+    _controller = new TabController(length: 7, vsync: this);
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    return new TabBar(
+      isScrollable: true
+      ,
 
-    return new FutureBuilder(builder: (context,asyc){
-      if(!asyc.hasData){
-        return new Center(
-          child: new CircularProgressIndicator(),
-        );
-      }
-      else{
-        return new ListView(
-            children: <Widget>[new HtmlView(
-              data: json.decode(asyc.data)["results"][0]["content"],
-            )]
-        );
-      }
-    },future: getData());
+      tabs: [
+        new Icon(Icons.add,color:Colors.black),
+        new Icon(Icons.add,color:Colors.black),
+        new Icon(Icons.add,color:Colors.black),
+        new Icon(Icons.add,color:Colors.black),
+        new Icon(Icons.add,color:Colors.black),
+        new Icon(Icons.add,color:Colors.black),
+        new Icon(Icons.add,color:Colors.black)
+      ],
+      controller: _controller,
+    );
   }
 }
