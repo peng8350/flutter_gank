@@ -29,20 +29,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return new TabBar(
-      isScrollable: true
-      ,
-
-      tabs: [
-        new Icon(Icons.add,color:Colors.black),
-        new Icon(Icons.add,color:Colors.black),
-        new Icon(Icons.add,color:Colors.black),
-        new Icon(Icons.add,color:Colors.black),
-        new Icon(Icons.add,color:Colors.black),
-        new Icon(Icons.add,color:Colors.black),
-        new Icon(Icons.add,color:Colors.black)
-      ],
-      controller: _controller,
-    );
+    return new Container();
   }
 }

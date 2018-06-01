@@ -110,6 +110,9 @@ class _GirlPageState extends State<GirlPage>
 
   void _onClickLike(int index) {
     _dataList[index].like = !_dataList[index].like;
+    setState(() {
+
+    });
     update("Girl", _dataList[index].toMap(), "id = ? ", [_dataList[index].id]);
   }
 
