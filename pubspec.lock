@@ -257,5 +257,5 @@ packages:
     source: hosted
     version: "0.5.3"
 sdks:
-  dart: ">=2.0.0-dev.35 <=2.0.0-edge.c080951d45e79cd25df98036c4be835b284a269c"
+  dart: ">=2.0.0-dev.35 <=2.0.0-dev.54.0.flutter-46ab040e58"
   flutter: ">=0.2.5 <2.0.0"

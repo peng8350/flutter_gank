@@ -208,7 +208,6 @@ class _MainActivityState extends State<MainActivity>
   Widget build(BuildContext context) {
     return new Scaffold(
         body: new ResideMenu.scafford(
-      enableScale: false,
       controller: _menuController,
       leftScaffold: _buildMiddleMenu(),
       child: new Scaffold(
