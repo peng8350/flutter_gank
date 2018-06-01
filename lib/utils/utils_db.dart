@@ -55,7 +55,7 @@ class DbUtils {
   }
 
   Future<int> update(
-      String table, Map map, String whereSql, List<String> params) async {
+      String table, Map map, [String whereSql, List<String> params]) async {
     return await db.update(table, map, where: whereSql, whereArgs: params);
   }
 

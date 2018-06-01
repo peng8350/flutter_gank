@@ -12,7 +12,6 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class GankItem extends StatefulWidget {
   final GankInfo info;
-  
 
   GankItem({this.info});
 
@@ -183,8 +182,9 @@ class GirlCardItem extends StatefulWidget {
   final String who;
   final String url;
   final bool isLike;
+  final Function onChangeVal;
 
-  GirlCardItem({this.time, this.url, this.who,this.isLike});
+  GirlCardItem({this.time, this.url, this.who, this.isLike, this.onChangeVal});
 
   @override
   _GirlCardItemState createState() => new _GirlCardItemState();
@@ -231,14 +231,27 @@ class _GirlCardItemState extends State<GirlCardItem> {
             ],
           ),
           new Align(
-            alignment: Alignment.centerRight,
-            child: new Row(
-              children: <Widget>[
-                  new Icon(!isLike?Icons.favorite_border:Icons.favorite,color:Colors.redAccent),
-                new Text(!isLike?"取消收藏":"收藏")
-              ],
-            ),
-          )
+              alignment: Alignment.centerRight,
+              child: new InkWell(
+                onTap: () {
+                  if (widget.onChangeVal != null) {
+                    widget.onChangeVal();
+                  }
+                },
+                child: new Container(
+                  margin: const EdgeInsets.all(10.0),
+                  child: new Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      new Icon(!isLike ? Icons.favorite_border : Icons.favorite,
+                          color: Colors.redAccent),
+                      new Text(isLike ? "取消收藏" : "收藏"),
+                    ],
+                  ),
+                ),
+              ))
         ],
       ),
     );

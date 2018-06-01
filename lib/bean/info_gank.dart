@@ -7,7 +7,7 @@
 class GankInfo {
   final String id;
   final String desc, publishedAt, source, type, url, who, img;
-  final bool like;
+  bool like;
 
   GankInfo(
       {this.desc,
@@ -65,7 +65,7 @@ class GankInfo {
 class GirlInfo {
   final String id;
   final String desc, who, url;
-  final bool like;
+  bool like;
 
   GirlInfo(
       {this.desc, this.who, this.url, this.id, this.like});
@@ -95,6 +95,7 @@ class GirlInfo {
       map["who"] = who;
       map["desc"] = desc;
       map["like"] = like?1:0;
+
     }
     return map;
   }

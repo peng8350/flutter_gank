@@ -45,10 +45,9 @@ class _GirlPageState extends State<GirlPage>
         //空数据
         _refreshController.sendBack(false, RefreshStatus.noMore);
       } else {
-        for (GirlInfo item in data){
+        for (GirlInfo item in data) {
           _dataList.add(item);
-          insert("Girl", item.toMap()).then((val) {
-          });
+          insert("Girl", item.toMap()).then((val) {});
         }
 
         _pageIndex++;
@@ -74,28 +73,20 @@ class _GirlPageState extends State<GirlPage>
   void initState() {
     // TODO: implement initState
     _refreshController = new RefreshController();
-    open().then((val) {
-
-      getList("Girl").then((List<dynamic> list){
-        if(list.isEmpty){
-          SharedPreferences.getInstance().then((SharedPreferences preferences) {
-            if (preferences.getBool("autoRefresh") ?? false) {
-              _fetchMoreData();
-            }
-
-          });
-        }
-        else{
-          for(Map map in list){
-            _dataList.add(new GirlInfo.fromMap(map));
+    getList("Girl").then((List<dynamic> list) {
+      if (list.isEmpty) {
+        SharedPreferences.getInstance().then((SharedPreferences preferences) {
+          if (preferences.getBool("autoRefresh") ?? false) {
+            _fetchMoreData();
           }
-          int aa = list.length~/20;
-          _pageIndex = aa+1;
-
-
+        });
+      } else {
+        for (Map map in list) {
+          _dataList.add(new GirlInfo.fromMap(map));
         }
-      });
-
+        int aa = list.length ~/ 20;
+        _pageIndex = aa + 1;
+      }
     });
     super.initState();
   }
@@ -117,6 +108,13 @@ class _GirlPageState extends State<GirlPage>
     }
   }
 
+  void _onClickLike(int index) {
+    _dataList[index].like = !_dataList[index].like;
+    setState(() {});
+    print(_dataList[index].id);
+    update("Girl", _dataList[index].toMap(), "id = ? ", [_dataList[index].id]);
+  }
+
   Widget _buildList() {
     if (widget.isCard) {
       return new ListView.builder(
@@ -125,6 +123,10 @@ class _GirlPageState extends State<GirlPage>
                 who: _dataList[index].who,
                 time: _dataList[index].desc,
                 url: _dataList[index].url,
+                isLike: _dataList[index].like,
+                onChangeVal: (){
+                  _onClickLike(index);
+                },
               ));
     }
     return new StaggeredGridView.countBuilder(
