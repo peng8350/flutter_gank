@@ -15,7 +15,9 @@ class GankItem extends StatefulWidget {
 
   final Function onChange;
 
-  GankItem({this.info,this.onChange});
+  final bool showLike;
+
+  GankItem({this.info, this.onChange, this.showLike:true});
 
   @override
   _GankItemState createState() => new _GankItemState();
@@ -77,7 +79,7 @@ class _GankItemState extends State<GankItem> {
               color: Colors.greenAccent,
               child: new Text(
                 widget.info.who,
-                style: const TextStyle(inherit:true,color:Colors.white),
+                style: const TextStyle(inherit: true, color: Colors.white),
               ),
             ),
             new Container(
@@ -87,30 +89,35 @@ class _GankItemState extends State<GankItem> {
               color: Colors.purpleAccent,
               child: new Text(
                 widget.info.source,
-                style: new TextStyle(inherit: true,color:Colors.white),
+                style: new TextStyle(inherit: true, color: Colors.white),
               ),
             )
           ],
         ),
-        new InkWell(
-          child: new Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              new Icon(!widget.info.like ? Icons.favorite_border : Icons.favorite,
-                  color: Colors.redAccent),
-              new Text(widget.info.like ? "取消收藏" : "收藏",style: Theme.of(context).textTheme.body2,),
-            ],
+        new Offstage(
+          offstage: !widget.showLike,
+          child: new InkWell(
+            child: new Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                new Icon(
+                    !widget.info.like ? Icons.favorite_border : Icons.favorite,
+                    color: Colors.redAccent),
+                new Text(
+                  widget.info.like ? "取消收藏" : "收藏",
+                  style: Theme.of(context).textTheme.body2,
+                ),
+              ],
+            ),
+            onTap: () {
+              if (widget.onChange != null) {
+                widget.onChange();
+              }
+              setState(() {});
+            },
           ),
-          onTap: (){
-            if(widget.onChange!=null){
-              widget.onChange();
-            }
-            setState(() {
-
-            });
-          },
         )
       ],
     );
@@ -289,9 +296,7 @@ class _GirlCardItemState extends State<GirlCardItem> {
                 onTap: () {
                   if (widget.onChangeVal != null) {
                     widget.onChangeVal();
-                    setState(() {
-
-                    });
+                    setState(() {});
                   }
                 },
                 child: new Container(
@@ -303,7 +308,10 @@ class _GirlCardItemState extends State<GirlCardItem> {
                     children: <Widget>[
                       new Icon(!isLike ? Icons.favorite_border : Icons.favorite,
                           color: Colors.redAccent),
-                      new Text(isLike ? "取消收藏" : "收藏",style: Theme.of(context).textTheme.body2,),
+                      new Text(
+                        isLike ? "取消收藏" : "收藏",
+                        style: Theme.of(context).textTheme.body2,
+                      ),
                     ],
                   ),
                 ),
