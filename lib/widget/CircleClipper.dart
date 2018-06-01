@@ -11,7 +11,7 @@ class ArcIndicator extends StatefulWidget {
 
   final Color color;
 
-  ArcIndicator({this.color:Colors.purpleAccent,this.offsetLis});
+  ArcIndicator({this.color:Colors.lightBlueAccent,this.offsetLis});
 
   @override
   _ArcIndicatorState createState() => new _ArcIndicatorState();

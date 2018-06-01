@@ -5,6 +5,7 @@
  */
 
 import 'dart:async';
+import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -93,6 +94,7 @@ class _GirlPageState extends State<GirlPage>
 
   void _onOffsetCall(bool up, double offset) {
     if (up) {
+      print(offset);
       offsetLis.value = offset;
     }
   }
@@ -111,7 +113,6 @@ class _GirlPageState extends State<GirlPage>
   void _onClickLike(int index) {
     _dataList[index].like = !_dataList[index].like;
     setState(() {});
-    print(_dataList[index].id);
     update("Girl", _dataList[index].toMap(), "id = ? ", [_dataList[index].id]);
   }
 
@@ -124,7 +125,7 @@ class _GirlPageState extends State<GirlPage>
                 time: _dataList[index].desc,
                 url: _dataList[index].url,
                 isLike: _dataList[index].like,
-                onChangeVal: (){
+                onChangeVal: () {
                   _onClickLike(index);
                 },
               ));
@@ -157,24 +158,21 @@ class _GirlPageState extends State<GirlPage>
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
-      color: const Color.fromRGBO(249, 249, 249, 100.0),
-      child: new Stack(
-        children: <Widget>[
-          new ArcIndicator(
-            offsetLis: offsetLis,
-          ),
-          new SmartRefresher(
-            controller: _refreshController,
-            child: _buildList(),
-            headerBuilder: buildDefaultHeader,
-            footerBuilder: buildDefaultFooter,
-            onRefresh: _onRefresh,
-            enablePullUp: true,
-            onOffsetChange: _onOffsetCall,
-          )
-        ],
+    return new Stack(children: <Widget>[
+      new ArcIndicator(
+        offsetLis: offsetLis,
       ),
-    );
+      new Container(
+        child: new SmartRefresher(
+          controller: _refreshController,
+          child: _buildList(),
+          headerBuilder: buildDefaultHeader,
+          footerBuilder: buildDefaultFooter,
+          onRefresh: _onRefresh,
+          enablePullUp: true,
+          onOffsetChange: _onOffsetCall,
+        ),
+      )
+    ]);
   }
 }

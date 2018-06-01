@@ -42,13 +42,22 @@ class _MainActivityState extends State<MainActivity>
 
   Widget _buildRight(){
     if(selectIndex==1){
-      return new Container(
-        child: new Icon(Icons.search,color:Colors.white),
-        margin: new EdgeInsets.only(right: 10.0),
+      return new InkWell(
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        child: new Container(
+          child: new Icon(Icons.search,color:Colors.white,size: 25.0,),
+          margin: new EdgeInsets.all( 10.0),
+        ),
+        onTap: (){
+
+        },
       );
     }
     else if(selectIndex==2){
-      return new GestureDetector(
+      return new InkWell(
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onTap: (){
           isCard= !isCard;
           setState(() {
@@ -137,6 +146,8 @@ class _MainActivityState extends State<MainActivity>
 
   Widget _buildMenuItem(String title, IconData iconName, Function callback) {
     return new InkWell(
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
       child: new ResideMenuItem(
           title: title,
           titleStyle:
@@ -211,7 +222,9 @@ class _MainActivityState extends State<MainActivity>
                       : selectIndex == 3
                           ? STRING_LIKE
                           : selectIndex == 4 ? STRING_SETTING : STRING_ABOUTME),
-          leading: new GestureDetector(
+          leading: new InkWell(
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
             child: const Icon(Icons.menu),
             onTap: () {
               _menuController.openMenu(true);

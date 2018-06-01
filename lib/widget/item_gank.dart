@@ -191,6 +191,14 @@ class GirlCardItem extends StatefulWidget {
 }
 
 class _GirlCardItemState extends State<GirlCardItem> {
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    print("Eee");
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final time = widget.time;
