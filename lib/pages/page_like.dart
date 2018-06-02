@@ -12,6 +12,7 @@ import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:flutter_gank/widget/cached_pic.dart';
+import 'package:flutter_gank/widget/drag_to_dismiss.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -23,7 +24,7 @@ class LikePage extends StatefulWidget {
 class _LikePageState extends State<LikePage> with DbUtils {
   int _selectIndex = 0;
   Future<List<dynamic>> _catchGirls;
-  List<GirlInfo> _girlList=[];
+  List<GirlInfo> _girlList = [];
 
   Widget _buildGankList() {
     return new ListView(
@@ -54,30 +55,85 @@ class _LikePageState extends State<LikePage> with DbUtils {
     );
   }
 
+  Widget _buildBottomSheet(int index, Function onClose) {
+    return new Container(
+      padding: const EdgeInsets.all(15.0),
+      color: COLOR_BANTANSPARENT,
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text('确定要删除吗?'),
+          new Row(
+            children: <Widget>[
+              new InkWell(
+                child: new Container(
+                    child: const Icon(Icons.check),
+                    margin: const EdgeInsets.all(5.0)),
+                onTap: () {
+                  _cancelLike(index);
+                  onClose();
+                },
+              ),
+              new InkWell(
+                child: new Container(
+                  margin: const EdgeInsets.all(5.0),
+                  child: const Icon(Icons.clear),
+                ),
+                onTap: () {
+                  onClose();
+                },
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  void _cancelLike(int index) {
+    _girlList[index].like = false;
+    update("Girl", _girlList[index].toMap(), " id = ? ", [_girlList[index].id]);
+    _girlList.removeAt(index);
+    setState(() {});
+  }
+
   Widget _buildGirlList() {
-    return new FutureBuilder(builder: (context,shot){
-      if(shot.connectionState==ConnectionState.none||shot.connectionState==ConnectionState.waiting){
-        return new Center(
-          child: const CircularProgressIndicator(),
-        );
-      }
-      else{
-        if(shot.hasError){
-          return new Center(child: new Text('网络异常!!!'));
-        }else
-        return new StaggeredGridView.countBuilder(
-          crossAxisCount: 6,
-          itemCount: _girlList.length,
-          itemBuilder: (context, index) => new CachedPic(
-            url: _girlList[index].url,
-          ),
-          staggeredTileBuilder: (int index) =>
-          new StaggeredTile.count(3, index.isEven ? 3 : 2),
-          mainAxisSpacing: 4.0,
-          crossAxisSpacing: 4.0,
-        );
-      }
-    },future:_catchGirls );
+    return new FutureBuilder(
+        builder: (context, shot) {
+          if (shot.connectionState == ConnectionState.none ||
+              shot.connectionState == ConnectionState.waiting) {
+            return new Center(
+              child: const CircularProgressIndicator(),
+            );
+          } else {
+            if (shot.hasError) {
+              return new Center(child: new Text('网络异常!!!'));
+            } else
+              return new StaggeredGridView.countBuilder(
+                crossAxisCount: 6,
+                itemCount: _girlList.length,
+                itemBuilder: (context, index) => new GestureDetector(
+                      child: new CachedPic(url: _girlList[index].url),
+                      onLongPress: () {
+                        PersistentBottomSheetController sheetController;
+                        Function closeFun = () {
+                          sheetController.close();
+                        };
+                        sheetController = showBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return _buildBottomSheet(index, closeFun);
+                            });
+                      },
+                    ),
+                staggeredTileBuilder: (int index) =>
+                    new StaggeredTile.count(3, index.isEven ? 3 : 2),
+                mainAxisSpacing: 4.0,
+                crossAxisSpacing: 4.0,
+              );
+          }
+        },
+        future: _catchGirls);
   }
 
   Widget _buildContent() {
@@ -128,8 +184,8 @@ class _LikePageState extends State<LikePage> with DbUtils {
   @override
   void initState() {
     // TODO: implement initState
-    _catchGirls = getList("Girl"," like = 1 ").then((List<dynamic> maps){
-      for(var m in maps){
+    _catchGirls = getList("Girl", " like = 1 ").then((List<dynamic> maps) {
+      for (var m in maps) {
         _girlList.add(new GirlInfo.fromMap(m));
       }
     });
@@ -140,8 +196,8 @@ class _LikePageState extends State<LikePage> with DbUtils {
   void didUpdateWidget(LikePage oldWidget) {
     // TODO: implement didUpdateWidget
     _girlList.clear();
-    _catchGirls = getList("Girl"," like = 1 ").then((List<dynamic> maps){
-      for(var m in maps){
+    _catchGirls = getList("Girl", " like = 1 ").then((List<dynamic> maps) {
+      for (var m in maps) {
         _girlList.add(new GirlInfo.fromMap(m));
       }
     });
@@ -150,16 +206,19 @@ class _LikePageState extends State<LikePage> with DbUtils {
 
   @override
   Widget build(BuildContext context) {
-
-    return new Column(
-      children: <Widget>[new Flexible(child: _buildContent()), _buildBottom()],
+    return new Container(
+      child: new Column(
+        children: <Widget>[
+          new Flexible(child: _buildContent()),
+          _buildBottom()
+        ],
+      ),
     );
   }
 }
 
 class GankGroup extends StatefulWidget {
   final groupName;
-
 
   GankGroup(String groupName) : this.groupName = groupName;
 
@@ -171,6 +230,7 @@ class _GankGroupState extends State<GankGroup>
     with SingleTickerProviderStateMixin, DbUtils {
   AnimationController _controller;
   Future _future;
+  List<GankInfo> _list=[];
 
   @override
   void initState() {
@@ -180,14 +240,23 @@ class _GankGroupState extends State<GankGroup>
         duration: const Duration(milliseconds: 300),
         lowerBound: 0.75,
         value: 1.0);
-    _future = getList("Gank", " type = ? and like = 1 ", [widget.groupName]);
+    _future = getList("Gank", " type = ? and like = 1 ", [widget.groupName]).then((data){
+      for(Map m in data){
+        _list.add(new GankInfo.fromMap(m));
+      }
+    });
     super.initState();
   }
 
   @override
   void didUpdateWidget(GankGroup oldWidget) {
     // TODO: implement didUpdateWidget
-    _future = getList("Gank", " type = ? and like = 1 ", [widget.groupName]);
+    _list.clear();
+    _future = getList("Gank", " type = ? and like = 1 ", [widget.groupName]).then((data){
+      for(Map m in data){
+        _list.add(new GankInfo.fromMap(m));
+      }
+    });
     super.didUpdateWidget(oldWidget);
   }
 
@@ -208,12 +277,21 @@ class _GankGroupState extends State<GankGroup>
                   return new Column(children: <Widget>[new Text('网络异常')]);
                 } else {
                   List<Widget> childrens = [];
-                  for (Map item in asnc.data) {
-                    childrens.add(new GankItem(
-                      info: new GankInfo.fromMap(item),
-                      showLike: false,
-                    ));
-                  }
+                  for(int i = 0 ;i<_list.length;i++)
+                    childrens.add(new DragToDismiss(
+                        child: new GankItem(
+                          info: _list[i],
+                          showLike: false,
+                        ),
+                        onDismiss: () {
+                          _list[i].like = false;
+                          update("Gank", _list[i].toMap(),"id = ? ",[_list[i].id]);
+                          _list.removeAt(i);
+                          setState(() {
+
+                          });
+                        })
+                    );
                   return new Column(children: childrens);
                 }
               }

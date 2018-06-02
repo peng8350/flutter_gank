@@ -4,11 +4,8 @@
  * Time: 2018/5/31 下午1:20
  */
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/utils/utils_http.dart';
-import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   @override
@@ -29,6 +26,11 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return new Container();
+
+    return new MaterialButton(child: new Text('sdsdsdsd'),onPressed: (){
+      showBottomSheet(context: context, builder: (context){
+        return new Text('sdsds');
+      });
+    },);
   }
 }

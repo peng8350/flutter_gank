@@ -11,3 +11,5 @@ const Color DEFAULT_THEMECOLOR = const Color.fromRGBO(33, 150, 243, 100.0);
 const Color COLOR_BG = const Color.fromARGB(255,249, 249, 249);
 
 const Color COLOR_DIVIDER= const Color.fromARGB(240, 180, 180, 180);
+
+const Color COLOR_BANTANSPARENT = const Color(0x66666666);

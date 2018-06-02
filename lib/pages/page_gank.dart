@@ -126,6 +126,13 @@ class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory ,D
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(GankPage oldWidget) {
+    // TODO: implement didUpdateWidget
+
+    super.didUpdateWidget(oldWidget);
+  }
+
 
   @override
   void initState() {

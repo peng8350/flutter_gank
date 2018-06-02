@@ -267,7 +267,7 @@ class _GirlCardItemState extends State<GirlCardItem> {
               ),
               new Container(
                 height: 40.0,
-                color: const Color(0x66666666),
+                color: COLOR_BANTANSPARENT,
                 child: new Padding(
                   padding: new EdgeInsets.only(left: 10.0, right: 10.0),
                   child: new Row(
