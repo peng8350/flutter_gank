@@ -21,6 +21,7 @@ class SearchBar extends StatelessWidget {
       onChanged: (String str) {
         if (onChangeText != null) onChangeText(str);
       },
+      autofocus: true,
       style: Theme.of(context).textTheme.body1,
       decoration: new InputDecoration(
         labelStyle: Theme.of(context).textTheme.body1,

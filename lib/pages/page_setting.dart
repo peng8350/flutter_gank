@@ -117,7 +117,7 @@ class _SettingPageState extends State<SettingPage> {
               App.of(context).night = val;
             }),
         _buildSwitch(
-            "进入刷新数据", Icons.wb_cloudy, Colors.orangeAccent, autoRefresh,
+            "没有数据自动加载更多", Icons.wb_cloudy, Colors.orangeAccent, autoRefresh,
                 (val) {
               this.autoRefresh = val;
               preferences.setBool("autoRefresh", autoRefresh);

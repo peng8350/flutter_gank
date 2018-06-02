@@ -47,12 +47,25 @@ class GankPageState extends State<GankPage>
         if (newData[i].id == _dataList[0].id) {
           return i;
         }
+        else{
+          int j = i+1;
+          //是否存在
+          while(j<_dataList.length&&_dataList[j].desc==newData[j].desc){
+            if(_dataList[j].id!=newData[i].id){
+              j++;
+            }
+            else{
+              return i;
+            }
+          }
+        }
       }
     }
     return 0;
   }
 
   void _refreshNewData() {
+    print("seach");
     getGankfromNet(URL_GANK_FETCH + widget.title + "/200/1")
         .then((List<GankInfo> data) {
       for (int i = _catchEndPos(data)-1; i >= 0; i--) {
@@ -204,7 +217,7 @@ class GankPageState extends State<GankPage>
       if (list.isEmpty) {
         SharedPreferences.getInstance().then((SharedPreferences preferences) {
           if (preferences.getBool("autoRefresh") ?? false) {
-//            _refreshController.sendBack(false, RefreshStatus.refreshing);
+            _refreshController.sendBack(false, RefreshStatus.refreshing);
           }
         });
       } else {

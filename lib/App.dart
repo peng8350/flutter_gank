@@ -5,8 +5,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gank/activity_main.dart';
-import 'package:flutter_gank/activity_spalsh.dart';
+import 'package:flutter_gank/activities/activity_main.dart';
+import 'package:flutter_gank/activities/activity_spalsh.dart';
+import 'package:flutter_gank/activities/activity_web.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,9 +52,7 @@ class AppState extends State<App> {
       _themeColor = new Color(
           preferences.getInt("themeColor") ?? DEFAULT_THEMECOLOR.value);
       _isNight = preferences.getBool("isNight") ?? false;
-      setState(() {
-
-      });
+      setState(() {});
     });
 
     super.initState();
@@ -82,22 +81,28 @@ class AppState extends State<App> {
           // counter didn't reset back to zero; the application is not restarted.
           primaryColor: _themeColor,
           backgroundColor: Colors.redAccent,
-          scaffoldBackgroundColor: _isNight?NIGHT_COLOR_BG:COLOR_BG,
-          dialogBackgroundColor: _isNight?NIGHT_COLOR_BG:COLOR_BG,
-          canvasColor: _isNight?NIGHT_ITEM_BG:Colors.white,
+          scaffoldBackgroundColor: _isNight ? NIGHT_COLOR_BG : COLOR_BG,
+          dialogBackgroundColor: _isNight ? NIGHT_COLOR_BG : COLOR_BG,
+          canvasColor: _isNight ? NIGHT_ITEM_BG : Colors.white,
           bottomAppBarColor: Colors.grey,
-          dividerColor: _isNight?NIGHT_COLOR_DIVIDER:COLOR_DIVIDER,
+          dividerColor: _isNight ? NIGHT_COLOR_DIVIDER : COLOR_DIVIDER,
           textTheme: new TextTheme(
             title: new TextStyle(inherit: true, fontSize: 14.0),
-            subhead: new TextStyle(inherit: true, fontSize: 13.0,color:_isNight? NIGHT_TEXT : Colors.black),
-            body1: new TextStyle(inherit: true, fontSize: 12.0,color:_isNight?NIGHT_TEXT:Colors.black),
+            subhead: new TextStyle(
+                inherit: true,
+                fontSize: 13.0,
+                color: _isNight ? NIGHT_TEXT : Colors.black),
+            body1: new TextStyle(
+                inherit: true,
+                fontSize: 12.0,
+                color: _isNight ? NIGHT_TEXT : Colors.black),
             body2: new TextStyle(
                 inherit: true, fontSize: 10.0, color: Colors.grey),
           )),
       routes: {
         "main": (BuildContext context) {
           return new MainActivity();
-        }
+        },
       },
       home: new SpalshActivity(),
     );

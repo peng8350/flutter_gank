@@ -41,14 +41,27 @@ class _GirlPageState extends State<GirlPage>
   ValueNotifier<double> offsetLis = new ValueNotifier(0.0);
 
 
-  //捕捉应该要插入多少个新的数据
+  //这个算法用来捕捉数据应该要终止插入到数据库的位置
   int _catchEndPos(List<GirlInfo> newData) {
     if (_dataList.isEmpty) {
       return newData.length;
     } else {
       for (int i = 0; i < newData.length; i++) {
         if (newData[i].id == _dataList[0].id) {
+
           return i;
+        }
+        else{
+          int j = i+1;
+          //是否存在
+          while(j<_dataList.length&&_dataList[j].desc==newData[j].desc){
+            if(_dataList[j].id!=newData[i].id){
+              j++;
+            }
+            else{
+              return i;
+            }
+          }
         }
       }
     }
@@ -56,7 +69,7 @@ class _GirlPageState extends State<GirlPage>
   }
 
   void _refreshNewData() {
-    getGirlfromNet(URL_GANK_FETCH + "福利" + "/200/1")
+    getGirlfromNet(URL_GANK_FETCH + "福利" + "/100/1")
         .then((List<GirlInfo> data) {
       for (int i = _catchEndPos(data)-1; i >= 0; i--) {
         _dataList.insert(0, data[i]);
@@ -82,7 +95,9 @@ class _GirlPageState extends State<GirlPage>
       } else {
         for (GirlInfo item in data) {
           _dataList.add(item);
-          insert("Girl", item.toMap()).then((val) {});
+          insert("Girl", item.toMap()).then((val) {}).then((val){
+
+          });
         }
 
         _pageIndex++;
@@ -111,7 +126,7 @@ class _GirlPageState extends State<GirlPage>
       if (list.isEmpty) {
         SharedPreferences.getInstance().then((SharedPreferences preferences) {
           if (preferences.getBool("autoRefresh") ?? false) {
-//            _fetchMoreData();
+            _refreshController.sendBack(false, RefreshStatus.refreshing);
           }
         });
       } else {

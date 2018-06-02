@@ -82,7 +82,7 @@ class GirlInfo {
     return new GirlInfo(
         id: json["_id"],
         like: false,
-        desc: json['desc'],
+        desc: (json['publishedAt'] as String).substring(0,10),
         who: json['who'],
         url: json['url']);
   }

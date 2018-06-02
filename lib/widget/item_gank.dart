@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/App.dart';
+import 'package:flutter_gank/activities/activity_web.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/widget/cached_pic.dart';
@@ -154,16 +155,8 @@ class _GankItemState extends State<GankItem> {
             ),
           ),
           onTap: () {
-            Navigator
-                .of(context)
-                .push(new MaterialPageRoute(builder: (context) {
-              return new WebviewScaffold(
-                url: widget.info.url,
-                appBar: new AppBar(
-                  title: new Text("Widget webview"),
-                ),
-              );
-            }));
+            Navigator.of(context).push(new MaterialPageRoute(
+                builder: (context) => new WebActivity(widget.info.url)));
           },
         ),
       ),
@@ -205,7 +198,8 @@ class _SettingItemState extends State<SettingItem> {
       child: new Container(
         decoration: new BoxDecoration(
             border: new Border(
-                bottom: new BorderSide(color: Theme.of(context).dividerColor, width: 0.4))),
+                bottom: new BorderSide(
+                    color: Theme.of(context).dividerColor, width: 0.4))),
         child: new ListTile(
           onTap: () {
             if (widget.onClick != null) {
@@ -324,6 +318,55 @@ class _GirlCardItemState extends State<GirlCardItem> {
               ))
         ],
       ),
+    );
+  }
+}
+
+class HomeGroup extends StatelessWidget {
+  final String title;
+
+  final List<GankInfo> children;
+
+  HomeGroup({this.title, this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> widgets = [];
+    for (GankInfo info in children) widgets.add(new HomeItem(info: info));
+    widgets.insert(0, new Container(
+      alignment: Alignment.centerLeft,
+      margin: const EdgeInsets.all(5.0),
+      child: new Text(title,style: const TextStyle(inherit: true,fontSize: 20.0)),
+    ));
+    return new Column(children: widgets);
+  }
+}
+
+class HomeItem extends StatelessWidget {
+  final GankInfo info;
+
+  HomeItem({this.info});
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    final author = info.who;
+    final time = info.publishedAt;
+    final desc= info.desc;
+    return new ListTile(
+      title: new RichText(
+        text: new TextSpan(
+            text: "● $desc", children: [new TextSpan(text: "($author)")]),
+
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: new Text(time.substring(0,10),style: Theme.of(context).textTheme.body2),
+      enabled: true,
+      onTap: (){
+        Navigator.of(context).push(new MaterialPageRoute(
+            builder: (context) => new WebActivity(info.url)));
+      },
     );
   }
 }

@@ -12,6 +12,11 @@ class HttpUtils {
 
 
 
+  Future<Map> getToMap(String url, [Map params]) async {
+    http.Response response = await http.get(url, headers: params);
+    return json.decode(response.body.toString());
+  }
+
   Future<String> get(String url, [Map params]) async {
     http.Response response = await http.get(url, headers: params);
     return response.body.toString();
