@@ -30,10 +30,18 @@ class _HomePageState extends State<HomePage>
 
   List<String> categories = [];
 
+  AnimationController _aniController;
+
   @override
   void initState() {
     // TODO: implement initState
     _fetch();
+    _aniController = new AnimationController(
+        vsync: this,
+        lowerBound: 1.0,
+        upperBound: 2.0,
+        value: 1.0,
+        duration: const Duration(milliseconds: 200));
     super.initState();
   }
 
@@ -45,16 +53,14 @@ class _HomePageState extends State<HomePage>
         for (String s in _dataMap["category"]) {
           categories.add(s);
         }
-        setState(() {
-
-        });
+        setState(() {});
       });
     });
   }
 
-  Widget _buildGroupByCategory(String category){
+  Widget _buildGroupByCategory(String category) {
     List<GankInfo> list = [];
-    for(Map map in _dataMap["results"][category]){
+    for (Map map in _dataMap["results"][category]) {
       list.add(new GankInfo.fromJson(map));
     }
     return new HomeGroup(
@@ -63,13 +69,44 @@ class _HomePageState extends State<HomePage>
     );
   }
 
+  void _handleScrollEnd(ScrollNotification notifcation) {
+    _aniController.animateTo(1.0);
+  }
+
+  bool _dispatchEvent(ScrollNotification notification) {
+    if (notification is ScrollStartNotification) {
+    } else if (notification is OverscrollNotification) {
+      _aniController.value += -notification.overscroll / 300.0;
+    } else if (notification is ScrollEndNotification) {
+      _handleScrollEnd(notification);
+    } else if (notification is ScrollUpdateNotification) {
+      if (notification.dragDetails == null) {
+        _handleScrollEnd(notification);
+      }
+    }
+    return false;
+  }
+
   Widget _buildContent() {
-    List<Widget> groups= [];
-    for(String cate in categories){
+    List<Widget> groups = [];
+    for (String cate in categories) {
       groups.add(_buildGroupByCategory(cate));
     }
-    groups.insert(0, new SizedBox(height: 300.0,child: new CachedPic(url: _dataMap["results"]["福利"][0]["url"])));
-    return new ListView(children: groups);
+    groups.insert(
+        0,
+        new SizedBox(
+            height: 300.0,
+            child: new ScaleTransition(
+              scale: _aniController,
+              child: new CachedPic(url: _dataMap["results"]["福利"][0]["url"]),
+            )));
+    return new NotificationListener(
+      child: new ListView(
+        children: groups,
+        physics: const ClampingScrollPhysics(),
+      ),
+      onNotification: _dispatchEvent,
+    );
   }
 
   Widget _buildWaiting() {
@@ -102,4 +139,3 @@ class _HomePageState extends State<HomePage>
     );
   }
 }
-

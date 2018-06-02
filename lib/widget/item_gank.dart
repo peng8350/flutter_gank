@@ -334,11 +334,16 @@ class HomeGroup extends StatelessWidget {
     List<Widget> widgets = [];
     for (GankInfo info in children) widgets.add(new HomeItem(info: info));
     widgets.insert(0, new Container(
+
       alignment: Alignment.centerLeft,
-      margin: const EdgeInsets.all(5.0),
+      margin: const EdgeInsets.all(10.0),
       child: new Text(title,style: const TextStyle(inherit: true,fontSize: 20.0)),
     ));
-    return new Column(children: widgets);
+
+    return new Container(
+      color:Theme.of(context).scaffoldBackgroundColor,
+      child: new Column(children: widgets),
+    );
   }
 }
 
@@ -350,23 +355,24 @@ class HomeItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    final author = info.who;
     final time = info.publishedAt;
     final desc= info.desc;
-    return new ListTile(
-      title: new RichText(
-        text: new TextSpan(
-            text: "● $desc", children: [new TextSpan(text: "($author)")]),
+    return new Material(
+      child: new Container(
+        child: new ListTile(
+          title: new Text("● $desc",style: Theme.of(context).textTheme.body1,),
+          trailing: new Text(time.substring(0,10),style: Theme.of(context).textTheme.body2),
+          enabled: true,
+          onTap: (){
+            Navigator.of(context).push(new MaterialPageRoute(
+                builder: (context) => new WebActivity(info.url)));
+          },
 
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+        ),
+        decoration: new BoxDecoration(
+          border: new Border(bottom: new BorderSide(color: Theme.of(context).dividerColor,width: 0.4))
+        ),
       ),
-      trailing: new Text(time.substring(0,10),style: Theme.of(context).textTheme.body2),
-      enabled: true,
-      onTap: (){
-        Navigator.of(context).push(new MaterialPageRoute(
-            builder: (context) => new WebActivity(info.url)));
-      },
     );
   }
 }
