@@ -8,12 +8,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
-import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/utils/utils_http.dart';
 import 'package:flutter_gank/widget/cached_pic.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
-import 'package:flutter_gank/widget/search_bar.dart';
-import '../App.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -64,9 +61,23 @@ class _HomePageState extends State<HomePage>
       list.add(new GankInfo.fromJson(map));
     }
     return new HomeGroup(
-      title: category,
-      children: list,
-    );
+        title: category,
+        children: list,
+        icon: category == 'Android'
+            ? Icons.android
+            : category == '休息视频'
+                ? Icons.video_label
+                : category == 'App'
+                    ? Icons.phone_android
+                    : category == '福利'
+                        ? Icons.tag_faces
+                        : category == '拓展资源'
+                            ? Icons.filter_none
+                            : category == '前端'
+                                ? Icons.language
+                                : category == 'iOS'
+                                    ? Icons.insert_emoticon
+                                    : Icons.layers);
   }
 
   void _handleScrollEnd(ScrollNotification notifcation) {
