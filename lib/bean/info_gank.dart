@@ -10,6 +10,7 @@ class GankInfo {
   bool like;
 
   bool isAvailableSearch(String searchText){
+    if(searchText.isEmpty)return false;
     if(desc.contains(searchText)||publishedAt.contains(searchText)||who.contains(searchText)||url.contains(searchText)){
       return true;
     }

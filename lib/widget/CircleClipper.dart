@@ -19,15 +19,26 @@ class ArcIndicator extends StatefulWidget {
 
 class _ArcIndicatorState extends State<ArcIndicator> {
 
+  Function _update ;
+
   @override
   void initState() {
     // TODO: implement initState
-    widget.offsetLis.addListener((){
+    _update =  (){
       setState(() {
 
       });
-    });
+    };
+    widget.offsetLis.addListener(_update);
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    widget.offsetLis.removeListener(_update);
+    super.dispose();
   }
 
   @override
@@ -60,6 +71,7 @@ class ArcClipper extends CustomClipper<Path>{
     // TODO: implement shouldReclip
     return this != oldClipper;
   }
+
 
 
 }

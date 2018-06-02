@@ -11,7 +11,7 @@ class SearchBar extends StatelessWidget {
   TextEditingController _controller;
 
   SearchBar({this.onChangeText})
-      : _controller = new TextEditingController(text: "we");
+      : _controller = new TextEditingController(text: "");
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +21,22 @@ class SearchBar extends StatelessWidget {
       onChanged: (String str) {
         if (onChangeText != null) onChangeText(str);
       },
+      style: new TextStyle(inherit: true,color: Colors.white),
       decoration: new InputDecoration(
+        labelStyle: new TextStyle(inherit: true,color: Colors.white),
           hintText: "search Gank",
-          border: new UnderlineInputBorder(
-              borderRadius: new BorderRadius.circular(1.0),
-              borderSide: new BorderSide()),
-          suffixIcon: const Icon(Icons.add),
-          prefixIcon: const Icon(Icons.search)),
+          enabled: true,
+          filled: true,
+          prefixIcon: const Icon(Icons.search,color:Colors.white,size: 18.0,),
+          suffixIcon: new InkWell(
+            child: new Icon(Icons.clear,color: Colors.white,size: 16.0),
+            onTap: (){
+              _controller.clear();
+            },
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+          ),
+          ),
     );
   }
 }
