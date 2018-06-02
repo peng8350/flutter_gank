@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/utils/utils_http.dart';
 import 'package:flutter_gank/widget/search_bar.dart';
+import '../App.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -27,6 +28,10 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
 
-    return new Container();
+    return new MaterialButton(
+      child: new Text('获取 App'),
+      onPressed: (){
+      },
+    );
   }
 }

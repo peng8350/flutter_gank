@@ -10,7 +10,16 @@ import 'package:flutter_gank/widget/dialogs.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import '../App.dart';
+
 class SettingPage extends StatefulWidget {
+
+  final Color themeColor;
+
+
+  SettingPage({this.themeColor});
+
   @override
   _SettingPageState createState() => new _SettingPageState();
 }
@@ -20,6 +29,8 @@ class _SettingPageState extends State<SettingPage> {
   SharedPreferences preferences ;
   bool isNight = false;
   bool autoRefresh = false;
+
+  Color _currentColor= new Color(0xff443a49);
 
   Widget _buildSwitch(String title, IconData icon, Color iconColor, bool value,
       Function onChange) {
@@ -61,7 +72,32 @@ class _SettingPageState extends State<SettingPage> {
     Share.share('这是一个使用flutter写的干货集中营客户端');
   }
 
-  void _clickColorSelect() {}
+  void _clickColorSelect() {
+    // raise the [showDialog] widget
+    showDialog(
+      context: context,
+      child: new AlertDialog(
+        title: const Text('Pick a color!'),
+        content: new SingleChildScrollView(
+          child: new ColorPicker(
+            pickerColor: _currentColor,
+            onColorChanged: (color) => setState((){_currentColor = color;}),
+            enableLabel: true,
+            pickerAreaHeightPercent: 0.8,
+          ),
+        ),
+        actions: <Widget>[
+          new FlatButton(
+            child: new Text('Got it'),
+            onPressed: () {
+              App.of(context).changeThemeColor(_currentColor);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

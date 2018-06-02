@@ -10,7 +10,39 @@ import 'package:flutter_gank/activity_main.dart';
 import 'package:flutter_gank/activity_spalsh.dart';
 import 'package:flutter_gank/constant/strings.dart';
 
-class App extends StatelessWidget {
+
+class App extends StatefulWidget {
+
+  static AppState of(BuildContext context, { bool nullOk: false }) {
+    assert(nullOk != null);
+    assert(context != null);
+    final AppState result = context.ancestorStateOfType(const TypeMatcher<AppState>());
+    if (nullOk || result != null)
+      return result;
+    throw new FlutterError(
+        'get Static App failed'
+    );
+  }
+
+  @override
+  AppState createState() => new AppState();
+}
+
+class AppState extends State<App> {
+  Color _themeColor;
+
+
+  @override
+  String toString({DiagnosticLevel minLevel: DiagnosticLevel.debug}) {
+    // TODO: implement toString
+    return "这是我的App";
+  }
+
+  void changeThemeColor(Color color){
+    setState(() {
+      _themeColor = color;
+    });
+  }
 
   // This widget is the root of your application.
   @override
@@ -26,13 +58,13 @@ class App extends StatelessWidget {
         // "hot reload" (press "r" in the console where you ran "flutter run",
         // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
         // counter didn't reset back to zero; the application is not restarted.
-        primarySwatch: Colors.blue,
-        textTheme: new TextTheme(
-          title: new TextStyle(inherit: true,fontSize: 14.0),
-          subhead: new TextStyle(inherit: true,fontSize: 13.0),
-          body1: new TextStyle(inherit: true,fontSize: 12.0),
-          body2: new TextStyle(inherit: true,fontSize: 10.0,color:Colors.grey),
-        )
+          primaryColor: _themeColor,
+          textTheme: new TextTheme(
+            title: new TextStyle(inherit: true,fontSize: 14.0),
+            subhead: new TextStyle(inherit: true,fontSize: 13.0),
+            body1: new TextStyle(inherit: true,fontSize: 12.0),
+            body2: new TextStyle(inherit: true,fontSize: 10.0,color:Colors.grey),
+          )
       ),
       routes: {
         "main": (BuildContext context){

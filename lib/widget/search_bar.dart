@@ -27,6 +27,7 @@ class SearchBar extends StatelessWidget {
           hintText: "search Gank",
           enabled: true,
           filled: true,
+          hintStyle: new TextStyle(inherit: true,color: const Color(0xdddddddd)),
           prefixIcon: const Icon(Icons.search,color:Colors.white,size: 18.0,),
           suffixIcon: new InkWell(
             child: new Icon(Icons.clear,color: Colors.white,size: 16.0),

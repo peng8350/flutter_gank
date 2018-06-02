@@ -16,7 +16,8 @@ class DragToDismiss extends StatefulWidget {
   createState() => new _DragToMissState();
 }
 
-class _DragToMissState extends State<DragToDismiss> with SingleTickerProviderStateMixin  {
+class _DragToMissState extends State<DragToDismiss>
+    with SingleTickerProviderStateMixin {
   bool _dragLeaved = false;
   AnimationController _controller;
 
@@ -25,33 +26,30 @@ class _DragToMissState extends State<DragToDismiss> with SingleTickerProviderSta
       return new Container(
         color: Colors.transparent,
         height: 150.0,
-
       );
     }, onWillAccept: (_) {
-      _controller.value=1.0;
+      _controller.value = 1.0;
       _dragLeaved = false;
       return true;
     }, onLeave: (_) {
       _controller.value = 0.4;
       _dragLeaved = true;
-
-    }
-      );
+    });
   }
 
   _onDragEnd(_, __) {
-
     if (_dragLeaved && widget.onDismiss != null) {
       widget.onDismiss();
     }
     _controller.value = 1.0;
-    _dragLeaved= false;
+    _dragLeaved = false;
   }
 
   @override
   void initState() {
     // TODO: implement initState
-    _controller = new AnimationController(vsync: this,duration: const Duration(milliseconds: 100),value: 1.0);
+    _controller = new AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 100), value: 1.0);
     super.initState();
   }
 
@@ -65,15 +63,14 @@ class _DragToMissState extends State<DragToDismiss> with SingleTickerProviderSta
             height: 150.0,
             child: dragTarget(),
             width: double.infinity,
-            margin:new EdgeInsets.only(left: 100.0,right: 100.0),
+            margin: new EdgeInsets.only(left: 100.0, right: 100.0),
           ),
           new LongPressDraggable(
             child: widget.child,
             feedback: new FadeTransition(
-
               child: new Container(
                 width: cons.biggest.width,
-                height: 145.0,
+                height: 150.0,
                 child: widget.child,
               ),
               opacity: _controller,
