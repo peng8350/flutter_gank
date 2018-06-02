@@ -32,14 +32,37 @@ class IndicatorFactory {
     );
   }
 
-  Widget buildDefaultFooter(BuildContext context, int mode) {
-    return new ClassicIndicator(
+  Widget buildDefaultFooter(BuildContext context, int mode,[Function requestLoad]) {
+    if(mode==RefreshStatus.failed||mode==RefreshStatus.idle) {
+      return new InkWell(
+        child: new ClassicIndicator(
+            mode: mode,
+            idleIcon: new Icon(Icons.arrow_upward,
+                color: App
+                    .of(context)
+                    .night ? Colors.white : Colors.black),
+            textStyle: new TextStyle(
+                inherit: true,
+                color: App
+                    .of(context)
+                    .night ? Colors.white : Colors.black),
+            refreshingText: '火热加载中...',
+            idleText: '上拉加载',
+            failedText: '网络异常',
+            noDataText: '没有更多数据'),
+        onTap: requestLoad,
+      );
+    }else return new ClassicIndicator(
         mode: mode,
         idleIcon: new Icon(Icons.arrow_upward,
-            color: App.of(context).night ? Colors.white : Colors.black),
+            color: App
+                .of(context)
+                .night ? Colors.white : Colors.black),
         textStyle: new TextStyle(
             inherit: true,
-            color: App.of(context).night ? Colors.white : Colors.black),
+            color: App
+                .of(context)
+                .night ? Colors.white : Colors.black),
         refreshingText: '火热加载中...',
         idleText: '上拉加载',
         failedText: '网络异常',

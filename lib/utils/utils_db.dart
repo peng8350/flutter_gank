@@ -73,7 +73,7 @@ class DbUtils {
   Future<List<dynamic>> getList(String table,
       [String whereSql, List<String> params]) async {
     List<Map> maps = await db.query(table,
-        columns: ["*"], where: whereSql, whereArgs: params,groupBy: "publishedAt");
+        columns: ["*"], where: whereSql, whereArgs: params,orderBy: "publishedAt desc");
     return maps;
   }
 

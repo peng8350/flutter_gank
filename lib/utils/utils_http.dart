@@ -19,9 +19,9 @@ class HttpUtils {
 
   List<GankInfo> toGankList(String responseStr) {
     Map<String, dynamic> map = json.decode(responseStr);
-
     List<GankInfo> list = [];
     for (var item in map['results']) {
+      print(item);
       list.add(new GankInfo.fromJson(item));
     }
     return list;
@@ -43,6 +43,7 @@ class HttpUtils {
 
   Future<List<GirlInfo>> getGirlfromNet(String url) async {
     final String responseStr = await get(url);
+
     return toGirlList(responseStr);
   }
 

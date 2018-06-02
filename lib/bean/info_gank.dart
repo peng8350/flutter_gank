@@ -18,40 +18,40 @@ class GankInfo {
   }
 
   GankInfo(
-      {this.desc,
-      this.id,
+      {this.desc:'这是一个描述的文字',
+      this.id:'33cxx',
       this.like:false,
-      this.publishedAt,
-      this.source: 'null',
-      this.type,
-      this.url,
-      this.who: 'null',
+      this.publishedAt:'2018-5-13',
+      this.source: 'ccc',
+      this.type:'前端',
+      this.url:'http://www.baidu.com',
+      this.who: 'ccc',
       this.img: ''});
 
-  factory GankInfo.fromJson(Map<String, dynamic> json) {
+  factory GankInfo.fromJson(Map json) {
     return new GankInfo(
-      id: json["_id"],
+      id: json["_id"] ?? 'id',
       like: false,
-      desc: json['desc'],
-      img: json['images'] != null ? json['images'][0] : '',
-      publishedAt: json['publishedAt'],
-      source: json['source'],
-      type: json['type'],
-      who: json['who'] == null ? 'null' : json['who'],
-      url: json['url'],
+      desc: json['desc']?? '这是描述',
+      img: json['images']==null ? '':json['images'][0],
+      publishedAt: json['publishedAt'] ?? '2018-5-13',
+      source: json['source'] ?? 'Web',
+      type: json['type'] ?? 'type' ,
+      who: json['who'] ?? 'null' ,
+      url: json['url'] ?? 'url',
     );
   }
 
   GankInfo.fromMap(Map map)
-      : id = map["id"],
-        img = map["img"],
-        url = map["url"],
+      : id = map["id"] ?? 'id',
+        img = map["img"] ?? '',
+        url = map["url"] ?? 'http://www.baidu.com',
         like = map["like"]==1,
         type= map["type"],
-        desc = map["desc"],
-        source = map["source"],
-        publishedAt = map["publishedAt"],
-        who = map["who"];
+        desc = map["desc"] ?? '这是描述',
+        source = map["source"] ?? 'Web',
+        publishedAt = map["publishedAt"] ?? '2018-5-13',
+        who = map["who"] ?? 'null';
 
   Map<String,dynamic> toMap() {
     Map<String,dynamic> map = new Map();
