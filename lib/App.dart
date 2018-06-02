@@ -83,7 +83,10 @@ class AppState extends State<App> {
           primaryColor: _themeColor,
           backgroundColor: Colors.redAccent,
           scaffoldBackgroundColor: _isNight?NIGHT_COLOR_BG:COLOR_BG,
+          dialogBackgroundColor: _isNight?NIGHT_COLOR_BG:COLOR_BG,
+          canvasColor: _isNight?NIGHT_ITEM_BG:Colors.white,
           bottomAppBarColor: Colors.grey,
+          dividerColor: _isNight?NIGHT_COLOR_DIVIDER:COLOR_DIVIDER,
           textTheme: new TextTheme(
             title: new TextStyle(inherit: true, fontSize: 14.0),
             subhead: new TextStyle(inherit: true, fontSize: 13.0,color:_isNight? NIGHT_TEXT : Colors.black),

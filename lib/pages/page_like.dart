@@ -27,7 +27,6 @@ class _LikePageState extends State<LikePage> with DbUtils {
   Future<List<dynamic>> _catchGirls;
   List<GirlInfo> _girlList = [];
 
-
   Widget _buildGankList() {
     return new ListView(
       cacheExtent: 555555.0,
@@ -154,41 +153,43 @@ class _LikePageState extends State<LikePage> with DbUtils {
   }
 
   Widget _buildBottom() {
-    return new Container(
-      color:Colors.redAccent,
-      child: new BottomNavigationBar(
-        fixedColor: Colors.blue,
-          type: BottomNavigationBarType.fixed
-          ,
-
-          items: [
-            new BottomNavigationBarItem(
-                backgroundColor: Colors.redAccent,
-                icon: new Icon(Icons.insert_photo,
-                    color: _selectIndex == 0 ? Theme.of(context).primaryColor : Colors.grey),
-                title: new Text(
-                  '妹子',
-                  style: new TextStyle(
-                      inherit: true,
-                      color:
-                      _selectIndex == 0 ? Theme.of(context).primaryColor : Colors.grey),
-                )),
-            new BottomNavigationBarItem(
-                icon: new Icon(Icons.explore,
-                    color: _selectIndex == 1 ? Theme.of(context).primaryColor : Colors.grey),
-                title: new Text(
-                  '干货',
-                  style: new TextStyle(
-                      inherit: true,
-                      color:
-                      _selectIndex == 1 ? Theme.of(context).primaryColor : Colors.grey),
-                ))
-          ],
-          onTap: (index) {
-            _selectIndex = index;
-            setState(() {});
-          }),
-    );
+    return new BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectIndex,
+        fixedColor: Colors.redAccent,
+        items: [
+          new BottomNavigationBarItem(
+              icon: new Icon(Icons.insert_photo,
+                  color: _selectIndex == 0
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey),
+              title: new Text(
+                '妹子',
+                style: new TextStyle(
+                    inherit: true,
+                    color: _selectIndex == 0
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey),
+              )),
+          new BottomNavigationBarItem(
+              backgroundColor: Colors.blue,
+              icon: new Icon(Icons.explore,
+                  color: _selectIndex == 1
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey),
+              title: new Text(
+                '干货',
+                style: new TextStyle(
+                    inherit: true,
+                    color: _selectIndex == 1
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey),
+              ))
+        ],
+        onTap: (index) {
+          _selectIndex = index;
+          setState(() {});
+        });
   }
 
   @override
@@ -217,10 +218,7 @@ class _LikePageState extends State<LikePage> with DbUtils {
   @override
   Widget build(BuildContext context) {
     return new Column(
-      children: <Widget>[
-        new Flexible(child: _buildContent()),
-        _buildBottom()
-      ],
+      children: <Widget>[new Flexible(child: _buildContent()), _buildBottom()],
     );
   }
 }
@@ -238,8 +236,8 @@ class _GankGroupState extends State<GankGroup>
     with SingleTickerProviderStateMixin, DbUtils {
   AnimationController _controller;
   Future _future;
-  List<GankInfo> _list=[];
-  bool _isExpanded=  true;
+  List<GankInfo> _list = [];
+  bool _isExpanded = true;
 
   @override
   void initState() {
@@ -249,8 +247,9 @@ class _GankGroupState extends State<GankGroup>
         duration: const Duration(milliseconds: 300),
         lowerBound: 0.75,
         value: 1.0);
-    _future = getList("Gank", " type = ? and like = 1 ", [widget.groupName]).then((data){
-      for(Map m in data){
+    _future = getList("Gank", " type = ? and like = 1 ", [widget.groupName])
+        .then((data) {
+      for (Map m in data) {
         _list.add(new GankInfo.fromMap(m));
       }
     });
@@ -261,8 +260,9 @@ class _GankGroupState extends State<GankGroup>
   void didUpdateWidget(GankGroup oldWidget) {
     // TODO: implement didUpdateWidget
     _list.clear();
-    _future = getList("Gank", " type = ? and like = 1 ", [widget.groupName]).then((data){
-      for(Map m in data){
+    _future = getList("Gank", " type = ? and like = 1 ", [widget.groupName])
+        .then((data) {
+      for (Map m in data) {
         _list.add(new GankInfo.fromMap(m));
       }
     });
@@ -272,7 +272,8 @@ class _GankGroupState extends State<GankGroup>
   @override
   Widget build(BuildContext context) {
     return new ExpansionTile(
-      title: new Text(widget.groupName,style: new TextStyle(inherit: true,color: _isExpanded?Theme.of(context).primaryColor:Colors.black)),
+      title: new Text(widget.groupName,
+          style: Theme.of(context).textTheme.subhead),
       children: [
         new FutureBuilder(
             builder: (context, asnc) {
@@ -286,7 +287,7 @@ class _GankGroupState extends State<GankGroup>
                   return new Column(children: <Widget>[new Text('网络异常')]);
                 } else {
                   List<Widget> childrens = [];
-                  for(int i = 0 ;i<_list.length;i++)
+                  for (int i = 0; i < _list.length; i++)
                     childrens.add(new DragToDismiss(
                         child: new GankItem(
                           info: _list[i],
@@ -294,13 +295,11 @@ class _GankGroupState extends State<GankGroup>
                         ),
                         onDismiss: () {
                           _list[i].like = false;
-                          update("Gank", _list[i].toMap(),"id = ? ",[_list[i].id]);
+                          update("Gank", _list[i].toMap(), "id = ? ",
+                              [_list[i].id]);
                           _list.removeAt(i);
-                          setState(() {
-
-                          });
-                        })
-                    );
+                          setState(() {});
+                        }));
                   return new Column(children: childrens);
                 }
               }
@@ -310,16 +309,14 @@ class _GankGroupState extends State<GankGroup>
       onExpansionChanged: (val) {
         _isExpanded = val;
         _controller.animateTo(val ? 1.0 : 0.75);
-        setState(() {
-
-        });
+        setState(() {});
       },
       initiallyExpanded: true,
       trailing: new Icon(
-        Icons.keyboard_arrow_right,
+        Icons.keyboard_arrow_right,color: Colors.grey,
       ),
       leading: new RotationTransition(
-          turns: _controller, child: new Icon(Icons.arrow_drop_down_circle)),
+          turns: _controller, child: new Icon(Icons.arrow_drop_down_circle,color: Colors.grey)),
     );
   }
 }

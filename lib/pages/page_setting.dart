@@ -58,8 +58,10 @@ class _SettingPageState extends State<SettingPage> {
   void _clickAboutMe() {
     showDialog(
         context: context,
+
         child: new SimpleDialog(
             title: new Text("作者"),
+
             children: <Widget>[new AboutMeDialog()],
             contentPadding: new EdgeInsets.all(10.0)));
   }

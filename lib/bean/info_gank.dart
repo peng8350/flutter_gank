@@ -92,7 +92,7 @@ class GirlInfo {
         url = map["url"],
         id = map["id"],
         who = map["who"],
-        desc = map["desc"];
+        desc = map["publishedAt"];
 
 
   Map<String,dynamic> toMap() {
@@ -101,7 +101,7 @@ class GirlInfo {
       map["id"] = id;
       map["url"] = url;
       map["who"] = who;
-      map["desc"] = desc;
+      map["publishedAt"] = desc;
       map["like"] = like?1:0;
 
     }

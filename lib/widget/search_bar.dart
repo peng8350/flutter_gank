@@ -21,9 +21,9 @@ class SearchBar extends StatelessWidget {
       onChanged: (String str) {
         if (onChangeText != null) onChangeText(str);
       },
-      style: new TextStyle(inherit: true,color: Colors.white),
+      style: Theme.of(context).textTheme.body1,
       decoration: new InputDecoration(
-        labelStyle: new TextStyle(inherit: true,color: Colors.white),
+        labelStyle: Theme.of(context).textTheme.body1,
           hintText: "search Gank",
           enabled: true,
           filled: true,
@@ -33,6 +33,7 @@ class SearchBar extends StatelessWidget {
             child: new Icon(Icons.clear,color: Colors.white,size: 16.0),
             onTap: (){
               _controller.clear();
+              onChangeText("");
             },
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,

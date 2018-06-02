@@ -16,13 +16,18 @@ class IndicatorFactory {
       completeText: '刷新完成!',
       releaseText: '释放可以刷新',
       idleText: '下拉刷新哦!',
-      refreshingIcon: const CircularProgressIndicator(strokeWidth: 2.0),
-      failedIcon: const Icon(Icons.clear, color: Colors.black),
-      completeIcon: const Icon(Icons.done, color: Colors.black),
-      idleIcon: const Icon(Icons.arrow_downward, color: Colors.black),
-      releaseIcon: const Icon(Icons.arrow_upward, color: Colors.black),
+      failedIcon: new Icon(Icons.clear,
+          color: App.of(context).night ? Colors.white : Colors.black),
+      completeIcon: new Icon(Icons.done,
+          color: App.of(context).night ? Colors.white : Colors.black),
+      idleIcon: new Icon(Icons.arrow_downward,
+          color: App.of(context).night ? Colors.white : Colors.black),
+      releaseIcon: new Icon(Icons.arrow_upward,
+          color: App.of(context).night ? Colors.white : Colors.black),
       refreshingText: '正在刷新...',
-      textStyle: const TextStyle(inherit: true, color: Colors.black),
+      textStyle: new TextStyle(
+          inherit: true,
+          color: App.of(context).night ? Colors.white : Colors.black),
       mode: mode,
     );
   }
@@ -30,8 +35,11 @@ class IndicatorFactory {
   Widget buildDefaultFooter(BuildContext context, int mode) {
     return new ClassicIndicator(
         mode: mode,
-        idleIcon: const Icon(Icons.arrow_upward, color: Colors.grey),
-        textStyle: const TextStyle(inherit: true, color: Colors.grey),
+        idleIcon: new Icon(Icons.arrow_upward,
+            color: App.of(context).night ? Colors.white : Colors.black),
+        textStyle: new TextStyle(
+            inherit: true,
+            color: App.of(context).night ? Colors.white : Colors.black),
         refreshingText: '火热加载中...',
         idleText: '上拉加载',
         failedText: '网络异常',

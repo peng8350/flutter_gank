@@ -43,7 +43,7 @@ class DbUtils {
                 await db.execute(
                     "create table Gank (id text primary key, img text, source text, type text, desc text, url text, publishedAt text, who text, like integer)");
                 await db.execute(
-                    "create table Girl (id text primary key, url text, desc text,  who text, like integer)");
+                    "create table Girl (id text primary key, url text, publishedAt text,  who text, like integer)");
               });
         }
       });
@@ -73,7 +73,7 @@ class DbUtils {
   Future<List<dynamic>> getList(String table,
       [String whereSql, List<String> params]) async {
     List<Map> maps = await db.query(table,
-        columns: ["*"], where: whereSql, whereArgs: params);
+        columns: ["*"], where: whereSql, whereArgs: params,groupBy: "publishedAt");
     return maps;
   }
 

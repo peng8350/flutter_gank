@@ -146,7 +146,7 @@ class _GankItemState extends State<GankItem> {
                 _buildTop(),
                 new Container(
                   height: 0.5,
-                  color: COLOR_DIVIDER,
+                  color: Theme.of(context).dividerColor,
                   margin: const EdgeInsets.only(top: 10.0),
                 ),
                 _buildBottom()
@@ -205,7 +205,7 @@ class _SettingItemState extends State<SettingItem> {
       child: new Container(
         decoration: new BoxDecoration(
             border: new Border(
-                bottom: new BorderSide(color: COLOR_DIVIDER, width: 0.4))),
+                bottom: new BorderSide(color: Theme.of(context).dividerColor, width: 0.4))),
         child: new ListTile(
           onTap: () {
             if (widget.onClick != null) {

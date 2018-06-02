@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 
 import 'dart:math' as math;
 
+import 'package:flutter_gank/App.dart';
+import 'package:flutter_gank/constant/colors.dart';
+
 class TagFlowDeletegate extends FlowDelegate {
   double width = 0.0;
   double height = 0.0;
@@ -85,35 +88,39 @@ class AboutMeDialog extends StatelessWidget {
           style: new TextStyle(inherit: true, color: Colors.white),
         ),
       ));
-    return new Column(
-      children: <Widget>[
-        new CircleAvatar(
-          backgroundImage: new NetworkImage(
-              'https://avatars3.githubusercontent.com/u/19425362?s=460&v=4'),
-          radius: 50.0,
-        ),
-        new Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Icon(Icons.email, color: Colors.grey),
-            new Text('  peng8350@gmail.com')
-          ],
-        ),
-        new Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Icon(Icons.home, color: Colors.grey),
-            new Text('  http://peng8350.cn/')
-          ],
-        ),
-        new Container(
-          height: 200.0,
-          child: new Flow(
-            delegate: new TagFlowDeletegate(),
-            children: widgets,
+    return new Container(
+
+      child: new Column(
+        children: <Widget>[
+          new CircleAvatar(
+            backgroundImage: new NetworkImage(
+                'https://avatars3.githubusercontent.com/u/19425362?s=460&v=4'),
+            radius: 50.0,
           ),
-        )
-      ],
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new Icon(Icons.email, color: Colors.grey),
+              new Text('  peng8350@gmail.com')
+            ],
+          ),
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new Icon(Icons.home, color: Colors.grey),
+              new Text('  http://peng8350.cn/')
+            ],
+          ),
+          new Container(
+            height: 200.0,
+            child: new Flow(
+              delegate: new TagFlowDeletegate(),
+              children: widgets,
+            ),
+          )
+        ],
+      ),
+
     );
   }
 }

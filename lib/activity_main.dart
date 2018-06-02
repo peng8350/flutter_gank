@@ -55,7 +55,7 @@ class _MainActivityState extends State<MainActivity>
         child: new Container(
           alignment: Alignment.center,
           child: _isSearching
-              ? new Text('取消')
+              ? new Text('取消', style: new TextStyle(inherit: true,color: App.of(context).night ? NIGHT_TEXT : Colors.white))
               : new Icon(
                   Icons.search,
                   color: App.of(context).night ? NIGHT_TEXT : Colors.white,
