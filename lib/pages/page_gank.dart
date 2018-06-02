@@ -7,7 +7,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gank/App.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
+import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:flutter_gank/utils/utils_indicator.dart';
@@ -95,32 +97,29 @@ class GankPageState extends State<GankPage>
 
   Widget _buildContent() {
     if (!widget.isSeaching)
-      return new Container(
-        color: const Color.fromRGBO(249, 249, 249, 100.0),
-        child: new Stack(
-          children: <Widget>[
-            new ArcIndicator(
-              offsetLis: offsetLis,
-            ),
-            new SmartRefresher(
-              controller: _refreshController,
-              child: new ListView.builder(
-                itemBuilder: (context, index) => new GankItem(
-                      info: _dataList[index],
-                      onChange: () {
-                        _onClickLike(_dataList[index]);
-                      },
-                    ),
-                itemCount: _dataList.length,
+      return new Stack(
+        children: <Widget>[
+          new ArcIndicator(
+            offsetLis: offsetLis,
+          ),
+          new SmartRefresher(
+            controller: _refreshController,
+            child: new ListView.builder(
+              itemBuilder: (context, index) => new GankItem(
+                info: _dataList[index],
+                onChange: () {
+                  _onClickLike(_dataList[index]);
+                },
               ),
-              headerBuilder: buildDefaultHeader,
-              footerBuilder: buildDefaultFooter,
-              onRefresh: _onRefresh,
-              enablePullUp: true,
-              onOffsetChange: _onOffsetCall,
-            )
-          ],
-        ),
+              itemCount: _dataList.length,
+            ),
+            headerBuilder: buildDefaultHeader,
+            footerBuilder: buildDefaultFooter,
+            onRefresh: _onRefresh,
+            enablePullUp: true,
+            onOffsetChange: _onOffsetCall,
+          )
+        ],
       );
     else
       return new ListView.builder(

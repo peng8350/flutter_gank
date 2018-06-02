@@ -4,7 +4,6 @@
  * Time: 2018/5/21 下午10:43
  */
 
-import 'package:flutter/material.dart';
 
 const String STRING_APP_NAME = "GankIo";
 

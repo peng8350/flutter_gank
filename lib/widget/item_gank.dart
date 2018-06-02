@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gank/App.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/widget/cached_pic.dart';
@@ -17,7 +18,7 @@ class GankItem extends StatefulWidget {
 
   final bool showLike;
 
-  GankItem({this.info, this.onChange, this.showLike:true});
+  GankItem({this.info, this.onChange, this.showLike: true});
 
   @override
   _GankItemState createState() => new _GankItemState();
@@ -132,11 +133,11 @@ class _GankItemState extends State<GankItem> {
   @override
   Widget build(BuildContext context) {
     return new Container(
-      color: COLOR_BG,
+      color: App.of(context).night ? NIGHT_COLOR_BG : COLOR_BG,
       child: new Card(
+        color: App.of(context).night ? NIGHT_ITEM_BG : Colors.white,
         margin: new EdgeInsets.all(5.0),
         elevation: 3.0,
-        color: Colors.white,
         child: new InkWell(
           child: new Container(
             padding: new EdgeInsets.all(5.0),
@@ -198,8 +199,9 @@ class SettingItem extends StatefulWidget {
 class _SettingItemState extends State<SettingItem> {
   @override
   Widget build(BuildContext context) {
+    final bool isNight = App.of(context).night;
     return new Material(
-      color: Colors.white,
+      color: isNight ? NIGHT_ITEM_BG : Colors.white,
       child: new Container(
         decoration: new BoxDecoration(
             border: new Border(
@@ -222,7 +224,11 @@ class _SettingItemState extends State<SettingItem> {
             ),
           ),
           trailing: widget.isSwitch
-              ? new Switch(value: widget.value, onChanged: widget.onChange,activeColor: Theme.of(context).primaryColor,)
+              ? new Switch(
+                  value: widget.value,
+                  onChanged: widget.onChange,
+                  activeColor: Theme.of(context).primaryColor,
+                )
               : widget.right,
         ),
       ),
@@ -247,7 +253,6 @@ class _GirlCardItemState extends State<GirlCardItem> {
   @override
   void dispose() {
     // TODO: implement dispose
-    print("Eee");
     super.dispose();
   }
 
@@ -257,6 +262,7 @@ class _GirlCardItemState extends State<GirlCardItem> {
     final who = widget.who;
     final bool isLike = widget.isLike;
     return new Card(
+      color: App.of(context).night ? NIGHT_ITEM_BG : Colors.white,
       child: new Column(
         children: <Widget>[
           new Stack(

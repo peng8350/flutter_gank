@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/utils/utils_http.dart';
 import 'package:flutter_gank/widget/search_bar.dart';
 import '../App.dart';
@@ -28,10 +29,6 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
 
-    return new MaterialButton(
-      child: new Text('获取 App'),
-      onPressed: (){
-      },
-    );
+    return new Container();
   }
 }

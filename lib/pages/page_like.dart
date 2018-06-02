@@ -7,6 +7,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gank/App.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
@@ -153,33 +154,41 @@ class _LikePageState extends State<LikePage> with DbUtils {
   }
 
   Widget _buildBottom() {
-    return new BottomNavigationBar(
-        items: [
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.insert_photo,
-                  color: _selectIndex == 0 ? Theme.of(context).primaryColor : Colors.grey),
-              title: new Text(
-                '妹子',
-                style: new TextStyle(
-                    inherit: true,
-                    color:
-                        _selectIndex == 0 ? Theme.of(context).primaryColor : Colors.grey),
-              )),
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.explore,
-                  color: _selectIndex == 1 ? Theme.of(context).primaryColor : Colors.grey),
-              title: new Text(
-                '干货',
-                style: new TextStyle(
-                    inherit: true,
-                    color:
-                        _selectIndex == 1 ? Theme.of(context).primaryColor : Colors.grey),
-              ))
-        ],
-        onTap: (index) {
-          _selectIndex = index;
-          setState(() {});
-        });
+    return new Container(
+      color:Colors.redAccent,
+      child: new BottomNavigationBar(
+        fixedColor: Colors.blue,
+          type: BottomNavigationBarType.fixed
+          ,
+
+          items: [
+            new BottomNavigationBarItem(
+                backgroundColor: Colors.redAccent,
+                icon: new Icon(Icons.insert_photo,
+                    color: _selectIndex == 0 ? Theme.of(context).primaryColor : Colors.grey),
+                title: new Text(
+                  '妹子',
+                  style: new TextStyle(
+                      inherit: true,
+                      color:
+                      _selectIndex == 0 ? Theme.of(context).primaryColor : Colors.grey),
+                )),
+            new BottomNavigationBarItem(
+                icon: new Icon(Icons.explore,
+                    color: _selectIndex == 1 ? Theme.of(context).primaryColor : Colors.grey),
+                title: new Text(
+                  '干货',
+                  style: new TextStyle(
+                      inherit: true,
+                      color:
+                      _selectIndex == 1 ? Theme.of(context).primaryColor : Colors.grey),
+                ))
+          ],
+          onTap: (index) {
+            _selectIndex = index;
+            setState(() {});
+          }),
+    );
   }
 
   @override
@@ -207,13 +216,11 @@ class _LikePageState extends State<LikePage> with DbUtils {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new Flexible(child: _buildContent()),
-          _buildBottom()
-        ],
-      ),
+    return new Column(
+      children: <Widget>[
+        new Flexible(child: _buildContent()),
+        _buildBottom()
+      ],
     );
   }
 }

@@ -14,9 +14,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import '../App.dart';
 
 class SettingPage extends StatefulWidget {
-
   final Color themeColor;
-
 
   SettingPage({this.themeColor});
 
@@ -25,12 +23,10 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-
-  SharedPreferences preferences ;
-  bool isNight = false;
+  SharedPreferences preferences;
   bool autoRefresh = false;
 
-  Color _currentColor= new Color(0xff443a49);
+  Color _currentColor = new Color(0xff443a49);
 
   Widget _buildSwitch(String title, IconData icon, Color iconColor, bool value,
       Function onChange) {
@@ -50,7 +46,7 @@ class _SettingPageState extends State<SettingPage> {
       String title, IconData icon, Color iconColor, Function onClick) {
     return new SettingItem(
         iconBgColor: iconColor,
-        title: new Text(title),
+        title: new Text(title,style: Theme.of(context).textTheme.subhead,),
         icon: new Icon(
           icon,
           color: Colors.white,
@@ -60,10 +56,12 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   void _clickAboutMe() {
-    showDialog(context: context,child: new SimpleDialog(title: new Text("作者"),
-    children: <Widget>[
-      new AboutMeDialog()
-    ],contentPadding: new EdgeInsets.all(10.0)));
+    showDialog(
+        context: context,
+        child: new SimpleDialog(
+            title: new Text("作者"),
+            children: <Widget>[new AboutMeDialog()],
+            contentPadding: new EdgeInsets.all(10.0)));
   }
 
   void _clickEmail() {}
@@ -77,18 +75,20 @@ class _SettingPageState extends State<SettingPage> {
     showDialog(
       context: context,
       child: new AlertDialog(
-        title: const Text('Pick a color!'),
+        title: const Text('选择主题颜色'),
         content: new SingleChildScrollView(
           child: new ColorPicker(
             pickerColor: _currentColor,
-            onColorChanged: (color) => setState((){_currentColor = color;}),
+            onColorChanged: (color) => setState(() {
+                  _currentColor = color;
+                }),
             enableLabel: true,
             pickerAreaHeightPercent: 0.8,
           ),
         ),
         actions: <Widget>[
           new FlatButton(
-            child: new Text('Got it'),
+            child: new Text('确定'),
             onPressed: () {
               App.of(context).changeThemeColor(_currentColor);
               Navigator.of(context).pop();
@@ -101,50 +101,45 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
-      color:COLOR_BG,
-      child:         new ListView(
-        children: <Widget>[
-          new Container(
-              height: 30.0,
-              decoration: new BoxDecoration(
-                  border: new Border(
-                      bottom: const BorderSide(
-                          color: COLOR_DIVIDER, width: 0.4)))),
-          _buildSwitch("夜间模式", Icons.brightness_2, Colors.blueGrey, isNight,
-                  (val) {
-                this.isNight = val;
-                preferences.setBool("isNight", isNight);
-                setState(() {});
-              }),
-          _buildSwitch(
-              "进入刷新数据", Icons.wb_cloudy, Colors.orangeAccent, autoRefresh,
-                  (val) {
-                this.autoRefresh = val;
-                preferences.setBool("autoRefresh", autoRefresh);
-                setState(() {});
-              }),
-          new Container(
+    return new ListView(
+      children: <Widget>[
+        new Container(
             height: 30.0,
             decoration: new BoxDecoration(
                 border: new Border(
-                    top: const BorderSide(color: COLOR_DIVIDER, width: 0.4),
                     bottom:
-                    const BorderSide(color: COLOR_DIVIDER, width: 0.4))),
-          ),
-          _buildInter("主题颜色", Icons.border_color, Colors.cyanAccent,
-              _clickColorSelect),
-          _buildInter("反馈", Icons.email, Colors.purpleAccent, _clickEmail),
-          _buildInter("分享", Icons.share, Colors.teal, _clickShare),
-          _buildInter("关于我", Icons.person, Colors.redAccent, _clickAboutMe),
-          new Container(
-              height: 30.0,
-              decoration: new BoxDecoration(
-                  border: new Border(
-                      top: const BorderSide(
-                          color: COLOR_DIVIDER, width: 0.4))))
-        ],
-      ),
+                    const BorderSide(color: COLOR_DIVIDER, width: 0.4)))),
+        _buildSwitch("夜间模式", Icons.brightness_2, Colors.blueGrey,
+            App.of(context).night, (val) {
+              preferences.setBool("isNight", val);
+              App.of(context).night = val;
+            }),
+        _buildSwitch(
+            "进入刷新数据", Icons.wb_cloudy, Colors.orangeAccent, autoRefresh,
+                (val) {
+              this.autoRefresh = val;
+              preferences.setBool("autoRefresh", autoRefresh);
+              setState(() {});
+            }),
+        new Container(
+          height: 30.0,
+          decoration: new BoxDecoration(
+              border: new Border(
+                  top: const BorderSide(color: COLOR_DIVIDER, width: 0.4),
+                  bottom:
+                  const BorderSide(color: COLOR_DIVIDER, width: 0.4))),
+        ),
+        _buildInter(
+            "主题颜色", Icons.border_color, Colors.cyanAccent, _clickColorSelect),
+        _buildInter("反馈", Icons.email, Colors.purpleAccent, _clickEmail),
+        _buildInter("分享", Icons.share, Colors.teal, _clickShare),
+        _buildInter("关于我", Icons.person, Colors.redAccent, _clickAboutMe),
+        new Container(
+            height: 30.0,
+            decoration: new BoxDecoration(
+                border: new Border(
+                    top: const BorderSide(color: COLOR_DIVIDER, width: 0.4))))
+      ],
     );
   }
 
@@ -152,12 +147,9 @@ class _SettingPageState extends State<SettingPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    SharedPreferences.getInstance().then((val){
-
+    SharedPreferences.getInstance().then((val) {
       preferences = val;
-      isNight = preferences.getBool("isNight") ?? false;
       autoRefresh = preferences.getBool("autoRefresh") ?? false;
-
     });
   }
 }

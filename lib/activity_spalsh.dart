@@ -44,7 +44,8 @@ class _SpalshActivityState extends State<SpalshActivity>
         duration: const Duration(milliseconds: 1000));
     open().then((val) {
       _controller.animateTo(2.0).then((ccc) {
-        Navigator.of(context).pushNamed("main");
+        Navigator.of(context).pushReplacementNamed("main");
+
       });
     });
   }

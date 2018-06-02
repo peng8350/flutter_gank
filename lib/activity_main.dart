@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gank/App.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
 import 'package:flutter_gank/pages/page_gank.dart';
@@ -57,7 +58,7 @@ class _MainActivityState extends State<MainActivity>
               ? new Text('取消')
               : new Icon(
                   Icons.search,
-                  color: Colors.white,
+                  color: App.of(context).night ? NIGHT_TEXT : Colors.white,
                   size: 25.0,
                 ),
           margin: new EdgeInsets.all(10.0),
@@ -78,7 +79,8 @@ class _MainActivityState extends State<MainActivity>
         child: new Container(
           alignment: Alignment.center,
           margin: new EdgeInsets.only(right: 10.0),
-          child: new Text(isCard ? "缩略图" : "卡片",style:const TextStyle(inherit: true,color:Colors.white)),
+          child: new Text(isCard ? "缩略图" : "卡片",
+              style: new TextStyle(inherit: true, color:App.of(context).night ? NIGHT_TEXT : Colors.white)),
         ),
       );
     }
@@ -118,25 +120,53 @@ class _MainActivityState extends State<MainActivity>
             children: <Widget>[
               new Offstage(
                   offstage: _gankSelectIndex != 0,
-                  child: new GankPage(key: _gankPageKeys[0],title: _gankTitles[0],isSeaching: _isSearching,)),
+                  child: new GankPage(
+                    key: _gankPageKeys[0],
+                    title: _gankTitles[0],
+                    isSeaching: _isSearching,
+                  )),
               new Offstage(
                   offstage: _gankSelectIndex != 1,
-                  child: new GankPage(key: _gankPageKeys[1],title: _gankTitles[1],isSeaching: _isSearching,)),
+                  child: new GankPage(
+                    key: _gankPageKeys[1],
+                    title: _gankTitles[1],
+                    isSeaching: _isSearching,
+                  )),
               new Offstage(
                   offstage: _gankSelectIndex != 2,
-                  child: new GankPage(key: _gankPageKeys[2],title: _gankTitles[2],isSeaching: _isSearching,)),
+                  child: new GankPage(
+                    key: _gankPageKeys[2],
+                    title: _gankTitles[2],
+                    isSeaching: _isSearching,
+                  )),
               new Offstage(
                   offstage: _gankSelectIndex != 3,
-                  child: new GankPage(key: _gankPageKeys[3],title: _gankTitles[3],isSeaching: _isSearching,)),
+                  child: new GankPage(
+                    key: _gankPageKeys[3],
+                    title: _gankTitles[3],
+                    isSeaching: _isSearching,
+                  )),
               new Offstage(
                   offstage: _gankSelectIndex != 4,
-                  child: new GankPage(key: _gankPageKeys[4],title: _gankTitles[4],isSeaching: _isSearching,)),
+                  child: new GankPage(
+                    key: _gankPageKeys[4],
+                    title: _gankTitles[4],
+                    isSeaching: _isSearching,
+                  )),
               new Offstage(
                   offstage: _gankSelectIndex != 5,
-                  child: new GankPage(key: _gankPageKeys[5],title: _gankTitles[5],isSeaching: _isSearching,)),
+                  child: new GankPage(
+                    key: _gankPageKeys[5],
+                    title: _gankTitles[5],
+                    isSeaching: _isSearching,
+                  )),
               new Offstage(
                   offstage: _gankSelectIndex != 6,
-                  child: new GankPage(key: _gankPageKeys[6],title: _gankTitles[6],isSeaching: _isSearching,)),
+                  child: new GankPage(
+                    key: _gankPageKeys[6],
+                    title: _gankTitles[6],
+                    isSeaching: _isSearching,
+                  )),
             ],
           ),
         ),
@@ -157,16 +187,20 @@ class _MainActivityState extends State<MainActivity>
   }
 
   Widget _buildMenuItem(String title, IconData iconName, Function callback) {
-    return new InkWell(
-      child: new ResideMenuItem(
-          title: title,
-          titleStyle:
-              new TextStyle(inherit: true, color: Colors.white, fontSize: 14.0),
-          icon: new Icon(
-            iconName,
-            color: Colors.white,
-          )),
-      onTap: callback,
+    return new Material(
+      color: Colors.transparent,
+      child: new InkWell(
+        child: new ResideMenuItem(
+            title: title,
+            titleStyle: new TextStyle(
+                inherit: true, color: Colors.white, fontSize: 14.0),
+            icon: new Icon(
+              iconName,
+              color: Colors.white,
+            )),
+        onTap: callback,
+        enableFeedback: true,
+      ),
     );
   }
 
@@ -214,8 +248,8 @@ class _MainActivityState extends State<MainActivity>
         ]);
   }
 
-  void _onSearch(String text){
-    for(GlobalKey<GankPageState> key in _gankPageKeys){
+  void _onSearch(String text) {
+    for (GlobalKey<GankPageState> key in _gankPageKeys) {
       key.currentState.searchGank(text);
     }
   }
@@ -230,22 +264,29 @@ class _MainActivityState extends State<MainActivity>
       child: new Scaffold(
         appBar: new AppBar(
           title: _isSearching && selectIndex == 1
-              ? new SearchBar(onChangeText: _onSearch,)
-              : new Text(selectIndex == 0
-                  ? STRING_HOME
-                  : selectIndex == 1
-                      ? STRING_GANK
-                      : selectIndex == 2
-                          ? STRING_GIRL
-                          : selectIndex == 3
-                              ? STRING_LIKE
-                              : selectIndex == 4
-                                  ? STRING_SETTING
-                                  : STRING_ABOUTME,style: const TextStyle(inherit: true,color: Colors.white)),
+              ? new SearchBar(
+                  onChangeText: _onSearch,
+                )
+              : new Text(
+                  selectIndex == 0
+                      ? STRING_HOME
+                      : selectIndex == 1
+                          ? STRING_GANK
+                          : selectIndex == 2
+                              ? STRING_GIRL
+                              : selectIndex == 3
+                                  ? STRING_LIKE
+                                  : selectIndex == 4
+                                      ? STRING_SETTING
+                                      : STRING_ABOUTME,
+                  style: new TextStyle(
+                      inherit: true,
+                      color:
+                          App.of(context).night ? NIGHT_TEXT : Colors.white)),
           leading: new InkWell(
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
-            child: const Icon(Icons.menu,color: Colors.white),
+            child: new Icon(Icons.menu, color: App.of(context).night ? NIGHT_TEXT : Colors.white),
             onTap: () {
               _menuController.openMenu(true);
             },
@@ -257,9 +298,10 @@ class _MainActivityState extends State<MainActivity>
       ),
       direction: ScrollDirection.LEFT,
       decoration: new BoxDecoration(
-          gradient: const LinearGradient(
-              colors: <Color>[DEFAULT_THEMECOLOR, const Color(0xff666666)],
-              begin: Alignment.topLeft)),
+          gradient: new LinearGradient(colors: <Color>[
+        Theme.of(context).primaryColor,
+        const Color(0xff666666)
+      ], begin: Alignment.topLeft)),
     ));
   }
 

@@ -5,6 +5,7 @@
  */
 
 import 'dart:async';
+import 'package:flutter_gank/App.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -173,16 +174,14 @@ class _GirlPageState extends State<GirlPage>
       new ArcIndicator(
         offsetLis: offsetLis,
       ),
-      new Container(
-        child: new SmartRefresher(
-          controller: _refreshController,
-          child: _buildList(),
-          headerBuilder: buildDefaultHeader,
-          footerBuilder: buildDefaultFooter,
-          onRefresh: _onRefresh,
-          enablePullUp: true,
-          onOffsetChange: _onOffsetCall,
-        ),
+      new SmartRefresher(
+        controller: _refreshController,
+        child: _buildList(),
+        headerBuilder: buildDefaultHeader,
+        footerBuilder: buildDefaultFooter,
+        onRefresh: _onRefresh,
+        enablePullUp: true,
+        onOffsetChange: _onOffsetCall,
       )
     ]);
   }
