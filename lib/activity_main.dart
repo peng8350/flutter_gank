@@ -78,7 +78,7 @@ class _MainActivityState extends State<MainActivity>
         child: new Container(
           alignment: Alignment.center,
           margin: new EdgeInsets.only(right: 10.0),
-          child: new Text(isCard ? "缩略图" : "卡片"),
+          child: new Text(isCard ? "缩略图" : "卡片",style:const TextStyle(inherit: true,color:Colors.white)),
         ),
       );
     }
@@ -88,7 +88,9 @@ class _MainActivityState extends State<MainActivity>
   Widget _buildViewPagerIndicator() {
     return selectIndex == 1
         ? new TabBar(
+            indicatorColor: Theme.of(context).primaryColor,
             isScrollable: true,
+            labelColor: Colors.white,
             tabs: <Widget>[
               new Tab(text: STRING_GANK_WEB),
               new Tab(text: STRING_GANK_ANDROID),
@@ -156,8 +158,6 @@ class _MainActivityState extends State<MainActivity>
 
   Widget _buildMenuItem(String title, IconData iconName, Function callback) {
     return new InkWell(
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
       child: new ResideMenuItem(
           title: title,
           titleStyle:
@@ -241,11 +241,11 @@ class _MainActivityState extends State<MainActivity>
                               ? STRING_LIKE
                               : selectIndex == 4
                                   ? STRING_SETTING
-                                  : STRING_ABOUTME),
+                                  : STRING_ABOUTME,style: const TextStyle(inherit: true,color: Colors.white)),
           leading: new InkWell(
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
-            child: const Icon(Icons.menu),
+            child: const Icon(Icons.menu,color: Colors.white),
             onTap: () {
               _menuController.openMenu(true);
             },

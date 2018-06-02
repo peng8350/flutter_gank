@@ -222,7 +222,7 @@ class _SettingItemState extends State<SettingItem> {
             ),
           ),
           trailing: widget.isSwitch
-              ? new Switch(value: widget.value, onChanged: widget.onChange)
+              ? new Switch(value: widget.value, onChanged: widget.onChange,activeColor: Theme.of(context).primaryColor,)
               : widget.right,
         ),
       ),

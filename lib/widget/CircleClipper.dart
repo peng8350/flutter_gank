@@ -11,7 +11,7 @@ class ArcIndicator extends StatefulWidget {
 
   final Color color;
 
-  ArcIndicator({this.color:Colors.lightBlueAccent,this.offsetLis});
+  ArcIndicator({this.color,this.offsetLis});
 
   @override
   _ArcIndicatorState createState() => new _ArcIndicatorState();
@@ -48,7 +48,7 @@ class _ArcIndicatorState extends State<ArcIndicator> {
       child: new Container(
         width: double.infinity,
         height: double.infinity,
-        color: widget.color,
+        color: widget.color ?? Theme.of(context).primaryColor,
       ),
     );
   }

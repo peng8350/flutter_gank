@@ -26,6 +26,7 @@ class _LikePageState extends State<LikePage> with DbUtils {
   Future<List<dynamic>> _catchGirls;
   List<GirlInfo> _girlList = [];
 
+
   Widget _buildGankList() {
     return new ListView(
       cacheExtent: 555555.0,
@@ -156,23 +157,23 @@ class _LikePageState extends State<LikePage> with DbUtils {
         items: [
           new BottomNavigationBarItem(
               icon: new Icon(Icons.insert_photo,
-                  color: _selectIndex == 0 ? DEFAULT_THEMECOLOR : Colors.grey),
+                  color: _selectIndex == 0 ? Theme.of(context).primaryColor : Colors.grey),
               title: new Text(
                 '妹子',
                 style: new TextStyle(
                     inherit: true,
                     color:
-                        _selectIndex == 0 ? DEFAULT_THEMECOLOR : Colors.grey),
+                        _selectIndex == 0 ? Theme.of(context).primaryColor : Colors.grey),
               )),
           new BottomNavigationBarItem(
               icon: new Icon(Icons.explore,
-                  color: _selectIndex == 1 ? DEFAULT_THEMECOLOR : Colors.grey),
+                  color: _selectIndex == 1 ? Theme.of(context).primaryColor : Colors.grey),
               title: new Text(
                 '干货',
                 style: new TextStyle(
                     inherit: true,
                     color:
-                        _selectIndex == 1 ? DEFAULT_THEMECOLOR : Colors.grey),
+                        _selectIndex == 1 ? Theme.of(context).primaryColor : Colors.grey),
               ))
         ],
         onTap: (index) {
@@ -231,6 +232,7 @@ class _GankGroupState extends State<GankGroup>
   AnimationController _controller;
   Future _future;
   List<GankInfo> _list=[];
+  bool _isExpanded=  true;
 
   @override
   void initState() {
@@ -263,7 +265,7 @@ class _GankGroupState extends State<GankGroup>
   @override
   Widget build(BuildContext context) {
     return new ExpansionTile(
-      title: new Text(widget.groupName),
+      title: new Text(widget.groupName,style: new TextStyle(inherit: true,color: _isExpanded?Theme.of(context).primaryColor:Colors.black)),
       children: [
         new FutureBuilder(
             builder: (context, asnc) {
@@ -299,7 +301,11 @@ class _GankGroupState extends State<GankGroup>
             future: _future)
       ],
       onExpansionChanged: (val) {
+        _isExpanded = val;
         _controller.animateTo(val ? 1.0 : 0.75);
+        setState(() {
+
+        });
       },
       initiallyExpanded: true,
       trailing: new Icon(
