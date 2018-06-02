@@ -4,6 +4,8 @@
  * Time: 2018/5/21 下午10:19
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/App.dart';
 import 'package:flutter_gank/constant/colors.dart';
@@ -45,6 +47,10 @@ class _MainActivityState extends State<MainActivity>
 
   bool _isSearching = false;
 
+  int _lastClickTime = 0;
+
+  final GlobalKey<ScaffoldState> _scffoldKey = new GlobalKey();
+
   List<GlobalKey<GankPageState>> _gankPageKeys = [];
 
   Widget _buildRight() {
@@ -55,7 +61,10 @@ class _MainActivityState extends State<MainActivity>
         child: new Container(
           alignment: Alignment.center,
           child: _isSearching
-              ? new Text('取消', style: new TextStyle(inherit: true,color: App.of(context).night ? NIGHT_TEXT : Colors.white))
+              ? new Text('取消',
+                  style: new TextStyle(
+                      inherit: true,
+                      color: App.of(context).night ? NIGHT_TEXT : Colors.white))
               : new Icon(
                   Icons.search,
                   color: App.of(context).night ? NIGHT_TEXT : Colors.white,
@@ -80,7 +89,9 @@ class _MainActivityState extends State<MainActivity>
           alignment: Alignment.center,
           margin: new EdgeInsets.only(right: 10.0),
           child: new Text(isCard ? "缩略图" : "卡片",
-              style: new TextStyle(inherit: true, color:App.of(context).night ? NIGHT_TEXT : Colors.white)),
+              style: new TextStyle(
+                  inherit: true,
+                  color: App.of(context).night ? NIGHT_TEXT : Colors.white)),
         ),
       );
     }
@@ -254,55 +265,77 @@ class _MainActivityState extends State<MainActivity>
     }
   }
 
+  Future<bool> _doubleExit() {
+    print("aaa");
+    int nowTime = new DateTime.now().microsecondsSinceEpoch;
+    if (_lastClickTime != 0 && nowTime - _lastClickTime > 1500) {
+      return new Future.value(true);
+    } else {
+      _lastClickTime = new DateTime.now().microsecondsSinceEpoch;
+      new Future.delayed(const Duration(milliseconds: 1500), () {
+        _lastClickTime = 0;
+      });
+      _scffoldKey.currentState
+          .showSnackBar(new SnackBar(content: new Text('再点多一次就退出程序!!!')));
+      return new Future.value(false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        body: new ResideMenu.scafford(
-      enableFade: false,
-      controller: _menuController,
-      leftScaffold: _buildMiddleMenu(),
-      child: new Scaffold(
-        appBar: new AppBar(
-          title: _isSearching && selectIndex == 1
-              ? new SearchBar(
-                  onChangeText: _onSearch,
-                )
-              : new Text(
-                  selectIndex == 0
-                      ? STRING_HOME
-                      : selectIndex == 1
+    return new WillPopScope(
+        child: new Scaffold(
+            key: _scffoldKey,
+            body: new ResideMenu.scafford(
+              enableFade: false,
+              controller: _menuController,
+              leftScaffold: _buildMiddleMenu(),
+              child: new Scaffold(
+                appBar: new AppBar(
+                  title: _isSearching && selectIndex == 1
+                      ? new SearchBar(
+                    onChangeText: _onSearch,
+                  )
+                      : new Text(
+                      selectIndex == 0
+                          ? STRING_HOME
+                          : selectIndex == 1
                           ? STRING_GANK
                           : selectIndex == 2
-                              ? STRING_GIRL
-                              : selectIndex == 3
-                                  ? STRING_LIKE
-                                  : selectIndex == 4
-                                      ? STRING_SETTING
-                                      : STRING_ABOUTME,
-                  style: new TextStyle(
-                      inherit: true,
-                      color:
-                          App.of(context).night ? NIGHT_TEXT : Colors.white)),
-          leading: new InkWell(
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            child: new Icon(Icons.menu, color: App.of(context).night ? NIGHT_TEXT : Colors.white),
-            onTap: () {
-              _menuController.openMenu(true);
-            },
-          ),
-          bottom: _buildViewPagerIndicator(),
-          actions: _buildRight() != null ? [_buildRight()] : null,
-        ),
-        body: _buildBody(),
-      ),
-      direction: ScrollDirection.LEFT,
-      decoration: new BoxDecoration(
-          gradient: new LinearGradient(colors: <Color>[
-        Theme.of(context).primaryColor,
-        const Color(0xff666666)
-      ], begin: Alignment.topLeft)),
-    ));
+                          ? STRING_GIRL
+                          : selectIndex == 3
+                          ? STRING_LIKE
+                          : selectIndex == 4
+                          ? STRING_SETTING
+                          : STRING_ABOUTME,
+                      style: new TextStyle(
+                          inherit: true,
+                          color: App.of(context).night
+                              ? NIGHT_TEXT
+                              : Colors.white)),
+                  leading: new InkWell(
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    child: new Icon(Icons.menu,
+                        color:
+                        App.of(context).night ? NIGHT_TEXT : Colors.white),
+                    onTap: () {
+                      _menuController.openMenu(true);
+                    },
+                  ),
+                  bottom: _buildViewPagerIndicator(),
+                  actions: _buildRight() != null ? [_buildRight()] : null,
+                ),
+                body: _buildBody(),
+              ),
+              direction: ScrollDirection.LEFT,
+              decoration: new BoxDecoration(
+                  gradient: new LinearGradient(colors: <Color>[
+                    Theme.of(context).primaryColor,
+                    const Color(0xff666666)
+                  ], begin: Alignment.topLeft)),
+            )),
+        onWillPop: _doubleExit);
   }
 
   @override

@@ -66,7 +66,9 @@ class _SettingPageState extends State<SettingPage> {
             contentPadding: new EdgeInsets.all(10.0)));
   }
 
-  void _clickEmail() {}
+  void _clickEmail() {
+    Scaffold.of(context).showSnackBar(new SnackBar(content: new Text('该功能未实现,只是占位而已...')));
+  }
 
   void _clickShare() {
     Share.share('这是一个使用flutter写的干货集中营客户端');
