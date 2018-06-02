@@ -21,7 +21,6 @@ class HttpUtils {
     Map<String, dynamic> map = json.decode(responseStr);
     List<GankInfo> list = [];
     for (var item in map['results']) {
-      print(item);
       list.add(new GankInfo.fromJson(item));
     }
     return list;

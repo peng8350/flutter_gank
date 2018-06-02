@@ -40,6 +40,39 @@ class _GirlPageState extends State<GirlPage>
 
   ValueNotifier<double> offsetLis = new ValueNotifier(0.0);
 
+
+  //捕捉应该要插入多少个新的数据
+  int _catchEndPos(List<GirlInfo> newData) {
+    if (_dataList.isEmpty) {
+      return newData.length;
+    } else {
+      for (int i = 0; i < newData.length; i++) {
+        if (newData[i].id == _dataList[0].id) {
+          return i;
+        }
+      }
+    }
+    return 0;
+  }
+
+  void _refreshNewData() {
+    getGirlfromNet(URL_GANK_FETCH + "福利" + "/200/1")
+        .then((List<GirlInfo> data) {
+      for (int i = _catchEndPos(data)-1; i >= 0; i--) {
+        _dataList.insert(0, data[i]);
+        insert("Girl", data[i].toMap()).then((val) {}).catchError((error) {});
+      }
+      if (_dataList.length > 0)
+        _pageIndex = (_dataList.length ~/ 20).toInt() + 1;
+      _refreshController.sendBack(true, RefreshStatus.completed);
+      setState(() {});
+      return false;
+    }).catchError((error) {
+      _refreshController.sendBack(true, RefreshStatus.failed);
+      return false;
+    });
+  }
+
   void _fetchMoreData() async {
     getGirlfromNet(URL_GANK_FETCH + "福利" + "/20/$_pageIndex")
         .then((List<GirlInfo> data) {
@@ -78,7 +111,7 @@ class _GirlPageState extends State<GirlPage>
       if (list.isEmpty) {
         SharedPreferences.getInstance().then((SharedPreferences preferences) {
           if (preferences.getBool("autoRefresh") ?? false) {
-            _fetchMoreData();
+//            _fetchMoreData();
           }
         });
       } else {
@@ -104,9 +137,7 @@ class _GirlPageState extends State<GirlPage>
       //上拉加载
       _fetchMoreData();
     } else {
-      new Future.delayed(const Duration(milliseconds: 1000)).then((val) {
-        _refreshController.sendBack(true, RefreshStatus.completed);
-      });
+      _refreshNewData();
     }
   }
 
@@ -178,7 +209,9 @@ class _GirlPageState extends State<GirlPage>
         controller: _refreshController,
         child: _buildList(),
         headerBuilder: buildDefaultHeader,
-        footerBuilder: buildDefaultFooter,
+        footerBuilder: (context,mode) => buildDefaultFooter(context,mode,(){
+          _refreshController.sendBack(false, RefreshStatus.refreshing);
+        }) ,
         onRefresh: _onRefresh,
         enablePullUp: true,
         onOffsetChange: _onOffsetCall,

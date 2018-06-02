@@ -38,10 +38,41 @@ class GankPageState extends State<GankPage>
   int _pageIndex = 1;
   final ValueNotifier<double> offsetLis = new ValueNotifier(0.0);
 
+  //捕捉应该要插入多少个新的数据
+  int _catchEndPos(List<GankInfo> newData) {
+    if (_dataList.isEmpty) {
+      return newData.length;
+    } else {
+      for (int i = 0; i < newData.length; i++) {
+        if (newData[i].id == _dataList[0].id) {
+          return i;
+        }
+      }
+    }
+    return 0;
+  }
+
+  void _refreshNewData() {
+    getGankfromNet(URL_GANK_FETCH + widget.title + "/200/1")
+        .then((List<GankInfo> data) {
+      for (int i = _catchEndPos(data)-1; i >= 0; i--) {
+        _dataList.insert(0, data[i]);
+        insert("Gank", data[i].toMap()).then((val) {}).catchError((error) {});
+      }
+      if (_dataList.length > 0)
+        _pageIndex = (_dataList.length ~/ 20).toInt() + 1;
+      _refreshController.sendBack(true, RefreshStatus.completed);
+      setState(() {});
+      return false;
+    }).catchError((error) {
+      _refreshController.sendBack(true, RefreshStatus.failed);
+      return false;
+    });
+  }
+
   void _fetchMoreData() {
     getGankfromNet(URL_GANK_FETCH + widget.title + "/20/$_pageIndex")
         .then((List<GankInfo> data) {
-          print(data);
       if (data.isEmpty) {
         //空数据
         _refreshController.sendBack(false, RefreshStatus.noMore);
@@ -57,7 +88,6 @@ class GankPageState extends State<GankPage>
       }
       return false;
     }).catchError((error) {
-      print(error);
       _refreshController.sendBack(false, 4);
       return false;
     });
@@ -81,9 +111,7 @@ class GankPageState extends State<GankPage>
       //上拉加载
       _fetchMoreData();
     } else {
-      new Future.delayed(const Duration(milliseconds: 1000)).then((val) {
-        _refreshController.sendBack(true, RefreshStatus.completed);
-      });
+      _refreshNewData();
     }
   }
 
@@ -108,17 +136,18 @@ class GankPageState extends State<GankPage>
             controller: _refreshController,
             child: new ListView.builder(
               itemBuilder: (context, index) => new GankItem(
-                info: _dataList[index],
-                onChange: () {
-                  _onClickLike(_dataList[index]);
-                },
-              ),
+                    info: _dataList[index],
+                    onChange: () {
+                      _onClickLike(_dataList[index]);
+                    },
+                  ),
               itemCount: _dataList.length,
             ),
             headerBuilder: buildDefaultHeader,
-            footerBuilder: (context,mode) => buildDefaultFooter(context,mode,(){
-              _refreshController.sendBack(false, RefreshStatus.refreshing);
-            }),
+            footerBuilder: (context, mode) =>
+                buildDefaultFooter(context, mode, () {
+                  _refreshController.sendBack(false, RefreshStatus.refreshing);
+                }),
             onRefresh: _onRefresh,
             enablePullUp: true,
             onOffsetChange: _onOffsetCall,
@@ -175,7 +204,7 @@ class GankPageState extends State<GankPage>
       if (list.isEmpty) {
         SharedPreferences.getInstance().then((SharedPreferences preferences) {
           if (preferences.getBool("autoRefresh") ?? false) {
-            _refreshController.sendBack(false, RefreshStatus.refreshing);
+//            _refreshController.sendBack(false, RefreshStatus.refreshing);
           }
         });
       } else {
