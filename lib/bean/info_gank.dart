@@ -9,6 +9,13 @@ class GankInfo {
   final String desc, publishedAt, source, type, url, who, img;
   bool like;
 
+  bool isAvailableSearch(String searchText){
+    if(desc.contains(searchText)||publishedAt.contains(searchText)||who.contains(searchText)||url.contains(searchText)){
+      return true;
+    }
+    return false;
+  }
+
   GankInfo(
       {this.desc,
       this.id,

@@ -20,15 +20,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 class GankPage extends StatefulWidget {
   final String title;
 
+  final bool isSeaching;
 
-  GankPage({this.title, Key key}) : super(key: key);
+  GankPage({this.title, Key key, this.isSeaching}) : super(key: key);
 
   @override
-  _GankPageState createState() => new _GankPageState();
+  GankPageState createState() => new GankPageState();
 }
 
-class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory ,DbUtils{
+class GankPageState extends State<GankPage>
+    with HttpUtils, IndicatorFactory, DbUtils {
   List<GankInfo> _dataList = [];
+  List<GankInfo> _searchList = [];
   RefreshController _refreshController;
   int _pageIndex = 1;
   final ValueNotifier<double> offsetLis = new ValueNotifier(0.0);
@@ -40,20 +43,14 @@ class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory ,D
         //空数据
         _refreshController.sendBack(false, RefreshStatus.noMore);
       } else {
-
-        for (GankInfo item in data){
+        for (GankInfo item in data) {
           _dataList.add(item);
-          insert("Gank", item.toMap()).then((val) {
-          }).catchError((error){
-          });
+          insert("Gank", item.toMap()).then((val) {}).catchError((error) {});
         }
         _pageIndex++;
 
         _refreshController.sendBack(false, RefreshStatus.idle);
-        setState(() {
-
-
-        });
+        setState(() {});
       }
       return false;
     }).catchError((error) {
@@ -68,10 +65,11 @@ class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory ,D
     }
   }
 
-  void _onClickLike(int index) {
-    _dataList[index].like = !_dataList[index].like;
+  void _onClickLike(GankInfo item) {
+    item.like = !item.like;
+
+    update("Gank", item.toMap(), "id = ? ", [item.id]);
     setState(() {});
-    update("Gank", _dataList[index].toMap(), "id = ? ", [_dataList[index].id]);
   }
 
   void _onRefresh(bool up) {
@@ -85,32 +83,55 @@ class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory ,D
     }
   }
 
+  void searchGank(String searchText) {
+    _searchList.clear();
+    for (GankInfo item in _dataList) {
+      if (item.isAvailableSearch(searchText)) {
+        _searchList.add(item);
+      }
+    }
+    setState(() {});
+  }
+
   Widget _buildContent() {
-    return new Container(
-      color: const Color.fromRGBO(249, 249, 249, 100.0),
-      child: new Stack(
-        children: <Widget>[
-          new ArcIndicator(
-            offsetLis: offsetLis,
-          ),
-          new SmartRefresher(
-            controller: _refreshController,
-            child: new ListView.builder(
-              itemBuilder: (context, index) =>
-                  new GankItem(info: _dataList[index],onChange:(){
-                    _onClickLike(index);
-                  },),
-              itemCount: _dataList.length,
+    if (!widget.isSeaching)
+      return new Container(
+        color: const Color.fromRGBO(249, 249, 249, 100.0),
+        child: new Stack(
+          children: <Widget>[
+            new ArcIndicator(
+              offsetLis: offsetLis,
             ),
-            headerBuilder: buildDefaultHeader,
-            footerBuilder: buildDefaultFooter,
-            onRefresh: _onRefresh,
-            enablePullUp: true,
-            onOffsetChange: _onOffsetCall,
-          )
-        ],
-      ),
-    );
+            new SmartRefresher(
+              controller: _refreshController,
+              child: new ListView.builder(
+                itemBuilder: (context, index) => new GankItem(
+                      info: _dataList[index],
+                      onChange: () {
+                        _onClickLike(_dataList[index]);
+                      },
+                    ),
+                itemCount: _dataList.length,
+              ),
+              headerBuilder: buildDefaultHeader,
+              footerBuilder: buildDefaultFooter,
+              onRefresh: _onRefresh,
+              enablePullUp: true,
+              onOffsetChange: _onOffsetCall,
+            )
+          ],
+        ),
+      );
+    else
+      return new ListView.builder(
+        itemBuilder: (context, index) => new GankItem(
+              info: _searchList[index],
+              onChange: () {
+                _onClickLike(_searchList[index]);
+              },
+            ),
+        itemCount: _searchList.length,
+      );
   }
 
   @override
@@ -129,38 +150,38 @@ class _GankPageState extends State<GankPage> with HttpUtils, IndicatorFactory ,D
   @override
   void didUpdateWidget(GankPage oldWidget) {
     // TODO: implement didUpdateWidget
+    getList("Gank", "type = ?", [widget.title]).then((maps) {
+      _dataList.clear();
+      for (Map map in maps) {
+        _dataList.add(new GankInfo.fromMap(map));
+      }
+      int aa = maps.length ~/ 20;
+      _pageIndex = aa + 1;
+      setState(() {});
+    });
 
     super.didUpdateWidget(oldWidget);
   }
-
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _refreshController = new RefreshController();
-
-    open().then((val) {
-      getList("Gank","type = ?",[widget.title]).then((List<dynamic> list){
-        if(list.isEmpty){
-          SharedPreferences.getInstance().then((SharedPreferences preferences) {
-            if (preferences.getBool("autoRefresh") ?? false) {
-              _fetchMoreData();
-            }
-
-          });
-        }
-        else{
-          for(Map map in list){
-            _dataList.add(new GankInfo.fromMap(map));
+    getList("Gank", "type = ?", [widget.title]).then((List<dynamic> list) {
+      if (list.isEmpty) {
+        SharedPreferences.getInstance().then((SharedPreferences preferences) {
+          if (preferences.getBool("autoRefresh") ?? false) {
+            _fetchMoreData();
           }
-          int aa = list.length~/20;
-          _pageIndex = aa+1;
-
-
+        });
+      } else {
+        for (Map map in list) {
+          _dataList.add(new GankInfo.fromMap(map));
         }
-      });
-
+        int aa = list.length ~/ 20;
+        _pageIndex = aa + 1;
+      }
     });
   }
 }

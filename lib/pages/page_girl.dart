@@ -91,6 +91,7 @@ class _GirlPageState extends State<GirlPage>
     super.initState();
   }
 
+
   void _onOffsetCall(bool up, double offset) {
     if (up) {
       offsetLis.value = offset;
@@ -148,7 +149,17 @@ class _GirlPageState extends State<GirlPage>
     // TODO: implement didUpdateWidget
 
     super.didUpdateWidget(oldWidget);
+    getList("Girl").then((List<dynamic> list) {
+        _dataList.clear();
+        for (Map map in list) {
+          _dataList.add(new GirlInfo.fromMap(map));
+        }
+        int aa = list.length ~/ 20;
+        _pageIndex = aa + 1;
+        setState(() {
 
+        });
+    });
     if (widget.isCard != oldWidget.isCard) {
       SchedulerBinding.instance.addPostFrameCallback((val) {
         _refreshController.scrollTo(0.0);

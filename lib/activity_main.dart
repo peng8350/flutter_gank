@@ -13,6 +13,7 @@ import 'package:flutter_gank/pages/page_home.dart';
 import 'package:flutter_gank/pages/page_like.dart';
 import 'package:flutter_gank/pages/page_setting.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
+import 'package:flutter_gank/widget/search_bar.dart';
 import 'package:residemenu/residemenu.dart';
 
 class MainActivity extends StatefulWidget {
@@ -21,7 +22,7 @@ class MainActivity extends StatefulWidget {
 }
 
 class _MainActivityState extends State<MainActivity>
-    with TickerProviderStateMixin,DbUtils {
+    with TickerProviderStateMixin, DbUtils {
   final List<String> _gankTitles = [
     STRING_GANK_WEB,
     STRING_GANK_ANDROID,
@@ -41,35 +42,43 @@ class _MainActivityState extends State<MainActivity>
 
   bool isCard = false;
 
-  Widget _buildRight(){
-    if(selectIndex==1){
+  bool _isSearching = false;
+
+  List<GlobalKey<GankPageState>> _gankPageKeys = [];
+
+  Widget _buildRight() {
+    if (selectIndex == 1) {
       return new InkWell(
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         child: new Container(
-          child: new Icon(Icons.search,color:Colors.white,size: 25.0,),
-          margin: new EdgeInsets.all( 10.0),
+          alignment: Alignment.center,
+          child: _isSearching
+              ? new Text('取消')
+              : new Icon(
+                  Icons.search,
+                  color: Colors.white,
+                  size: 25.0,
+                ),
+          margin: new EdgeInsets.all(10.0),
         ),
-        onTap: (){
-
+        onTap: () {
+          _isSearching = !_isSearching;
+          setState(() {});
         },
       );
-    }
-    else if(selectIndex==2){
+    } else if (selectIndex == 2) {
       return new InkWell(
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
-        onTap: (){
-          isCard= !isCard;
-          setState(() {
-
-          });
+        onTap: () {
+          isCard = !isCard;
+          setState(() {});
         },
         child: new Container(
           alignment: Alignment.center,
           margin: new EdgeInsets.only(right: 10.0),
-
-          child: new Text(isCard?"缩略图":"卡片"),
+          child: new Text(isCard ? "缩略图" : "卡片"),
         ),
       );
     }
@@ -107,25 +116,25 @@ class _MainActivityState extends State<MainActivity>
             children: <Widget>[
               new Offstage(
                   offstage: _gankSelectIndex != 0,
-                  child: new GankPage(title: _gankTitles[0])),
+                  child: new GankPage(key: _gankPageKeys[0],title: _gankTitles[0],isSeaching: _isSearching,)),
               new Offstage(
                   offstage: _gankSelectIndex != 1,
-                  child: new GankPage(title: _gankTitles[1])),
+                  child: new GankPage(key: _gankPageKeys[1],title: _gankTitles[1],isSeaching: _isSearching,)),
               new Offstage(
                   offstage: _gankSelectIndex != 2,
-                  child: new GankPage(title: _gankTitles[2])),
+                  child: new GankPage(key: _gankPageKeys[2],title: _gankTitles[2],isSeaching: _isSearching,)),
               new Offstage(
                   offstage: _gankSelectIndex != 3,
-                  child: new GankPage(title: _gankTitles[3])),
+                  child: new GankPage(key: _gankPageKeys[3],title: _gankTitles[3],isSeaching: _isSearching,)),
               new Offstage(
                   offstage: _gankSelectIndex != 4,
-                  child: new GankPage(title: _gankTitles[4])),
+                  child: new GankPage(key: _gankPageKeys[4],title: _gankTitles[4],isSeaching: _isSearching,)),
               new Offstage(
                   offstage: _gankSelectIndex != 5,
-                  child: new GankPage(title: _gankTitles[5])),
+                  child: new GankPage(key: _gankPageKeys[5],title: _gankTitles[5],isSeaching: _isSearching,)),
               new Offstage(
                   offstage: _gankSelectIndex != 6,
-                  child: new GankPage(title: _gankTitles[6])),
+                  child: new GankPage(key: _gankPageKeys[6],title: _gankTitles[6],isSeaching: _isSearching,)),
             ],
           ),
         ),
@@ -205,6 +214,12 @@ class _MainActivityState extends State<MainActivity>
         ]);
   }
 
+  void _onSearch(String text){
+    for(GlobalKey<GankPageState> key in _gankPageKeys){
+      key.currentState.searchGank(text);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -214,15 +229,19 @@ class _MainActivityState extends State<MainActivity>
       leftScaffold: _buildMiddleMenu(),
       child: new Scaffold(
         appBar: new AppBar(
-          title: new Text(selectIndex == 0
-              ? STRING_HOME
-              : selectIndex == 1
-                  ? STRING_GANK
-                  : selectIndex == 2
-                      ? STRING_GIRL
-                      : selectIndex == 3
-                          ? STRING_LIKE
-                          : selectIndex == 4 ? STRING_SETTING : STRING_ABOUTME),
+          title: _isSearching && selectIndex == 1
+              ? new SearchBar(onChangeText: _onSearch,)
+              : new Text(selectIndex == 0
+                  ? STRING_HOME
+                  : selectIndex == 1
+                      ? STRING_GANK
+                      : selectIndex == 2
+                          ? STRING_GIRL
+                          : selectIndex == 3
+                              ? STRING_LIKE
+                              : selectIndex == 4
+                                  ? STRING_SETTING
+                                  : STRING_ABOUTME),
           leading: new InkWell(
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
@@ -231,9 +250,8 @@ class _MainActivityState extends State<MainActivity>
               _menuController.openMenu(true);
             },
           ),
-
           bottom: _buildViewPagerIndicator(),
-          actions:_buildRight()!=null?[_buildRight()]:null,
+          actions: _buildRight() != null ? [_buildRight()] : null,
         ),
         body: _buildBody(),
       ),
@@ -256,6 +274,7 @@ class _MainActivityState extends State<MainActivity>
   void initState() {
     // TODO: implement initState
     super.initState();
+    for (int i = 0; i < 7; i++) _gankPageKeys.add(new GlobalKey());
     _tabController = new TabController(length: 7, vsync: this, initialIndex: 0);
     _tabController.addListener(() {
       _gankSelectIndex = _tabController.index;

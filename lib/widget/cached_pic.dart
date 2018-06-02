@@ -38,7 +38,7 @@ class _CachedPicState extends State<CachedPic> {
     return new WillPopScope(
         child: new GestureDetector(
           child: new CachedNetworkImage(
-            placeholder: new Image.asset(widget.placeholder),
+            placeholder: new Image.asset(widget.placeholder,fit: BoxFit.cover,),
             imageUrl: widget.url,
             fit: BoxFit.cover,
           ),
