@@ -33,7 +33,7 @@ class GankInfo {
       id: json["_id"] ?? 'id',
       like: false,
       desc: json['desc']?? '这是描述',
-      img: json['images']==null ? '':json['images'][0],
+      img: json['images']==null||json['images'].length==0 ? '':json['images'][0],
       publishedAt: json['publishedAt'] ?? '2018-5-13',
       source: json['source'] ?? 'Web',
       type: json['type'] ?? 'type' ,

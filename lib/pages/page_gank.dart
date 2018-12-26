@@ -65,9 +65,9 @@ class GankPageState extends State<GankPage>
   }
 
   void _refreshNewData() {
-    print("seach");
-    getGankfromNet(URL_GANK_FETCH + widget.title + "/200/1")
+    getGankfromNet(URL_GANK_FETCH + widget.title + "/20/1")
         .then((List<GankInfo> data) {
+
       for (int i = _catchEndPos(data)-1; i >= 0; i--) {
         _dataList.insert(0, data[i]);
         insert("Gank", data[i].toMap()).then((val) {}).catchError((error) {});
@@ -78,12 +78,14 @@ class GankPageState extends State<GankPage>
       setState(() {});
       return false;
     }).catchError((error) {
+      print(error);
       _refreshController.sendBack(true, RefreshStatus.failed);
       return false;
     });
   }
 
   void _fetchMoreData() {
+
     getGankfromNet(URL_GANK_FETCH + widget.title + "/20/$_pageIndex")
         .then((List<GankInfo> data) {
       if (data.isEmpty) {

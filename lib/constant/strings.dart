@@ -43,4 +43,4 @@ const List<String> GANK_TITLES = [
   STRING_GANK_VIDEO
 ];
 
-const String URL_GANK_FETCH = 'http://gank.io/api/data/';
+const String URL_GANK_FETCH = 'https://gank.io/api/data/';
