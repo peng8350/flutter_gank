@@ -10,7 +10,7 @@ import '../constant/colors.dart';
  */
 
 class IndicatorFactory {
-  Widget buildDefaultHeader(BuildContext context, int mode) {
+  Widget buildDefaultHeader(BuildContext context, RefreshStatus mode) {
     return new ClassicIndicator(
       failedText: '刷新失败!',
       completeText: '刷新完成!',
@@ -32,7 +32,7 @@ class IndicatorFactory {
     );
   }
 
-  Widget buildDefaultFooter(BuildContext context, int mode,[Function requestLoad]) {
+  Widget buildDefaultFooter(BuildContext context, RefreshStatus mode,[Function requestLoad]) {
     if(mode==RefreshStatus.failed||mode==RefreshStatus.idle) {
       return new InkWell(
         child: new ClassicIndicator(

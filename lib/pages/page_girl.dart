@@ -36,6 +36,8 @@ class _GirlPageState extends State<GirlPage>
 
   RefreshController _refreshController;
 
+  ScrollController _scrollController;
+
   int _pageIndex = 1;
 
   ValueNotifier<double> offsetLis = new ValueNotifier(0.0);
@@ -107,7 +109,7 @@ class _GirlPageState extends State<GirlPage>
       }
       return false;
     }).catchError((error) {
-      _refreshController.sendBack(false, 4);
+      _refreshController.sendBack(false, RefreshStatus.failed);
       return false;
     });
   }
@@ -122,6 +124,8 @@ class _GirlPageState extends State<GirlPage>
   void initState() {
     // TODO: implement initState
     _refreshController = new RefreshController();
+
+    _scrollController = new ScrollController();
     getList("Girl").then((List<dynamic> list) {
       if (list.isEmpty) {
         SharedPreferences.getInstance().then((SharedPreferences preferences) {
@@ -167,6 +171,7 @@ class _GirlPageState extends State<GirlPage>
   Widget _buildList() {
     if (widget.isCard) {
       return new ListView.builder(
+          controller: _scrollController,
           itemCount: _dataList.length,
           itemBuilder: (context, index) => new GirlCardItem(
                 who: _dataList[index].who,
@@ -209,7 +214,7 @@ class _GirlPageState extends State<GirlPage>
     });
     if (widget.isCard != oldWidget.isCard) {
       SchedulerBinding.instance.addPostFrameCallback((val) {
-        _refreshController.scrollTo(0.0);
+        _scrollController.animateTo(0.0, duration: const Duration(milliseconds: 200), curve: Curves.linear);
       });
     }
   }

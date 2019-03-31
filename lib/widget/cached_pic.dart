@@ -39,7 +39,7 @@ class _CachedPicState extends State<CachedPic> {
         child: new GestureDetector(
           child: new CachedNetworkImage(
 
-            placeholder: new Image.asset(widget.placeholder,fit: BoxFit.cover,),
+            placeholder: (c,s) => new Image.asset(widget.placeholder,fit: BoxFit.cover,),
             imageUrl: widget.url,
             fit: BoxFit.cover,
           ),

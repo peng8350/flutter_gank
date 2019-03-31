@@ -12,7 +12,7 @@ dependencies:
   flutter_staggered_grid_view: any
 
   pull_to_refresh:
-    any
+    ^1.2.0
 
   residemenu:
     any
