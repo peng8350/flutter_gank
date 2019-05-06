@@ -79,11 +79,11 @@ class _GirlPageState extends State<GirlPage>
       }
       if (_dataList.length > 0)
         _pageIndex = (_dataList.length ~/ 20).toInt() + 1;
-      _refreshController.sendBack(true, RefreshStatus.completed);
+      _refreshController.refreshCompleted();
       setState(() {});
       return false;
     }).catchError((error) {
-      _refreshController.sendBack(true, RefreshStatus.failed);
+      _refreshController.refreshFailed();
       return false;
     });
   }
@@ -93,7 +93,7 @@ class _GirlPageState extends State<GirlPage>
         .then((List<GirlInfo> data) {
       if (data.isEmpty) {
         //空数据
-        _refreshController.sendBack(false, RefreshStatus.noMore);
+        _refreshController.loadNoData();
       } else {
         for (GirlInfo item in data) {
           _dataList.add(item);
@@ -104,12 +104,11 @@ class _GirlPageState extends State<GirlPage>
 
         _pageIndex++;
 
-        _refreshController.sendBack(false, RefreshStatus.idle);
+        _refreshController.loadComplete();
         setState(() {});
       }
       return false;
     }).catchError((error) {
-      _refreshController.sendBack(false, RefreshStatus.failed);
       return false;
     });
   }
@@ -117,6 +116,7 @@ class _GirlPageState extends State<GirlPage>
   @override
   void dispose() {
     // TODO: implement dispose
+    _refreshController.dispose();
     super.dispose();
   }
 
@@ -130,7 +130,7 @@ class _GirlPageState extends State<GirlPage>
       if (list.isEmpty) {
         SharedPreferences.getInstance().then((SharedPreferences preferences) {
           if (preferences.getBool("autoRefresh") ?? false) {
-            _refreshController.sendBack(false, RefreshStatus.refreshing);
+            _refreshController.requestRefresh();
           }
         });
       } else {
@@ -151,13 +151,13 @@ class _GirlPageState extends State<GirlPage>
     }
   }
 
-  void _onRefresh(bool up) {
-    if (!up) {
-      //上拉加载
-      _fetchMoreData();
-    } else {
-      _refreshNewData();
-    }
+  void _onRefresh() {
+    _refreshNewData();
+
+  }
+
+  void _onLoad(){
+    _fetchMoreData();
   }
 
   void _onClickLike(int index) {
@@ -228,9 +228,10 @@ class _GirlPageState extends State<GirlPage>
       new SmartRefresher(
         controller: _refreshController,
         child: _buildList(),
-        headerBuilder: buildDefaultHeader,
-        footerBuilder: (context,mode) => buildDefaultFooter(context,mode,(){
-          _refreshController.sendBack(false, RefreshStatus.refreshing);
+        onLoading: _onLoad,
+        header: buildDefaultHeader(context),
+        footer:  buildDefaultFooter(context,(){
+          _refreshController.requestLoading();
         }) ,
         onRefresh: _onRefresh,
         enablePullUp: true,
@@ -238,4 +239,6 @@ class _GirlPageState extends State<GirlPage>
       )
     ]);
   }
+
+
 }

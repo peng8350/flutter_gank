@@ -7,9 +7,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gank/App.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
-import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:flutter_gank/utils/utils_indicator.dart';
@@ -76,12 +74,12 @@ class GankPageState extends State<GankPage>
       }
       if (_dataList.length > 0)
         _pageIndex = (_dataList.length ~/ 20).toInt() + 1;
-      _refreshController.sendBack(true, RefreshStatus.completed);
+      _refreshController.refreshCompleted();
       setState(() {});
       return false;
     }).catchError((error) {
       print(error);
-      _refreshController.sendBack(true, RefreshStatus.failed);
+      _refreshController.refreshFailed();
       return false;
     });
   }
@@ -92,7 +90,7 @@ class GankPageState extends State<GankPage>
       if (data.isEmpty) {
         //空数据
         SchedulerBinding.instance.addPostFrameCallback((_){
-          _refreshController.sendBack(false, RefreshStatus.noMore);
+          _refreshController.loadNoData();
         });
 
       } else {
@@ -103,21 +101,20 @@ class GankPageState extends State<GankPage>
         _pageIndex++;
 
         SchedulerBinding.instance.addPostFrameCallback((_){
-          _refreshController.sendBack(false, RefreshStatus.idle);
+          _refreshController.loadComplete();
+
         });
         setState(() {});
       }
       return false;
     }).catchError((error) {
-      SchedulerBinding.instance.addPostFrameCallback((_){
-        _refreshController.sendBack(false, RefreshStatus.failed);
-      });
 
       return false;
     });
   }
 
   void _onOffsetCall(bool up, double offset) {
+    print(offset);
     if (up) {
       offsetLis.value = offset;
     }
@@ -130,13 +127,13 @@ class GankPageState extends State<GankPage>
     setState(() {});
   }
 
-  void _onRefresh(bool up) {
-    if (!up) {
-      //上拉加载
-      _fetchMoreData();
-    } else {
-      _refreshNewData();
-    }
+  void _onRefresh() {
+    _refreshNewData();
+
+  }
+
+  void _onLoad(){
+    _fetchMoreData();
   }
 
   void searchGank(String searchText) {
@@ -168,12 +165,13 @@ class GankPageState extends State<GankPage>
                   ),
               itemCount: _dataList.length,
             ),
-            headerBuilder: buildDefaultHeader,
-            footerBuilder: (context, mode) =>
-                buildDefaultFooter(context, mode, () {
-                  _refreshController.sendBack(false, RefreshStatus.refreshing);
-                }),
+            header: buildDefaultHeader(context),
+            footer: buildDefaultFooter(context,(){
+              _refreshController.requestLoading();
+            }),
             onRefresh: _onRefresh,
+            onLoading: _onLoad,
+
             enablePullUp: showFoot,
             onOffsetChange: _onOffsetCall,
           )
@@ -204,6 +202,7 @@ class GankPageState extends State<GankPage>
   @override
   void dispose() {
     // TODO: implement dispose
+    _refreshController.dispose();
     super.dispose();
   }
 
@@ -233,7 +232,7 @@ class GankPageState extends State<GankPage>
       if (list.isEmpty) {
         SharedPreferences.getInstance().then((SharedPreferences preferences) {
           if (preferences.getBool("autoRefresh") ?? false) {
-            _refreshController.sendBack(false, RefreshStatus.refreshing);
+            _refreshController.requestRefresh();
           }
         });
       } else {
