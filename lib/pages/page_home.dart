@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with HttpUtils, SingleTickerProviderStateMixin {
+    with HttpUtils, SingleTickerProviderStateMixin,AutomaticKeepAliveClientMixin {
   bool showAlignmentCards = false;
 
   Future _future;
@@ -126,6 +126,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return new FutureBuilder(
       builder: (context, shot) {
         if (shot.connectionState == ConnectionState.waiting ||
@@ -149,4 +150,8 @@ class _HomePageState extends State<HomePage>
       future: _future,
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

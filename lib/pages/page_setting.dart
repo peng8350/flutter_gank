@@ -81,9 +81,9 @@ class _SettingPageState extends State<SettingPage> {
       child: new AlertDialog(
         title: const Text('选择主题颜色'),
         content: new SingleChildScrollView(
-          child: new ColorPicker(
-            pickerColor: _currentColor,
-            onColorChanged: (color) => setState(() {
+          child: ColorPicker(
+             _currentColor,
+             (color) => setState(() {
                   _currentColor = color;
                 }),
             enableLabel: true,
@@ -156,4 +156,5 @@ class _SettingPageState extends State<SettingPage> {
       autoRefresh = preferences.getBool("autoRefresh") ?? false;
     });
   }
+
 }

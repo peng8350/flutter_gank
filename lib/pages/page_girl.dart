@@ -16,7 +16,6 @@ import 'package:flutter_gank/utils/utils_http.dart';
 import 'package:flutter_gank/utils/utils_indicator.dart';
 import 'package:flutter_gank/widget/cached_pic.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../widget/CircleClipper.dart';
 import 'package:flutter/scheduler.dart';
@@ -31,7 +30,7 @@ class GirlPage extends StatefulWidget {
 }
 
 class _GirlPageState extends State<GirlPage>
-    with IndicatorFactory, HttpUtils, DbUtils {
+    with IndicatorFactory, HttpUtils, DbUtils,AutomaticKeepAliveClientMixin {
   List<GirlInfo> _dataList = [];
 
   RefreshController _refreshController;
@@ -42,7 +41,6 @@ class _GirlPageState extends State<GirlPage>
 
   ValueNotifier<double> offsetLis = new ValueNotifier(0.0);
 
-
   //这个算法用来捕捉数据应该要终止插入到数据库的位置
   int _catchEndPos(List<GirlInfo> newData) {
     if (_dataList.isEmpty) {
@@ -50,17 +48,14 @@ class _GirlPageState extends State<GirlPage>
     } else {
       for (int i = 0; i < newData.length; i++) {
         if (newData[i].id == _dataList[0].id) {
-
           return i;
-        }
-        else{
-          int j = i+1;
+        } else {
+          int j = i + 1;
           //是否存在
-          while(j<_dataList.length&&_dataList[j].desc==newData[j].desc){
-            if(_dataList[j].id!=newData[i].id){
+          while (j < _dataList.length && _dataList[j].desc == newData[j].desc) {
+            if (_dataList[j].id != newData[i].id) {
               j++;
-            }
-            else{
+            } else {
               return i;
             }
           }
@@ -73,7 +68,7 @@ class _GirlPageState extends State<GirlPage>
   void _refreshNewData() {
     getGirlfromNet(URL_GANK_FETCH + "福利" + "/100/1")
         .then((List<GirlInfo> data) {
-      for (int i = _catchEndPos(data)-1; i >= 0; i--) {
+      for (int i = _catchEndPos(data) - 1; i >= 0; i--) {
         _dataList.insert(0, data[i]);
         insert("Girl", data[i].toMap()).then((val) {}).catchError((error) {});
       }
@@ -97,9 +92,7 @@ class _GirlPageState extends State<GirlPage>
       } else {
         for (GirlInfo item in data) {
           _dataList.add(item);
-          insert("Girl", item.toMap()).then((val) {}).then((val){
-
-          });
+          insert("Girl", item.toMap()).then((val) {}).then((val) {});
         }
 
         _pageIndex++;
@@ -144,27 +137,17 @@ class _GirlPageState extends State<GirlPage>
     super.initState();
   }
 
-
-  void _onOffsetCall(bool up, double offset) {
-    if (up) {
-      offsetLis.value = offset;
-    }
-  }
-
   void _onRefresh() {
     _refreshNewData();
-
   }
 
-  void _onLoad(){
+  void _onLoad() {
     _fetchMoreData();
   }
 
   void _onClickLike(int index) {
     _dataList[index].like = !_dataList[index].like;
-    setState(() {
-
-    });
+    setState(() {});
     update("Girl", _dataList[index].toMap(), "id = ? ", [_dataList[index].id]);
   }
 
@@ -183,16 +166,12 @@ class _GirlPageState extends State<GirlPage>
                 },
               ));
     }
-    return new StaggeredGridView.countBuilder(
-      crossAxisCount: 6,
+    return new GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,crossAxisSpacing: 5.0,mainAxisSpacing: 5.0),
       itemCount: _dataList.length,
       itemBuilder: (context, index) => new CachedPic(
             url: _dataList[index].url,
           ),
-      staggeredTileBuilder: (int index) =>
-          new StaggeredTile.count(3, index.isEven ? 3 : 2),
-      mainAxisSpacing: 4.0,
-      crossAxisSpacing: 4.0,
     );
   }
 
@@ -202,43 +181,41 @@ class _GirlPageState extends State<GirlPage>
 
     super.didUpdateWidget(oldWidget);
     getList("Girl").then((List<dynamic> list) {
-        _dataList.clear();
-        for (Map map in list) {
-          _dataList.add(new GirlInfo.fromMap(map));
-        }
-        int aa = list.length ~/ 20;
-        _pageIndex = aa + 1;
-        setState(() {
-
-        });
+      _dataList.clear();
+      for (Map map in list) {
+        _dataList.add(new GirlInfo.fromMap(map));
+      }
+      int aa = list.length ~/ 20;
+      _pageIndex = aa + 1;
+      setState(() {});
     });
     if (widget.isCard != oldWidget.isCard) {
       SchedulerBinding.instance.addPostFrameCallback((val) {
-        _scrollController.animateTo(0.0, duration: const Duration(milliseconds: 200), curve: Curves.linear);
+        _scrollController.animateTo(0.0,
+            duration: const Duration(milliseconds: 200), curve: Curves.linear);
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Stack(children: <Widget>[
-      new ArcIndicator(
-        offsetLis: offsetLis,
+    super.build(context);
+    return new SmartRefresher(
+      controller: _refreshController,
+      child: _buildList(),
+      onLoading: _onLoad,
+      header: WaterDropMaterialHeader(
+        backgroundColor: Theme.of(context).primaryColor,
       ),
-      new SmartRefresher(
-        controller: _refreshController,
-        child: _buildList(),
-        onLoading: _onLoad,
-        header: buildDefaultHeader(context),
-        footer:  buildDefaultFooter(context,(){
-          _refreshController.requestLoading();
-        }) ,
-        onRefresh: _onRefresh,
-        enablePullUp: true,
-        onOffsetChange: _onOffsetCall,
-      )
-    ]);
+      footer: buildDefaultFooter(context, () {
+        _refreshController.requestLoading();
+      }),
+      onRefresh: _onRefresh,
+      enablePullUp: true,
+    );
   }
 
-
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

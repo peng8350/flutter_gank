@@ -30,7 +30,7 @@ class GankPage extends StatefulWidget {
 }
 
 class GankPageState extends State<GankPage>
-    with HttpUtils, IndicatorFactory, DbUtils {
+    with HttpUtils, IndicatorFactory, DbUtils,AutomaticKeepAliveClientMixin {
   List<GankInfo> _dataList = [];
   List<GankInfo> _searchList = [];
   RefreshController _refreshController;
@@ -113,12 +113,6 @@ class GankPageState extends State<GankPage>
     });
   }
 
-  void _onOffsetCall(bool up, double offset) {
-    print(offset);
-    if (up) {
-      offsetLis.value = offset;
-    }
-  }
 
   void _onClickLike(GankInfo item) {
     item.like = !item.like;
@@ -146,39 +140,32 @@ class GankPageState extends State<GankPage>
     setState(() {});
   }
 
-  Widget _buildContent(showFoot) {
+  Widget _buildContent() {
     if (!widget.isSeaching)
-      return new Stack(
-        children: <Widget>[
-          new ArcIndicator(
-            offsetLis: offsetLis,
+      return SmartRefresher(
+        controller: _refreshController,
+        child: new ListView.builder(
+          controller: _scrollController,
+          itemBuilder: (context, index) => new GankItem(
+            info: _dataList[index],
+            onChange: () {
+              _onClickLike(_dataList[index]);
+            },
           ),
-          new SmartRefresher(
-            controller: _refreshController,
-            child: new ListView.builder(
-              controller: _scrollController,
-              itemBuilder: (context, index) => new GankItem(
-                    info: _dataList[index],
-                    onChange: () {
-                      _onClickLike(_dataList[index]);
-                    },
-                  ),
-              itemCount: _dataList.length,
-            ),
-            header: buildDefaultHeader(context),
-            footer: buildDefaultFooter(context,(){
-              _refreshController.requestLoading();
-            }),
-            onRefresh: _onRefresh,
-            onLoading: _onLoad,
+          itemCount: _dataList.length,
+        ),
+        header: WaterDropHeader(),
+        footer: buildDefaultFooter(context,(){
+          _refreshController.requestLoading();
+        }),
+        onRefresh: _onRefresh,
+        onLoading: _onLoad,
 
-            enablePullUp: showFoot,
-            onOffsetChange: _onOffsetCall,
-          )
-        ],
+        enablePullUp: true,
       );
     else
       return new ListView.builder(
+        controller: _scrollController,
         itemBuilder: (context, index) => new GankItem(
               info: _searchList[index],
               onChange: () {
@@ -191,12 +178,7 @@ class GankPageState extends State<GankPage>
 
   @override
   Widget build(BuildContext context) {
-
-    return new LayoutBuilder(builder: (BuildContext context,BoxConstraints size){
-      double listHeight = size.biggest.height;
-      double innerHeight = _dataList.length*135.0;
-      return _buildContent(innerHeight>listHeight);
-    });
+      return _buildContent();
   }
 
   @override
@@ -206,42 +188,34 @@ class GankPageState extends State<GankPage>
     super.dispose();
   }
 
-  @override
-  void didUpdateWidget(GankPage oldWidget) {
-    // TODO: implement didUpdateWidget
-    getList("Gank", "type = ?", [widget.title]).then((maps) {
-      _dataList.clear();
-      for (Map map in maps) {
-        _dataList.add(new GankInfo.fromMap(map));
-      }
-      int aa = maps.length ~/ 20;
-      _pageIndex = aa + 1;
-      setState(() {});
-    });
-
-    super.didUpdateWidget(oldWidget);
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _refreshController = new RefreshController();
-    _scrollController = new ScrollController();
-    getList("Gank", "type = ?", [widget.title]).then((List<dynamic> list) {
-      if (list.isEmpty) {
-        SharedPreferences.getInstance().then((SharedPreferences preferences) {
-          if (preferences.getBool("autoRefresh") ?? false) {
-            _refreshController.requestRefresh();
+    _scrollController = new ScrollController(keepScrollOffset: true);
+    if(_dataList?.length==0) {
+      getList("Gank", "type = ?", [widget.title]).then((List<dynamic> list) {
+        if (list.isEmpty) {
+          SharedPreferences.getInstance().then((SharedPreferences preferences) {
+            if (preferences.getBool("autoRefresh") ?? false) {
+              _refreshController.requestRefresh();
+            }
+          });
+        } else {
+          for (Map map in list) {
+            _dataList.add(new GankInfo.fromMap(map));
           }
-        });
-      } else {
-        for (Map map in list) {
-          _dataList.add(new GankInfo.fromMap(map));
+          int aa = list.length ~/ 20;
+          _pageIndex = aa + 1;
         }
-        int aa = list.length ~/ 20;
-        _pageIndex = aa + 1;
-      }
-    });
+      });
+    }
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+
 }

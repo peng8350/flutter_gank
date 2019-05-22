@@ -53,6 +53,9 @@ class _MainActivityState extends State<MainActivity>
 
   List<GlobalKey<GankPageState>> _gankPageKeys = [];
 
+  final PageController _pageController = PageController(initialPage: 0);
+
+
   Widget _buildRight() {
     if (selectIndex == 1) {
       return new InkWell(
@@ -119,80 +122,54 @@ class _MainActivityState extends State<MainActivity>
   }
 
   Widget _buildBody() {
-    return new Stack(
+    return PageView(
+      controller: _pageController,
+      physics: NeverScrollableScrollPhysics(),
       children: <Widget>[
-        new Offstage(
-          offstage: selectIndex != 0,
-          child: new HomePage(),
+        new HomePage(),
+        TabBarView(
+          children: <Widget>[
+            new GankPage(
+              key: _gankPageKeys[0],
+              title: _gankTitles[0],
+              isSeaching: _isSearching,
+            ),
+            GankPage(
+              key: _gankPageKeys[1],
+              title: _gankTitles[1],
+              isSeaching: _isSearching,
+            ),
+            new GankPage(
+              key: _gankPageKeys[2],
+              title: _gankTitles[2],
+              isSeaching: _isSearching,
+            ),
+            GankPage(
+              key: _gankPageKeys[3],
+              title: _gankTitles[3],
+              isSeaching: _isSearching,
+            ),
+            GankPage(
+              key: _gankPageKeys[4],
+              title: _gankTitles[4],
+              isSeaching: _isSearching,
+            ),
+            GankPage(
+              key: _gankPageKeys[5],
+              title: _gankTitles[5],
+              isSeaching: _isSearching,
+            ),
+            GankPage(
+              key: _gankPageKeys[6],
+              title: _gankTitles[6],
+              isSeaching: _isSearching,
+            )
+          ],
+          controller: _tabController,
         ),
-        new Offstage(
-          offstage: selectIndex != 1,
-          child: new Stack(
-            children: <Widget>[
-              new Offstage(
-                  offstage: _gankSelectIndex != 0,
-                  child: new GankPage(
-                    key: _gankPageKeys[0],
-                    title: _gankTitles[0],
-                    isSeaching: _isSearching,
-                  )),
-              new Offstage(
-                  offstage: _gankSelectIndex != 1,
-                  child: new GankPage(
-                    key: _gankPageKeys[1],
-                    title: _gankTitles[1],
-                    isSeaching: _isSearching,
-                  )),
-              new Offstage(
-                  offstage: _gankSelectIndex != 2,
-                  child: new GankPage(
-                    key: _gankPageKeys[2],
-                    title: _gankTitles[2],
-                    isSeaching: _isSearching,
-                  )),
-              new Offstage(
-                  offstage: _gankSelectIndex != 3,
-                  child: new GankPage(
-                    key: _gankPageKeys[3],
-                    title: _gankTitles[3],
-                    isSeaching: _isSearching,
-                  )),
-              new Offstage(
-                  offstage: _gankSelectIndex != 4,
-                  child: new GankPage(
-                    key: _gankPageKeys[4],
-                    title: _gankTitles[4],
-                    isSeaching: _isSearching,
-                  )),
-              new Offstage(
-                  offstage: _gankSelectIndex != 5,
-                  child: new GankPage(
-                    key: _gankPageKeys[5],
-                    title: _gankTitles[5],
-                    isSeaching: _isSearching,
-                  )),
-              new Offstage(
-                  offstage: _gankSelectIndex != 6,
-                  child: new GankPage(
-                    key: _gankPageKeys[6],
-                    title: _gankTitles[6],
-                    isSeaching: _isSearching,
-                  )),
-            ],
-          ),
-        ),
-        new Offstage(
-          offstage: selectIndex != 2,
-          child: new GirlPage(isCard: isCard),
-        ),
-        new Offstage(
-          offstage: selectIndex != 3,
-          child: new LikePage(),
-        ),
-        new Offstage(
-          offstage: selectIndex != 4,
-          child: new SettingPage(),
-        ),
+        new GirlPage(isCard: isCard),
+        new LikePage(),
+        new SettingPage()
       ],
     );
   }
@@ -230,30 +207,35 @@ class _MainActivityState extends State<MainActivity>
             setState(() {
               selectIndex = 0;
             });
+            _pageController.jumpToPage(selectIndex);
             _menuController.closeMenu();
           }),
           _buildMenuItem(STRING_GANK, Icons.explore, () {
             setState(() {
               selectIndex = 1;
             });
+            _pageController.jumpToPage(selectIndex);
             _menuController.closeMenu();
           }),
           _buildMenuItem(STRING_GIRL, Icons.insert_photo, () {
             setState(() {
               selectIndex = 2;
             });
+            _pageController.jumpToPage(selectIndex);
             _menuController.closeMenu();
           }),
           _buildMenuItem(STRING_LIKE, Icons.favorite, () {
             setState(() {
               selectIndex = 3;
             });
+            _pageController.jumpToPage(selectIndex);
             _menuController.closeMenu();
           }),
           _buildMenuItem(STRING_SETTING, Icons.settings, () {
             setState(() {
               selectIndex = 4;
             });
+            _pageController.jumpToPage(selectIndex);
             _menuController.closeMenu();
           }),
         ]);
@@ -266,7 +248,6 @@ class _MainActivityState extends State<MainActivity>
   }
 
   Future<bool> _doubleExit() {
-    print("aaa");
     int nowTime = new DateTime.now().microsecondsSinceEpoch;
     if (_lastClickTime != 0 && nowTime - _lastClickTime > 1500) {
       return new Future.value(true);
@@ -294,31 +275,31 @@ class _MainActivityState extends State<MainActivity>
                 appBar: new AppBar(
                   title: _isSearching && selectIndex == 1
                       ? new SearchBar(
-                    onChangeText: _onSearch,
-                  )
+                          onChangeText: _onSearch,
+                        )
                       : new Text(
-                      selectIndex == 0
-                          ? STRING_HOME
-                          : selectIndex == 1
-                          ? STRING_GANK
-                          : selectIndex == 2
-                          ? STRING_GIRL
-                          : selectIndex == 3
-                          ? STRING_LIKE
-                          : selectIndex == 4
-                          ? STRING_SETTING
-                          : STRING_ABOUTME,
-                      style: new TextStyle(
-                          inherit: true,
-                          color: App.of(context).night
-                              ? NIGHT_TEXT
-                              : Colors.white)),
+                          selectIndex == 0
+                              ? STRING_HOME
+                              : selectIndex == 1
+                                  ? STRING_GANK
+                                  : selectIndex == 2
+                                      ? STRING_GIRL
+                                      : selectIndex == 3
+                                          ? STRING_LIKE
+                                          : selectIndex == 4
+                                              ? STRING_SETTING
+                                              : STRING_ABOUTME,
+                          style: new TextStyle(
+                              inherit: true,
+                              color: App.of(context).night
+                                  ? NIGHT_TEXT
+                                  : Colors.white)),
                   leading: new InkWell(
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
                     child: new Icon(Icons.menu,
                         color:
-                        App.of(context).night ? NIGHT_TEXT : Colors.white),
+                            App.of(context).night ? NIGHT_TEXT : Colors.white),
                     onTap: () {
                       _menuController.openMenu(true);
                     },
@@ -331,9 +312,9 @@ class _MainActivityState extends State<MainActivity>
               direction: ScrollDirection.LEFT,
               decoration: new BoxDecoration(
                   gradient: new LinearGradient(colors: <Color>[
-                    Theme.of(context).primaryColor,
-                    const Color(0xff666666)
-                  ], begin: Alignment.topLeft)),
+                Theme.of(context).primaryColor,
+                const Color(0xff666666)
+              ], begin: Alignment.topLeft)),
             )),
         onWillPop: _doubleExit);
   }
