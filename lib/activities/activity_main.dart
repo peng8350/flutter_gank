@@ -10,11 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gank/App.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
-import 'package:flutter_gank/pages/page_gank.dart';
 import 'package:flutter_gank/pages/page_girl.dart';
 import 'package:flutter_gank/pages/page_home.dart';
 import 'package:flutter_gank/pages/page_like.dart';
 import 'package:flutter_gank/pages/page_setting.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter_gank/pages/page_gank.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:flutter_gank/widget/search_bar.dart';
 import 'package:residemenu/residemenu.dart';
@@ -122,55 +123,60 @@ class _MainActivityState extends State<MainActivity>
   }
 
   Widget _buildBody() {
-    return PageView(
-      controller: _pageController,
-      physics: NeverScrollableScrollPhysics(),
-      children: <Widget>[
-        new HomePage(),
-        TabBarView(
-          children: <Widget>[
-            new GankPage(
-              key: _gankPageKeys[0],
-              title: _gankTitles[0],
-              isSeaching: _isSearching,
-            ),
-            GankPage(
-              key: _gankPageKeys[1],
-              title: _gankTitles[1],
-              isSeaching: _isSearching,
-            ),
-            new GankPage(
-              key: _gankPageKeys[2],
-              title: _gankTitles[2],
-              isSeaching: _isSearching,
-            ),
-            GankPage(
-              key: _gankPageKeys[3],
-              title: _gankTitles[3],
-              isSeaching: _isSearching,
-            ),
-            GankPage(
-              key: _gankPageKeys[4],
-              title: _gankTitles[4],
-              isSeaching: _isSearching,
-            ),
-            GankPage(
-              key: _gankPageKeys[5],
-              title: _gankTitles[5],
-              isSeaching: _isSearching,
-            ),
-            GankPage(
-              key: _gankPageKeys[6],
-              title: _gankTitles[6],
-              isSeaching: _isSearching,
-            )
-          ],
-          controller: _tabController,
-        ),
-        new GirlPage(isCard: isCard),
-        new LikePage(),
-        new SettingPage()
-      ],
+    return IndicatorConfiguration(
+      child: PageView(
+        controller: _pageController,
+        physics: NeverScrollableScrollPhysics(),
+        children: <Widget>[
+          new HomePage(),
+          TabBarView(
+            children: <Widget>[
+              new GankPage(
+                key: _gankPageKeys[0],
+                title: _gankTitles[0],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[1],
+                title: _gankTitles[1],
+                isSeaching: _isSearching,
+              ),
+              new GankPage(
+                key: _gankPageKeys[2],
+                title: _gankTitles[2],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[3],
+                title: _gankTitles[3],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[4],
+                title: _gankTitles[4],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[5],
+                title: _gankTitles[5],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[6],
+                title: _gankTitles[6],
+                isSeaching: _isSearching,
+              )
+            ],
+            controller: _tabController,
+          ),
+          new GirlPage(isCard: isCard),
+          new LikePage(),
+          new SettingPage()
+        ],
+      ),
+      headerBuilder: () => WaterDropHeader(waterDropColor: Theme.of(context).primaryColor,),
+      footerBuilder: () => ClassicFooter(idleText: "上拉加载",loadingText: "火热加载中..",noDataText: "没有更多数据"),
+
     );
   }
 

@@ -30,7 +30,7 @@ class GankPage extends StatefulWidget {
 }
 
 class GankPageState extends State<GankPage>
-    with HttpUtils, IndicatorFactory, DbUtils,AutomaticKeepAliveClientMixin {
+    with HttpUtils,  DbUtils,AutomaticKeepAliveClientMixin {
   List<GankInfo> _dataList = [];
   List<GankInfo> _searchList = [];
   RefreshController _refreshController;
@@ -78,7 +78,6 @@ class GankPageState extends State<GankPage>
       setState(() {});
       return false;
     }).catchError((error) {
-      print(error);
       _refreshController.refreshFailed();
       return false;
     });
@@ -154,10 +153,6 @@ class GankPageState extends State<GankPage>
           ),
           itemCount: _dataList.length,
         ),
-        header: WaterDropHeader(),
-        footer: buildDefaultFooter(context,(){
-          _refreshController.requestLoading();
-        }),
         onRefresh: _onRefresh,
         onLoading: _onLoad,
 

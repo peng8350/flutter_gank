@@ -4,10 +4,8 @@
  * Time: 2018/5/22 下午1:16
  */
 
-import 'dart:async';
-import 'package:flutter_gank/App.dart';
-import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
@@ -17,7 +15,6 @@ import 'package:flutter_gank/utils/utils_indicator.dart';
 import 'package:flutter_gank/widget/cached_pic.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import '../widget/CircleClipper.dart';
 import 'package:flutter/scheduler.dart';
 
 class GirlPage extends StatefulWidget {
@@ -166,12 +163,18 @@ class _GirlPageState extends State<GirlPage>
                 },
               ));
     }
-    return new GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,crossAxisSpacing: 5.0,mainAxisSpacing: 5.0),
+
+
+    return     StaggeredGridView.countBuilder(
+      crossAxisCount: 4,
       itemCount: _dataList.length,
       itemBuilder: (context, index) => new CachedPic(
-            url: _dataList[index].url,
-          ),
+        url: _dataList[index].url,
+      ),
+      staggeredTileBuilder: (int index) =>
+      new StaggeredTile.count(2, index.isEven ? 2 : 1),
+      mainAxisSpacing: 4.0,
+      crossAxisSpacing: 4.0,
     );
   }
 
@@ -204,12 +207,6 @@ class _GirlPageState extends State<GirlPage>
       controller: _refreshController,
       child: _buildList(),
       onLoading: _onLoad,
-      header: WaterDropMaterialHeader(
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      footer: buildDefaultFooter(context, () {
-        _refreshController.requestLoading();
-      }),
       onRefresh: _onRefresh,
       enablePullUp: true,
     );
