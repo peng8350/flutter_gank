@@ -123,7 +123,7 @@ class _MainActivityState extends State<MainActivity>
   }
 
   Widget _buildBody() {
-    return IndicatorConfiguration(
+    return RefreshConfiguration(
       child: PageView(
         controller: _pageController,
         physics: NeverScrollableScrollPhysics(),
@@ -174,7 +174,8 @@ class _MainActivityState extends State<MainActivity>
           new SettingPage()
         ],
       ),
-      headerBuilder: () => WaterDropHeader(waterDropColor: Theme.of(context).primaryColor,),
+      clickLoadingWhenIdle: true,
+      headerBuilder: () => WaterDropHeader(),
       footerBuilder: () => ClassicFooter(idleText: "上拉加载",loadingText: "火热加载中..",noDataText: "没有更多数据"),
 
     );
@@ -273,8 +274,8 @@ class _MainActivityState extends State<MainActivity>
     return new WillPopScope(
         child: new Scaffold(
             key: _scffoldKey,
-            body: new ResideMenu.scafford(
-              enableFade: false,
+            body: new ResideMenu.scaffold(
+              enableFade: true,
               controller: _menuController,
               leftScaffold: _buildMiddleMenu(),
               child: new Scaffold(
@@ -315,7 +316,6 @@ class _MainActivityState extends State<MainActivity>
                 ),
                 body: _buildBody(),
               ),
-              direction: ScrollDirection.LEFT,
               decoration: new BoxDecoration(
                   gradient: new LinearGradient(colors: <Color>[
                 Theme.of(context).primaryColor,
@@ -329,6 +329,7 @@ class _MainActivityState extends State<MainActivity>
   void dispose() {
     // TODO: implement dispose
     close();
+    _menuController.dispose();
     super.dispose();
   }
 
@@ -342,6 +343,7 @@ class _MainActivityState extends State<MainActivity>
       _gankSelectIndex = _tabController.index;
       setState(() {});
     });
-    _menuController = new MenuController(vsync: this);
+    _menuController = new MenuController(vsync: this,direction: ScrollDirection.LEFT);
   }
+
 }

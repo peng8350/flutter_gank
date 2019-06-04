@@ -11,6 +11,7 @@ import 'package:flutter_gank/bean/info_gank.dart';
 import 'package:flutter_gank/utils/utils_http.dart';
 import 'package:flutter_gank/widget/cached_pic.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -21,18 +22,18 @@ class _HomePageState extends State<HomePage>
     with HttpUtils, SingleTickerProviderStateMixin,AutomaticKeepAliveClientMixin {
   bool showAlignmentCards = false;
 
-  Future _future;
-
   Map _dataMap;
 
   List<String> categories = [];
 
   AnimationController _aniController;
 
+  RefreshController _refreshController = RefreshController(initialRefresh: true);
+
   @override
   void initState() {
     // TODO: implement initState
-    _fetch();
+
     _aniController = new AnimationController(
         vsync: this,
         lowerBound: 1.0,
@@ -42,17 +43,18 @@ class _HomePageState extends State<HomePage>
     super.initState();
   }
 
-  void _fetch() {
-    getToMap("http://gank.io/api/day/history").then((Map dateJson) {
-      _future = getToMap("http://gank.io/api/day/" +
-          dateJson["results"][0].replaceAll("-", "/")).then((Map todayJson) {
-        _dataMap = todayJson;
-        for (String s in _dataMap["category"]) {
-          categories.add(s);
-        }
-        setState(() {});
-      });
-    });
+  void _fetch()  async{
+    Map dateJson = await getToMap("http://gank.io/api/day/history");
+    Map todayJson =  await getToMap("http://gank.io/api/day/" +
+        dateJson["results"][0].replaceAll("-", "/"));
+    _dataMap = todayJson;
+    categories = [];
+    for (String s in _dataMap["category"]) {
+      categories.add(s);
+    }
+    setState(() {});
+
+    _refreshController.refreshCompleted();
   }
 
   Widget _buildGroupByCategory(String category) {
@@ -98,7 +100,18 @@ class _HomePageState extends State<HomePage>
     return false;
   }
 
-  Widget _buildContent() {
+  void _onRefresh() {
+      _fetch();
+  }
+
+  void _onLoading(){
+
+  }
+
+  Widget _buildContent( ) {
+    if(_dataMap==null){
+      return ListView(children: <Widget>[Container()],);
+    }
     List<Widget> groups = [];
     for (String cate in categories) {
       groups.add(_buildGroupByCategory(cate));
@@ -111,43 +124,22 @@ class _HomePageState extends State<HomePage>
               scale: _aniController,
               child: new CachedPic(url: _dataMap["results"]["福利"][0]["url"]),
             )));
-    return new NotificationListener(
-      child: new ListView(
-        children: groups,
-        physics: const ClampingScrollPhysics(),
-      ),
-      onNotification: _dispatchEvent,
-    );
-  }
-
-  Widget _buildWaiting() {
-    return new Center(child: const CircularProgressIndicator());
+    return ListView(children: groups,);
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return new FutureBuilder(
-      builder: (context, shot) {
-        if (shot.connectionState == ConnectionState.waiting ||
-            shot.connectionState == ConnectionState.none) {
-          return _buildWaiting();
-        } else {
-          if (shot.hasError) {
-            return new InkWell(
-              child: new Center(
-                child: new Text('网络异常,点击重新加载'),
-              ),
-              onTap: () {
-                _fetch();
-              },
-            );
-          } else {
-            return _buildContent();
-          }
-        }
-      },
-      future: _future,
+    return NotificationListener(
+      child: Scrollbar(
+        child: SmartRefresher(
+            child: _buildContent() ?? ListView(children: <Widget>[Container()],),
+            controller: _refreshController,
+            onRefresh: _onRefresh,
+            onLoading: _onLoading,
+            header:WaterDropMaterialHeader(backgroundColor: Theme.of(context).primaryColor,color: Colors.white,)
+        ),
+      ),
+      onNotification: _dispatchEvent,
     );
   }
 

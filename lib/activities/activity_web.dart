@@ -25,6 +25,5 @@ class WebActivity extends StatelessWidget {
           title: new Text("浏览器"),
         ),
       );
-
   }
 }

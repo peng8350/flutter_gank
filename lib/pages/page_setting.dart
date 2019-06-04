@@ -82,8 +82,8 @@ class _SettingPageState extends State<SettingPage> {
         title: const Text('选择主题颜色'),
         content: new SingleChildScrollView(
           child: ColorPicker(
-             _currentColor,
-             (color) => setState(() {
+             pickerColor:_currentColor,
+            onColorChanged: (color) => setState(() {
                   _currentColor = color;
                 }),
             enableLabel: true,

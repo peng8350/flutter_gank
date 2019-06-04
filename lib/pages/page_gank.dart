@@ -155,7 +155,7 @@ class GankPageState extends State<GankPage>
         ),
         onRefresh: _onRefresh,
         onLoading: _onLoad,
-
+        enablePullDown: true,
         enablePullUp: true,
       );
     else
