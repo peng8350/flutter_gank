@@ -23,7 +23,9 @@ class GankPage extends StatefulWidget {
 
   final bool isSeaching;
 
-  GankPage({this.title, Key key, this.isSeaching}) : super(key: key);
+  final Function onDismiss;
+
+  GankPage({this.title, Key key, this.isSeaching,this.onDismiss}) : super(key: key);
 
   @override
   GankPageState createState() => new GankPageState();
@@ -179,6 +181,7 @@ class GankPageState extends State<GankPage>
   @override
   void dispose() {
     // TODO: implement dispose
+    _scrollController.dispose();
     _refreshController.dispose();
     super.dispose();
   }
@@ -189,7 +192,15 @@ class GankPageState extends State<GankPage>
     // TODO: implement initState
     super.initState();
     _refreshController = new RefreshController();
-    _scrollController = new ScrollController(keepScrollOffset: true);
+    _scrollController = ScrollController(keepScrollOffset: true);
+    _scrollController.addListener((){
+      if(_scrollController.position.userScrollDirection.index==1){
+        widget.onDismiss(false);
+      }
+      else if(_scrollController.position.userScrollDirection.index==2&&_scrollController.offset>=100.0){
+        widget.onDismiss(true);
+      }
+    });
     if(_dataList?.length==0) {
       getList("Gank", "type = ?", [widget.title]).then((List<dynamic> list) {
         if (list.isEmpty) {
