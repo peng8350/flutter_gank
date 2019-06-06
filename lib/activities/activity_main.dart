@@ -42,7 +42,7 @@ class _MainActivityState extends State<MainActivity>
 
   int selectIndex = 0;
 
-  AnimationController _appbarController;
+  int _gankSelectIndex = 0;
 
   bool isCard = false;
 
@@ -55,11 +55,6 @@ class _MainActivityState extends State<MainActivity>
   List<GlobalKey<GankPageState>> _gankPageKeys = [];
 
   final PageController _pageController = PageController(initialPage: 0);
-
-
-  void _onDismissAppbar(bool forward){
-    _appbarController.animateTo(forward?0.0:11111.0,duration: const Duration(milliseconds: 300));
-  }
 
 
   Widget _buildRight() {
@@ -128,71 +123,61 @@ class _MainActivityState extends State<MainActivity>
   }
 
   Widget _buildBody() {
-    return ScrollConfiguration(
-      child: RefreshConfiguration(
-        child: PageView(
-          controller: _pageController,
-          physics: NeverScrollableScrollPhysics(),
-          children: <Widget>[
-            new HomePage(),
-            TabBarView(
-              children: <Widget>[
-                new GankPage(
-                  key: _gankPageKeys[0],
-                  title: _gankTitles[0],
-                  isSeaching: _isSearching,
-                  onDismiss:_onDismissAppbar,
-                ),
-                GankPage(
-                  key: _gankPageKeys[1],
-                  title: _gankTitles[1],
-                  isSeaching: _isSearching,
-                  onDismiss:_onDismissAppbar,
-                ),
-                new GankPage(
-                  key: _gankPageKeys[2],
-                  title: _gankTitles[2],
-                  isSeaching: _isSearching,
-                  onDismiss:_onDismissAppbar,
-                ),
-                GankPage(
-                  key: _gankPageKeys[3],
-                  title: _gankTitles[3],
-                  isSeaching: _isSearching,
-                  onDismiss:_onDismissAppbar,
-                ),
-                GankPage(
-                  key: _gankPageKeys[4],
-                  title: _gankTitles[4],
-                  isSeaching: _isSearching,
-                  onDismiss:_onDismissAppbar,
-                ),
-                GankPage(
-                  key: _gankPageKeys[5],
-                  title: _gankTitles[5],
-                  isSeaching: _isSearching,
-                  onDismiss:_onDismissAppbar,
-                ),
-                GankPage(
-                  key: _gankPageKeys[6],
-                  title: _gankTitles[6],
-                  isSeaching: _isSearching,
-                  onDismiss:_onDismissAppbar,
-                )
-              ],
-              controller: _tabController,
-            ),
-            new GirlPage(isCard: isCard),
-            new LikePage(),
-            new SettingPage()
-          ],
-        ),
-        clickLoadingWhenIdle: true,
-        headerBuilder: () => WaterDropHeader(),
-        footerBuilder: () => ClassicFooter(idleText: "上拉加载",loadingText: "火热加载中..",noDataText: "没有更多数据"),
-
+    return RefreshConfiguration(
+      child: PageView(
+        controller: _pageController,
+        physics: NeverScrollableScrollPhysics(),
+        children: <Widget>[
+          new HomePage(),
+          TabBarView(
+            children: <Widget>[
+              new GankPage(
+                key: _gankPageKeys[0],
+                title: _gankTitles[0],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[1],
+                title: _gankTitles[1],
+                isSeaching: _isSearching,
+              ),
+              new GankPage(
+                key: _gankPageKeys[2],
+                title: _gankTitles[2],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[3],
+                title: _gankTitles[3],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[4],
+                title: _gankTitles[4],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[5],
+                title: _gankTitles[5],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[6],
+                title: _gankTitles[6],
+                isSeaching: _isSearching,
+              )
+            ],
+            controller: _tabController,
+          ),
+          new GirlPage(isCard: isCard),
+          new LikePage(),
+          new SettingPage()
+        ],
       ),
-      behavior: _GankScrollBehavior(),
+      clickLoadingWhenIdle: true,
+      headerBuilder: () => WaterDropHeader(),
+      footerBuilder: () => ClassicFooter(idleText: "上拉加载",loadingText: "火热加载中..",noDataText: "没有更多数据"),
+
     );
   }
 
@@ -294,44 +279,41 @@ class _MainActivityState extends State<MainActivity>
               controller: _menuController,
               leftScaffold: _buildMiddleMenu(),
               child: new Scaffold(
-                appBar: PreferredSize(
-                  preferredSize: Size.fromHeight(selectIndex == 1?_appbarController.value:kToolbarHeight),
-                  child: AppBar(
-                    title: _isSearching && selectIndex == 1
-                        ? new SearchBar(
-                      onChangeText: _onSearch,
-                    )
-                        : new Text(
-                        selectIndex == 0
-                            ? STRING_HOME
-                            : selectIndex == 1
-                            ? STRING_GANK
-                            : selectIndex == 2
-                            ? STRING_GIRL
-                            : selectIndex == 3
-                            ? STRING_LIKE
-                            : selectIndex == 4
-                            ? STRING_SETTING
-                            : STRING_ABOUTME,
-                        style: new TextStyle(
-                            inherit: true,
-                            color: App.of(context).night
-                                ? NIGHT_TEXT
-                                : Colors.white)),
-                    leading: new InkWell(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      child: new Icon(Icons.menu,
-                          color:
-                          App.of(context).night ? NIGHT_TEXT : Colors.white),
-                      onTap: () {
-                        _menuController.openMenu(true);
-                      },
-                    ),
-                    bottom: _buildViewPagerIndicator(),
-                    actions: _buildRight() != null ? [_buildRight()] : null,
+                appBar: new AppBar(
+                  title: _isSearching && selectIndex == 1
+                      ? new SearchBar(
+                          onChangeText: _onSearch,
+                        )
+                      : new Text(
+                          selectIndex == 0
+                              ? STRING_HOME
+                              : selectIndex == 1
+                                  ? STRING_GANK
+                                  : selectIndex == 2
+                                      ? STRING_GIRL
+                                      : selectIndex == 3
+                                          ? STRING_LIKE
+                                          : selectIndex == 4
+                                              ? STRING_SETTING
+                                              : STRING_ABOUTME,
+                          style: new TextStyle(
+                              inherit: true,
+                              color: App.of(context).night
+                                  ? NIGHT_TEXT
+                                  : Colors.white)),
+                  leading: new InkWell(
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    child: new Icon(Icons.menu,
+                        color:
+                            App.of(context).night ? NIGHT_TEXT : Colors.white),
+                    onTap: () {
+                      _menuController.openMenu(true);
+                    },
                   ),
-                ) ,
+                  bottom: _buildViewPagerIndicator(),
+                  actions: _buildRight() != null ? [_buildRight()] : null,
+                ),
                 body: _buildBody(),
               ),
               decoration: new BoxDecoration(
@@ -347,7 +329,6 @@ class _MainActivityState extends State<MainActivity>
   void dispose() {
     // TODO: implement dispose
     close();
-    _appbarController.dispose();
     _menuController.dispose();
     super.dispose();
   }
@@ -356,32 +337,13 @@ class _MainActivityState extends State<MainActivity>
   void initState() {
     // TODO: implement initState
     super.initState();
-    _appbarController =AnimationController(vsync: this,lowerBound: kTextTabBarHeight,upperBound: kToolbarHeight+kTextTabBarHeight,value: 1202.0);
-    _appbarController.addListener((){
-      setState(() {
-
-      });
-    });
     for (int i = 0; i < 7; i++) _gankPageKeys.add(new GlobalKey());
     _tabController = new TabController(length: 7, vsync: this, initialIndex: 0);
     _tabController.addListener(() {
+      _gankSelectIndex = _tabController.index;
       setState(() {});
     });
     _menuController = new MenuController(vsync: this,direction: ScrollDirection.LEFT);
   }
 
-
-}
-
-class _GankScrollBehavior extends ScrollBehavior{
-
-  @override
-  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
-    // TODO: implement buildViewportChrome
-    return GlowingOverscrollIndicator(
-      child: child,
-      axisDirection: axisDirection,
-      color: Theme.of(context).primaryColor,
-    );
-  }
 }
