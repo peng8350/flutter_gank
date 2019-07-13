@@ -7,6 +7,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter_gank/App.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
@@ -174,7 +175,14 @@ class _MainActivityState extends State<MainActivity>
           new SettingPage()
         ],
       ),
-      clickLoadingWhenIdle: true,
+      springDescription: SpringDescription(
+        mass: 3.0
+            ,
+        stiffness: 400.0,
+        damping: 16.5
+      ),
+      enableScrollWhenRefreshCompleted: false,
+      hideFooterWhenNotFull: true,
       headerBuilder: () => WaterDropHeader(),
       footerBuilder: () => ClassicFooter(idleText: "上拉加载",loadingText: "火热加载中..",noDataText: "没有更多数据"),
 
