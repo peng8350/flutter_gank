@@ -11,6 +11,7 @@ import 'package:flutter_gank/bean/info_gank.dart';
 import 'package:flutter_gank/utils/utils_http.dart';
 import 'package:flutter_gank/widget/cached_pic.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,7 +20,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with HttpUtils, SingleTickerProviderStateMixin,AutomaticKeepAliveClientMixin {
+    with
+        HttpUtils,
+        SingleTickerProviderStateMixin,
+        AutomaticKeepAliveClientMixin {
   bool showAlignmentCards = false;
 
   Map _dataMap;
@@ -28,7 +32,8 @@ class _HomePageState extends State<HomePage>
 
   AnimationController _aniController;
 
-  RefreshController _refreshController = RefreshController(initialRefresh: true);
+  RefreshController _refreshController = RefreshController(
+      initialRefresh: true);
 
   @override
   void initState() {
@@ -43,9 +48,9 @@ class _HomePageState extends State<HomePage>
     super.initState();
   }
 
-  void _fetch()  async{
+  void _fetch() async {
     Map dateJson = await getToMap("http://gank.io/api/day/history");
-    Map todayJson =  await getToMap("http://gank.io/api/day/" +
+    Map todayJson = await getToMap("http://gank.io/api/day/" +
         dateJson["results"][0].replaceAll("-", "/"));
     _dataMap = todayJson;
     categories = [];
@@ -57,38 +62,80 @@ class _HomePageState extends State<HomePage>
     _refreshController.refreshCompleted();
   }
 
+//  new SliverStickyHeader(
+//  header: new Container(
+//  height: 60.0,
+//  color: Colors.lightBlue,
+//  padding: EdgeInsets.symmetric(horizontal: 16.0),
+//  alignment: Alignment.centerLeft,
+//  child: new Text(
+//  'Header #0',
+//  style: const TextStyle(color: Colors.white),
+//  ),
+//  ),
+//  sliver: new SliverList(
+//  delegate: new SliverChildBuilderDelegate(
+//  (context, i) => new ListTile(
+//  leading: new CircleAvatar(
+//  child: new Text('0'),
+//  ),
+//  title: new Text('List tile #$i'),
+//  ),
+//  childCount: 4,
+//  ),
+//  ),
+//  );
   Widget _buildGroupByCategory(String category) {
-    List<GankInfo> list = [];
+    List<Widget> list = [];
     for (Map map in _dataMap["results"][category]) {
-      list.add(new GankInfo.fromJson(map));
+      list.add(HomeItem(info:new GankInfo.fromJson(map)));
     }
-    return new HomeGroup(
-        title: category,
-        children: list,
-        icon: category == 'Android'
-            ? Icons.android
-            : category == '休息视频'
+    return SliverStickyHeader(
+      header: Container(
+        height: 40.0,
+        color: Color.fromARGB(244, 244, 244, 200),
+        child: new Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+
+          children: <Widget>[
+            new Icon(category == 'Android'
+                ? Icons.android
+                : category == '休息视频'
                 ? Icons.video_label
                 : category == 'App'
-                    ? Icons.phone_android
-                    : category == '福利'
-                        ? Icons.tag_faces
-                        : category == '拓展资源'
-                            ? Icons.filter_none
-                            : category == '前端'
-                                ? Icons.language
-                                : category == 'iOS'
-                                    ? Icons.insert_emoticon
-                                    : Icons.layers);
+                ? Icons.phone_android
+                : category == '福利'
+                ? Icons.tag_faces
+                : category == '拓展资源'
+                ? Icons.filter_none
+                : category == '前端'
+                ? Icons.language
+                : category == 'iOS'
+                ? Icons.insert_emoticon
+                : Icons.layers, color: Colors.grey, size: 18.0),
+            new Container(
+              child: new Text(category,
+                  style: const TextStyle(inherit: true, fontSize: 16.0)),
+              margin: const EdgeInsets.only(left: 10.0),
+            )
+          ],
+        ),
+      ),
+      sliver: SliverList(
+        delegate: SliverChildListDelegate(
+            list
+        ),
+      ),
+    );
   }
-
   void _handleScrollEnd(ScrollNotification notifcation) {
     _aniController.animateTo(1.0);
   }
 
   bool _dispatchEvent(ScrollNotification notification) {
-    if (notification is ScrollStartNotification) {
-    } else if (notification is OverscrollNotification) {
+    if (notification is ScrollStartNotification) {} else
+    if (notification is OverscrollNotification) {
       _aniController.value += -notification.overscroll / 300.0;
     } else if (notification is ScrollEndNotification) {
       _handleScrollEnd(notification);
@@ -101,15 +148,15 @@ class _HomePageState extends State<HomePage>
   }
 
   void _onRefresh() {
-      _fetch();
+    _fetch();
   }
 
-  void _onLoading(){
+  void _onLoading() {
 
   }
 
-  Widget _buildContent( ) {
-    if(_dataMap==null){
+  Widget _buildContent() {
+    if (_dataMap == null) {
       return ListView(children: <Widget>[Container()],);
     }
     List<Widget> groups = [];
@@ -118,13 +165,15 @@ class _HomePageState extends State<HomePage>
     }
     groups.insert(
         0,
-        new SizedBox(
-            height: 300.0,
-            child: new ScaleTransition(
-              scale: _aniController,
-              child: new CachedPic(url: _dataMap["results"]["福利"][0]["url"]),
-            )));
-    return ListView(children: groups,);
+        SliverToBoxAdapter(
+          child: new SizedBox(
+              height: 300.0,
+              child: new ScaleTransition(
+                scale: _aniController,
+                child: new CachedPic(url: _dataMap["results"]["福利"][0]["url"]),
+              )),
+        ));
+    return CustomScrollView(slivers: groups,);
   }
 
   @override
@@ -132,11 +181,14 @@ class _HomePageState extends State<HomePage>
     return NotificationListener(
       child: Scrollbar(
         child: SmartRefresher(
-            child: _buildContent() ?? ListView(children: <Widget>[Container()],),
+            child: _buildContent() ??
+                ListView(children: <Widget>[Container()],),
             controller: _refreshController,
             onRefresh: _onRefresh,
             onLoading: _onLoading,
-            header:WaterDropMaterialHeader(backgroundColor: Theme.of(context).primaryColor,color: Colors.white,)
+            header: WaterDropMaterialHeader(backgroundColor: Theme
+                .of(context)
+                .primaryColor, color: Colors.white,)
         ),
       ),
       onNotification: _dispatchEvent,

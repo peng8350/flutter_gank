@@ -322,45 +322,6 @@ class _GirlCardItemState extends State<GirlCardItem> {
   }
 }
 
-class HomeGroup extends StatelessWidget {
-  final String title;
-
-  final IconData icon;
-
-  final List<GankInfo> children;
-
-  HomeGroup({this.title, this.children,this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> widgets = [];
-    for (GankInfo info in children) widgets.add(new HomeItem(info: info));
-    widgets.insert(0, new Container(
-
-      alignment: Alignment.centerLeft,
-      margin: const EdgeInsets.all(10.0),
-      child: new Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-
-        children: <Widget>[
-          new Icon(icon,color: Colors.grey,size: 18.0),
-          new Container(
-            child: new Text(title,style: const TextStyle(inherit: true,fontSize: 16.0)),
-            margin: const EdgeInsets.only(left: 10.0),
-          )
-        ],
-      ),
-    ));
-
-    return new Container(
-      margin: const EdgeInsets.only(top: 10.0,bottom: 10.0),
-      color:Theme.of(context).scaffoldBackgroundColor,
-      child: new Column(children: widgets),
-    );
-  }
-}
-
 class HomeItem extends StatelessWidget {
   final GankInfo info;
 
