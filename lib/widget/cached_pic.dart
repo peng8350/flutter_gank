@@ -44,8 +44,10 @@ class _CachedPicState extends State<CachedPic> {
 
             placeholder: (c, s) => new Image.asset(
               widget.placeholder,
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             ),
+            height: 200.0,
+            width: 200.0,
             imageUrl: widget.url,
             fit: BoxFit.cover,
           ),

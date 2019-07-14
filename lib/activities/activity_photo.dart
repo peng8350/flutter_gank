@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 /// 展示图片列表
 
@@ -31,7 +32,7 @@ class _GankPhotoActivityState extends State<GankPhotoActivity> {
     return Container(
       height: MediaQuery.of(context).size.height*0.66,
       child: new PhotoView(
-        imageProvider: new NetworkImage(url),
+        imageProvider: CachedNetworkImageProvider(url),
         loadingChild: new Image.asset(
           "images/empty.png",
           width: double.infinity,

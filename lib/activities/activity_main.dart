@@ -16,6 +16,7 @@ import 'package:flutter_gank/pages/page_girl.dart';
 import 'package:flutter_gank/pages/page_home.dart';
 import 'package:flutter_gank/pages/page_like.dart';
 import 'package:flutter_gank/pages/page_setting.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_gank/pages/page_gank.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
@@ -68,14 +69,18 @@ class _MainActivityState extends State<MainActivity>
           alignment: Alignment.center,
           child: _isSearching
               ? new Text('取消',
-                  style: new TextStyle(
-                      inherit: true,
-                      color: App.of(context).night ? NIGHT_TEXT : Colors.white))
+              style: new TextStyle(
+                  inherit: true,
+                  color: App
+                      .of(context)
+                      .night ? NIGHT_TEXT : Colors.white))
               : new Icon(
-                  Icons.search,
-                  color: App.of(context).night ? NIGHT_TEXT : Colors.white,
-                  size: 25.0,
-                ),
+            Icons.search,
+            color: App
+                .of(context)
+                .night ? NIGHT_TEXT : Colors.white,
+            size: 25.0,
+          ),
           margin: new EdgeInsets.all(10.0),
         ),
         onTap: () {
@@ -97,7 +102,9 @@ class _MainActivityState extends State<MainActivity>
           child: new Text(isCard ? "缩略图" : "卡片",
               style: new TextStyle(
                   inherit: true,
-                  color: App.of(context).night ? NIGHT_TEXT : Colors.white)),
+                  color: App
+                      .of(context)
+                      .night ? NIGHT_TEXT : Colors.white)),
         ),
       );
     }
@@ -107,20 +114,22 @@ class _MainActivityState extends State<MainActivity>
   Widget _buildViewPagerIndicator() {
     return selectIndex == 1
         ? new TabBar(
-            indicatorColor: Theme.of(context).primaryColor,
-            isScrollable: true,
-            labelColor: Colors.white,
-            tabs: <Widget>[
-              new Tab(text: STRING_GANK_WEB),
-              new Tab(text: STRING_GANK_ANDROID),
-              new Tab(text: STRING_GANK_IOS),
-              new Tab(text: STRING_GANK_TUIJIAN),
-              new Tab(text: STRING_GANK_EXTRA),
-              new Tab(text: STRING_GANK_APP),
-              new Tab(text: STRING_GANK_VIDEO)
-            ],
-            controller: _tabController,
-          )
+      indicatorColor: Theme
+          .of(context)
+          .primaryColor,
+      isScrollable: true,
+      labelColor: Colors.white,
+      tabs: <Widget>[
+        new Tab(text: STRING_GANK_WEB),
+        new Tab(text: STRING_GANK_ANDROID),
+        new Tab(text: STRING_GANK_IOS),
+        new Tab(text: STRING_GANK_TUIJIAN),
+        new Tab(text: STRING_GANK_EXTRA),
+        new Tab(text: STRING_GANK_APP),
+        new Tab(text: STRING_GANK_VIDEO)
+      ],
+      controller: _tabController,
+    )
         : null;
   }
 
@@ -177,15 +186,52 @@ class _MainActivityState extends State<MainActivity>
         ],
       ),
       springDescription: SpringDescription(
-        mass: 3.0
-            ,
-        stiffness: 400.0,
-        damping: 16.5
+          mass: 3.0
+          ,
+          stiffness: 400.0,
+          damping: 16.5
       ),
       enableScrollWhenRefreshCompleted: false,
-      hideFooterWhenNotFull: true,
       headerBuilder: () => WaterDropHeader(),
-      footerBuilder: () => ClassicFooter(idleText: "上拉加载",loadingText: "火热加载中..",noDataText: "没有更多数据"),
+      footerBuilder: () =>
+          CustomFooter(
+            builder: (context, mode) {
+              Widget body;
+              if (mode == LoadStatus.idle) {
+                body = Row(children: <Widget>[
+                  Icon(Icons.arrow_upward),
+                  Text("上拉加载")
+                ],);
+              }
+              else if (mode == LoadStatus.loading) {
+                body = Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SpinKitCubeGrid (
+                      size: 18.0,
+                      color:  Theme.of(context).primaryColor,
+                    ),
+                    Container(width: 15.0,)
+                    ,
+                    Text("别急,马上来了!")
+                  ],
+                );
+              }
+              else if (mode == LoadStatus.failed) {
+                body = Text("加载失败,点击重新加载!");
+              }
+              else {
+                body = Text("一我是有底线的一");
+              }
+              return Container(
+                height: 60.0,
+                child: Center(
+                  child: body,
+                ),
+              );
+            },
+            loadStyle: LoadStyle.ShowWhenLoading,
+          ),
 
     );
   }
@@ -291,31 +337,35 @@ class _MainActivityState extends State<MainActivity>
                 appBar: new AppBar(
                   title: _isSearching && selectIndex == 1
                       ? new SearchBar(
-                          onChangeText: _onSearch,
-                        )
+                    onChangeText: _onSearch,
+                  )
                       : new Text(
-                          selectIndex == 0
-                              ? STRING_HOME
-                              : selectIndex == 1
-                                  ? STRING_GANK
-                                  : selectIndex == 2
-                                      ? STRING_GIRL
-                                      : selectIndex == 3
-                                          ? STRING_LIKE
-                                          : selectIndex == 4
-                                              ? STRING_SETTING
-                                              : STRING_ABOUTME,
-                          style: new TextStyle(
-                              inherit: true,
-                              color: App.of(context).night
-                                  ? NIGHT_TEXT
-                                  : Colors.white)),
+                      selectIndex == 0
+                          ? STRING_HOME
+                          : selectIndex == 1
+                          ? STRING_GANK
+                          : selectIndex == 2
+                          ? STRING_GIRL
+                          : selectIndex == 3
+                          ? STRING_LIKE
+                          : selectIndex == 4
+                          ? STRING_SETTING
+                          : STRING_ABOUTME,
+                      style: new TextStyle(
+                          inherit: true,
+                          color: App
+                              .of(context)
+                              .night
+                              ? NIGHT_TEXT
+                              : Colors.white)),
                   leading: new InkWell(
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
                     child: new Icon(Icons.menu,
                         color:
-                            App.of(context).night ? NIGHT_TEXT : Colors.white),
+                        App
+                            .of(context)
+                            .night ? NIGHT_TEXT : Colors.white),
                     onTap: () {
                       _menuController.openMenu(true);
                     },
@@ -327,9 +377,11 @@ class _MainActivityState extends State<MainActivity>
               ),
               decoration: new BoxDecoration(
                   gradient: new LinearGradient(colors: <Color>[
-                Theme.of(context).primaryColor,
-                const Color(0xff666666)
-              ], begin: Alignment.topLeft)),
+                    Theme
+                        .of(context)
+                        .primaryColor,
+                    const Color(0xff666666)
+                  ], begin: Alignment.topLeft)),
             )),
         onWillPop: _doubleExit);
   }
@@ -346,13 +398,15 @@ class _MainActivityState extends State<MainActivity>
   void initState() {
     // TODO: implement initState
     super.initState();
-    for (int i = 0; i < 7; i++) _gankPageKeys.add(new GlobalKey());
+    for (int i = 0; i < 7; i++)
+      _gankPageKeys.add(new GlobalKey());
     _tabController = new TabController(length: 7, vsync: this, initialIndex: 0);
     _tabController.addListener(() {
       _gankSelectIndex = _tabController.index;
       setState(() {});
     });
-    _menuController = new MenuController(vsync: this,direction: ScrollDirection.LEFT);
+    _menuController =
+    new MenuController(vsync: this, direction: ScrollDirection.LEFT);
   }
 
 }
