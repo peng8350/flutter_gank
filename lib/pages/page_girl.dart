@@ -22,12 +22,16 @@ class GirlPage extends StatefulWidget {
 
   GirlPage({this.isCard});
 
+  static GirlPageState of(BuildContext context) {
+    return context.ancestorStateOfType(const TypeMatcher<GirlPageState>());
+  }
+
   @override
-  _GirlPageState createState() => new _GirlPageState();
+  GirlPageState createState() => new GirlPageState();
 }
 
-class _GirlPageState extends State<GirlPage>
-    with IndicatorFactory, HttpUtils, DbUtils,AutomaticKeepAliveClientMixin {
+class GirlPageState extends State<GirlPage>
+    with IndicatorFactory, HttpUtils, DbUtils, AutomaticKeepAliveClientMixin {
   List<GirlInfo> _dataList = [];
 
   RefreshController _refreshController;
@@ -37,6 +41,15 @@ class _GirlPageState extends State<GirlPage>
   int _pageIndex = 1;
 
   ValueNotifier<double> offsetLis = new ValueNotifier(0.0);
+
+  List<String> getPhotoListByIndex(int index) {
+    List<String> photList = [];
+    int page = index ~/ 5;
+    for (int i = page * 5; i < (page + 1) * 5; i++) {
+      photList.add(_dataList[i].url);
+    }
+    return photList;
+  }
 
   //这个算法用来捕捉数据应该要终止插入到数据库的位置
   int _catchEndPos(List<GirlInfo> newData) {
@@ -163,16 +176,15 @@ class _GirlPageState extends State<GirlPage>
                 },
               ));
     }
-
-
-    return     StaggeredGridView.countBuilder(
+    return StaggeredGridView.countBuilder(
       crossAxisCount: 4,
       itemCount: _dataList.length,
       itemBuilder: (context, index) => new CachedPic(
         url: _dataList[index].url,
+        index: index,
       ),
       staggeredTileBuilder: (int index) =>
-      new StaggeredTile.count(2, index.isEven ? 2 : 1),
+          new StaggeredTile.count(2, index.isEven ? 2 : 1),
       mainAxisSpacing: 4.0,
       crossAxisSpacing: 4.0,
     );

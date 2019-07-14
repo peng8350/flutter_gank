@@ -28,13 +28,16 @@ class _GankPhotoActivityState extends State<GankPhotoActivity> {
   PageController _pageController;
 
   Widget _buildImg(String url) {
-    return new PhotoView(
-      imageProvider: new NetworkImage(url),
-      loadingChild: new Image.asset(
-        "empty.png",
-        width: double.infinity,
-        height: double.infinity,
-        fit: BoxFit.cover,
+    return Container(
+      height: MediaQuery.of(context).size.height*0.66,
+      child: new PhotoView(
+        imageProvider: new NetworkImage(url),
+        loadingChild: new Image.asset(
+          "images/empty.png",
+          width: double.infinity,
+          height: double.infinity,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
