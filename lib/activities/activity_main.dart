@@ -331,6 +331,7 @@ class _MainActivityState extends State<MainActivity>
             key: _scffoldKey,
             body: new ResideMenu.scaffold(
               enableFade: true,
+              enable3dRotate: true,
               controller: _menuController,
               leftScaffold: _buildMiddleMenu(),
               child: new Scaffold(

@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage>
     return SliverStickyHeader(
       header: Container(
         height: 40.0,
-        color: Color.fromARGB(244, 244, 244, 200),
+        color: Color.fromRGBO(244, 244, 244, 0.8),
         child: new Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,

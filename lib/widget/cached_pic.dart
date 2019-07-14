@@ -37,19 +37,18 @@ class _CachedPicState extends State<CachedPic> {
   }
 
   Widget _buildGirlItem() {
-
     return new WillPopScope(
         child: new GestureDetector(
-          child: CachedNetworkImage(
-
-            placeholder: (c, s) => new Image.asset(
-              widget.placeholder,
-              fit: BoxFit.fill,
+          child: Card(
+            child: FadeInImage(
+              image: CachedNetworkImageProvider(
+                widget.url,
+              ),
+              placeholder: AssetImage(
+                widget.placeholder,
+              ),
+              fit: BoxFit.cover,
             ),
-            height: 200.0,
-            width: 200.0,
-            imageUrl: widget.url,
-            fit: BoxFit.cover,
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (c) {

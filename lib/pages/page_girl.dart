@@ -184,9 +184,9 @@ class GirlPageState extends State<GirlPage>
         index: index,
       ),
       staggeredTileBuilder: (int index) =>
-          new StaggeredTile.count(2, index.isEven ? 2 : 1),
-      mainAxisSpacing: 4.0,
-      crossAxisSpacing: 4.0,
+          new StaggeredTile.count(2, index.isEven ? 2 : 4),
+      mainAxisSpacing: 2.0,
+      crossAxisSpacing: 2.0,
     );
   }
 
@@ -214,7 +214,6 @@ class GirlPageState extends State<GirlPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return new SmartRefresher(
       controller: _refreshController,
       child: _buildList(),
