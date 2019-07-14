@@ -21,7 +21,7 @@ packages:
       name: cached_network_image
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   charcode:
     dependency: transitive
     description:
@@ -61,7 +61,7 @@ packages:
       name: flutter_cache_manager
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   flutter_colorpicker:
     dependency: "direct main"
     description:
@@ -131,7 +131,7 @@ packages:
       name: photo_view
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.0"
+    version: "0.4.2"
   pull_to_refresh:
     dependency: "direct main"
     description:
