@@ -18,9 +18,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter/scheduler.dart';
 
 class GirlPage extends StatefulWidget {
-  final bool isCard;
+//  final bool isCard;
+  final Widget leading;
 
-  GirlPage({this.isCard});
+  GirlPage({this.leading});
 
   static GirlPageState of(BuildContext context) {
     return context.ancestorStateOfType(const TypeMatcher<GirlPageState>());
@@ -162,20 +163,20 @@ class GirlPageState extends State<GirlPage>
   }
 
   Widget _buildList() {
-    if (widget.isCard) {
-      return new ListView.builder(
-          controller: _scrollController,
-          itemCount: _dataList.length,
-          itemBuilder: (context, index) => new GirlCardItem(
-                who: _dataList[index].who,
-                time: _dataList[index].desc,
-                url: _dataList[index].url,
-                isLike: _dataList[index].like,
-                onChangeVal: () {
-                  _onClickLike(index);
-                },
-              ));
-    }
+//    if (widget.isCard) {
+//      return new ListView.builder(
+//          controller: _scrollController,
+//          itemCount: _dataList.length,
+//          itemBuilder: (context, index) => new GirlCardItem(
+//                who: _dataList[index].who,
+//                time: _dataList[index].desc,
+//                url: _dataList[index].url,
+//                isLike: _dataList[index].like,
+//                onChangeVal: () {
+//                  _onClickLike(index);
+//                },
+//              ));
+//    }
     return StaggeredGridView.countBuilder(
       crossAxisCount: 4,
       itemCount: _dataList.length,
@@ -204,22 +205,28 @@ class GirlPageState extends State<GirlPage>
       _pageIndex = aa + 1;
       setState(() {});
     });
-    if (widget.isCard != oldWidget.isCard) {
-      SchedulerBinding.instance.addPostFrameCallback((val) {
-        _scrollController.animateTo(0.0,
-            duration: const Duration(milliseconds: 200), curve: Curves.linear);
-      });
-    }
+//    if (widget.isCard != oldWidget.isCard) {
+//      SchedulerBinding.instance.addPostFrameCallback((val) {
+//        _scrollController.animateTo(0.0,
+//            duration: const Duration(milliseconds: 200), curve: Curves.linear);
+//      });
+//    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return new SmartRefresher(
-      controller: _refreshController,
-      child: _buildList(),
-      onLoading: _onLoad,
-      onRefresh: _onRefresh,
-      enablePullUp: true,
+    return Scaffold(
+      body: SmartRefresher(
+        controller: _refreshController,
+        child: _buildList(),
+        onLoading: _onLoad,
+        onRefresh: _onRefresh,
+        enablePullUp: true,
+      ),
+      appBar: AppBar(
+        title: Text("妹子"),
+        leading: widget.leading,
+      ),
     );
   }
 

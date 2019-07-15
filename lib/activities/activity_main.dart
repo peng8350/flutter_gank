@@ -141,9 +141,9 @@ class _MainActivityState extends State<MainActivity>
         children: <Widget>[
           new HomePage(leading: _buildLeading(),),
           GankPage(leading: _buildLeading(),),
-          new GirlPage(isCard: isCard),
-          new LikePage(),
-          new SettingPage()
+          new GirlPage(leading: _buildLeading(),),
+          new LikePage(leading: _buildLeading(),),
+          new SettingPage(leading: _buildLeading(),)
         ],
       ),
       springDescription:

@@ -17,6 +17,10 @@ import 'package:flutter_gank/widget/drag_to_dismiss.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
 
 class LikePage extends StatefulWidget {
+  final Widget leading;
+
+  LikePage({this.leading});
+
   @override
   _LikePageState createState() => new _LikePageState();
 }
@@ -213,8 +217,14 @@ class _LikePageState extends State<LikePage> with DbUtils {
 
   @override
   Widget build(BuildContext context) {
-    return new Column(
-      children: <Widget>[new Flexible(child: _buildContent()), _buildBottom()],
+    return Scaffold(
+      body: Column(
+        children: <Widget>[new Flexible(child: _buildContent()), _buildBottom()],
+      ),
+      appBar: AppBar(
+        title: Text("收藏"),
+        leading: widget.leading,
+      ),
     );
   }
 

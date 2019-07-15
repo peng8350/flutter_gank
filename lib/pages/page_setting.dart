@@ -14,9 +14,10 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import '../App.dart';
 
 class SettingPage extends StatefulWidget {
+  final Widget leading;
   final Color themeColor;
 
-  SettingPage({this.themeColor});
+  SettingPage({this.themeColor,this.leading});
 
   @override
   _SettingPageState createState() => new _SettingPageState();
@@ -105,45 +106,51 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new ListView(
-      children: <Widget>[
-        new Container(
+    return Scaffold(
+      body: ListView(
+        children: <Widget>[
+          new Container(
+              height: 30.0,
+              decoration: new BoxDecoration(
+                  border: new Border(
+                      bottom:
+                      const BorderSide(color: COLOR_DIVIDER, width: 0.4)))),
+          _buildSwitch("夜间模式", Icons.brightness_2, Colors.blueGrey,
+              App.of(context).night, (val) {
+                preferences.setBool("isNight", val);
+                App.of(context).night = val;
+              }),
+          _buildSwitch(
+              "没有数据自动加载更多", Icons.wb_cloudy, Colors.orangeAccent, autoRefresh,
+                  (val) {
+                this.autoRefresh = val;
+                preferences.setBool("autoRefresh", autoRefresh);
+                setState(() {});
+              }),
+          new Container(
             height: 30.0,
             decoration: new BoxDecoration(
                 border: new Border(
+                    top: const BorderSide(color: COLOR_DIVIDER, width: 0.4),
                     bottom:
-                    const BorderSide(color: COLOR_DIVIDER, width: 0.4)))),
-        _buildSwitch("夜间模式", Icons.brightness_2, Colors.blueGrey,
-            App.of(context).night, (val) {
-              preferences.setBool("isNight", val);
-              App.of(context).night = val;
-            }),
-        _buildSwitch(
-            "没有数据自动加载更多", Icons.wb_cloudy, Colors.orangeAccent, autoRefresh,
-                (val) {
-              this.autoRefresh = val;
-              preferences.setBool("autoRefresh", autoRefresh);
-              setState(() {});
-            }),
-        new Container(
-          height: 30.0,
-          decoration: new BoxDecoration(
-              border: new Border(
-                  top: const BorderSide(color: COLOR_DIVIDER, width: 0.4),
-                  bottom:
-                  const BorderSide(color: COLOR_DIVIDER, width: 0.4))),
-        ),
-        _buildInter(
-            "主题颜色", Icons.border_color, Colors.cyanAccent, _clickColorSelect),
-        _buildInter("反馈", Icons.email, Colors.purpleAccent, _clickEmail),
-        _buildInter("分享", Icons.share, Colors.teal, _clickShare),
-        _buildInter("关于我", Icons.person, Colors.redAccent, _clickAboutMe),
-        new Container(
-            height: 30.0,
-            decoration: new BoxDecoration(
-                border: new Border(
-                    top: const BorderSide(color: COLOR_DIVIDER, width: 0.4))))
-      ],
+                    const BorderSide(color: COLOR_DIVIDER, width: 0.4))),
+          ),
+          _buildInter(
+              "主题颜色", Icons.border_color, Colors.cyanAccent, _clickColorSelect),
+          _buildInter("反馈", Icons.email, Colors.purpleAccent, _clickEmail),
+          _buildInter("分享", Icons.share, Colors.teal, _clickShare),
+          _buildInter("关于我", Icons.person, Colors.redAccent, _clickAboutMe),
+          new Container(
+              height: 30.0,
+              decoration: new BoxDecoration(
+                  border: new Border(
+                      top: const BorderSide(color: COLOR_DIVIDER, width: 0.4))))
+        ],
+      ),
+      appBar: AppBar(
+        title: Text("设置"),
+        leading: widget.leading,
+      ),
     );
   }
 
