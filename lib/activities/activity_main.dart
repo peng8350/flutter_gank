@@ -6,15 +6,19 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter_gank/App.dart';
 import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
-import 'package:flutter_gank/pages/page_gank.dart';
 import 'package:flutter_gank/pages/page_girl.dart';
 import 'package:flutter_gank/pages/page_home.dart';
 import 'package:flutter_gank/pages/page_like.dart';
 import 'package:flutter_gank/pages/page_setting.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter_gank/pages/page_gank.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:flutter_gank/widget/search_bar.dart';
 import 'package:residemenu/residemenu.dart';
@@ -52,6 +56,8 @@ class _MainActivityState extends State<MainActivity>
   final GlobalKey<ScaffoldState> _scffoldKey = new GlobalKey();
 
   List<GlobalKey<GankPageState>> _gankPageKeys = [];
+
+  final PageController _pageController = PageController(initialPage: 0);
 
   Widget _buildRight() {
     if (selectIndex == 1) {
@@ -119,81 +125,108 @@ class _MainActivityState extends State<MainActivity>
   }
 
   Widget _buildBody() {
-    return new Stack(
-      children: <Widget>[
-        new Offstage(
-          offstage: selectIndex != 0,
-          child: new HomePage(),
-        ),
-        new Offstage(
-          offstage: selectIndex != 1,
-          child: new Stack(
+
+    return RefreshConfiguration(
+      maxOverScrollExtent: 100.0,
+      maxUnderScrollExtent:  TargetPlatform.android==defaultTargetPlatform?0.0:100.0,
+      child: PageView(
+        controller: _pageController,
+        physics: NeverScrollableScrollPhysics(),
+        children: <Widget>[
+          new HomePage(leading: new InkWell(
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            child: new Icon(Icons.menu,
+                color:
+                App.of(context).night ? NIGHT_TEXT : Colors.white),
+            onTap: () {
+              _menuController.openMenu(true);
+            },
+          ),),
+          TabBarView(
             children: <Widget>[
-              new Offstage(
-                  offstage: _gankSelectIndex != 0,
-                  child: new GankPage(
-                    key: _gankPageKeys[0],
-                    title: _gankTitles[0],
-                    isSeaching: _isSearching,
-                  )),
-              new Offstage(
-                  offstage: _gankSelectIndex != 1,
-                  child: new GankPage(
-                    key: _gankPageKeys[1],
-                    title: _gankTitles[1],
-                    isSeaching: _isSearching,
-                  )),
-              new Offstage(
-                  offstage: _gankSelectIndex != 2,
-                  child: new GankPage(
-                    key: _gankPageKeys[2],
-                    title: _gankTitles[2],
-                    isSeaching: _isSearching,
-                  )),
-              new Offstage(
-                  offstage: _gankSelectIndex != 3,
-                  child: new GankPage(
-                    key: _gankPageKeys[3],
-                    title: _gankTitles[3],
-                    isSeaching: _isSearching,
-                  )),
-              new Offstage(
-                  offstage: _gankSelectIndex != 4,
-                  child: new GankPage(
-                    key: _gankPageKeys[4],
-                    title: _gankTitles[4],
-                    isSeaching: _isSearching,
-                  )),
-              new Offstage(
-                  offstage: _gankSelectIndex != 5,
-                  child: new GankPage(
-                    key: _gankPageKeys[5],
-                    title: _gankTitles[5],
-                    isSeaching: _isSearching,
-                  )),
-              new Offstage(
-                  offstage: _gankSelectIndex != 6,
-                  child: new GankPage(
-                    key: _gankPageKeys[6],
-                    title: _gankTitles[6],
-                    isSeaching: _isSearching,
-                  )),
+              new GankPage(
+                key: _gankPageKeys[0],
+                title: _gankTitles[0],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[1],
+                title: _gankTitles[1],
+                isSeaching: _isSearching,
+              ),
+              new GankPage(
+                key: _gankPageKeys[2],
+                title: _gankTitles[2],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[3],
+                title: _gankTitles[3],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[4],
+                title: _gankTitles[4],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[5],
+                title: _gankTitles[5],
+                isSeaching: _isSearching,
+              ),
+              GankPage(
+                key: _gankPageKeys[6],
+                title: _gankTitles[6],
+                isSeaching: _isSearching,
+              )
             ],
+            controller: _tabController,
           ),
-        ),
-        new Offstage(
-          offstage: selectIndex != 2,
-          child: new GirlPage(isCard: isCard),
-        ),
-        new Offstage(
-          offstage: selectIndex != 3,
-          child: new LikePage(),
-        ),
-        new Offstage(
-          offstage: selectIndex != 4,
-          child: new SettingPage(),
-        ),
-      ],
+          new GirlPage(isCard: isCard),
+          new LikePage(),
+          new SettingPage()
+        ],
+      ),
+      springDescription:
+          SpringDescription(mass: 3.0, stiffness: 400.0, damping: 16.5),
+      headerBuilder: () => WaterDropHeader(),
+      footerBuilder: () => CustomFooter(
+        builder: (context, mode) {
+          Widget body;
+          if (mode == LoadStatus.idle) {
+            body = Row(
+              children: <Widget>[Icon(Icons.arrow_upward), Text("上拉加载")],
+              mainAxisAlignment: MainAxisAlignment.center,
+            );
+          } else if (mode == LoadStatus.loading) {
+            body = Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SpinKitCubeGrid(
+                  size: 18.0,
+                  color: Theme.of(context).primaryColor,
+                ),
+                Container(
+                  width: 15.0,
+                ),
+                Text("别急,马上来了!")
+              ],
+            );
+          } else if (mode == LoadStatus.failed) {
+            body = Text("加载失败,点击重新加载!");
+          } else {
+            body = Text("一我是有底线的一");
+          }
+          return Container(
+            height: 60.0,
+            child: Center(
+              child: body,
+            ),
+          );
+        },
+        loadStyle: LoadStyle.ShowWhenLoading,
+      ),
     );
   }
 
@@ -230,30 +263,35 @@ class _MainActivityState extends State<MainActivity>
             setState(() {
               selectIndex = 0;
             });
+            _pageController.jumpToPage(selectIndex);
             _menuController.closeMenu();
           }),
           _buildMenuItem(STRING_GANK, Icons.explore, () {
             setState(() {
               selectIndex = 1;
             });
+            _pageController.jumpToPage(selectIndex);
             _menuController.closeMenu();
           }),
           _buildMenuItem(STRING_GIRL, Icons.insert_photo, () {
             setState(() {
               selectIndex = 2;
             });
+            _pageController.jumpToPage(selectIndex);
             _menuController.closeMenu();
           }),
           _buildMenuItem(STRING_LIKE, Icons.favorite, () {
             setState(() {
               selectIndex = 3;
             });
+            _pageController.jumpToPage(selectIndex);
             _menuController.closeMenu();
           }),
           _buildMenuItem(STRING_SETTING, Icons.settings, () {
             setState(() {
               selectIndex = 4;
             });
+            _pageController.jumpToPage(selectIndex);
             _menuController.closeMenu();
           }),
         ]);
@@ -266,7 +304,6 @@ class _MainActivityState extends State<MainActivity>
   }
 
   Future<bool> _doubleExit() {
-    print("aaa");
     int nowTime = new DateTime.now().microsecondsSinceEpoch;
     if (_lastClickTime != 0 && nowTime - _lastClickTime > 1500) {
       return new Future.value(true);
@@ -286,54 +323,44 @@ class _MainActivityState extends State<MainActivity>
     return new WillPopScope(
         child: new Scaffold(
             key: _scffoldKey,
-            body: new ResideMenu.scafford(
-              enableFade: false,
+            body: new ResideMenu.scaffold(
+              enableFade: true,
+              enable3dRotate: true,
               controller: _menuController,
               leftScaffold: _buildMiddleMenu(),
               child: new Scaffold(
-                appBar: new AppBar(
-                  title: _isSearching && selectIndex == 1
-                      ? new SearchBar(
-                    onChangeText: _onSearch,
-                  )
-                      : new Text(
-                      selectIndex == 0
-                          ? STRING_HOME
-                          : selectIndex == 1
-                          ? STRING_GANK
-                          : selectIndex == 2
-                          ? STRING_GIRL
-                          : selectIndex == 3
-                          ? STRING_LIKE
-                          : selectIndex == 4
-                          ? STRING_SETTING
-                          : STRING_ABOUTME,
-                      style: new TextStyle(
-                          inherit: true,
-                          color: App.of(context).night
-                              ? NIGHT_TEXT
-                              : Colors.white)),
-                  leading: new InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    child: new Icon(Icons.menu,
-                        color:
-                        App.of(context).night ? NIGHT_TEXT : Colors.white),
-                    onTap: () {
-                      _menuController.openMenu(true);
-                    },
-                  ),
-                  bottom: _buildViewPagerIndicator(),
-                  actions: _buildRight() != null ? [_buildRight()] : null,
-                ),
+//                appBar: new AppBar(
+//                  title: _isSearching && selectIndex == 1
+//                      ? new SearchBar(
+//                          onChangeText: _onSearch,
+//                        )
+//                      : new Text(
+//                          selectIndex == 0
+//                              ? STRING_HOME
+//                              : selectIndex == 1
+//                                  ? STRING_GANK
+//                                  : selectIndex == 2
+//                                      ? STRING_GIRL
+//                                      : selectIndex == 3
+//                                          ? STRING_LIKE
+//                                          : selectIndex == 4
+//                                              ? STRING_SETTING
+//                                              : STRING_ABOUTME,
+//                          style: new TextStyle(
+//                              inherit: true,
+//                              color: App.of(context).night
+//                                  ? NIGHT_TEXT
+//                                  : Colors.white)),
+//                  bottom: _buildViewPagerIndicator(),
+//                  actions: _buildRight() != null ? [_buildRight()] : null,
+//                ),
                 body: _buildBody(),
               ),
-              direction: ScrollDirection.LEFT,
               decoration: new BoxDecoration(
                   gradient: new LinearGradient(colors: <Color>[
-                    Theme.of(context).primaryColor,
-                    const Color(0xff666666)
-                  ], begin: Alignment.topLeft)),
+                Theme.of(context).primaryColor,
+                const Color(0xff666666)
+              ], begin: Alignment.topLeft)),
             )),
         onWillPop: _doubleExit);
   }
@@ -342,6 +369,7 @@ class _MainActivityState extends State<MainActivity>
   void dispose() {
     // TODO: implement dispose
     close();
+    _menuController.dispose();
     super.dispose();
   }
 
@@ -355,6 +383,7 @@ class _MainActivityState extends State<MainActivity>
       _gankSelectIndex = _tabController.index;
       setState(() {});
     });
-    _menuController = new MenuController(vsync: this);
+    _menuController =
+        new MenuController(vsync: this, direction: ScrollDirection.LEFT);
   }
 }

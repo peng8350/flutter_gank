@@ -1,39 +1,43 @@
 name: flutter_gank
 description: This is a Gank App both Android and Ios
 
+version: 1.0.0+1
+
 dependencies:
 
   flutter:
     sdk: flutter
 
   http:
-    any
+    ^0.12.0
 
-  flutter_staggered_grid_view: any
 
-  pull_to_refresh:
-    any
-
+  pull_to_refresh:  1.5.0
+  flutter_sticky_header: 0.4.0
   residemenu:
-    any
+    1.3.6
 
   sqflite:
-    any
+    ^1.1.6
 
-  flutter_webview_plugin: any
+  # android complie error
+  #flutter_webview_plugin: 0.3.5
 
-  photo_view:
-    any
+  photo_view: 0.4.2
 
-  shared_preferences: any
+  shared_preferences: ^0.5.3+2
 
-  share: any
+  share: ^0.6.1+1
+
+  flutter_staggered_grid_view: 0.3.0
 
   cached_network_image:
-     any
+    ^1.1.0
 
-  flutter_colorpicker:
-    any
+  flutter_spinkit: ^3.1.0
+
+  flutter_colorpicker: ^0.2.5
+
 
 
 flutter:

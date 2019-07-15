@@ -15,7 +15,6 @@ import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:flutter_gank/widget/cached_pic.dart';
 import 'package:flutter_gank/widget/drag_to_dismiss.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class LikePage extends StatefulWidget {
   @override
@@ -110,11 +109,12 @@ class _LikePageState extends State<LikePage> with DbUtils {
             if (shot.hasError) {
               return new Center(child: new Text('网络异常!!!'));
             } else
-              return new StaggeredGridView.countBuilder(
-                crossAxisCount: 6,
+              return new GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,crossAxisSpacing: 5.0,mainAxisSpacing: 5.0),
                 itemCount: _girlList.length,
                 itemBuilder: (context, index) => new GestureDetector(
                       child: new CachedPic(url: _girlList[index].url),
+
                       onLongPress: () {
                         PersistentBottomSheetController sheetController;
                         Function closeFun = () {
@@ -127,10 +127,6 @@ class _LikePageState extends State<LikePage> with DbUtils {
                             });
                       },
                     ),
-                staggeredTileBuilder: (int index) =>
-                    new StaggeredTile.count(3, index.isEven ? 3 : 2),
-                mainAxisSpacing: 4.0,
-                crossAxisSpacing: 4.0,
               );
           }
         },
@@ -221,6 +217,10 @@ class _LikePageState extends State<LikePage> with DbUtils {
       children: <Widget>[new Flexible(child: _buildContent()), _buildBottom()],
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class GankGroup extends StatefulWidget {
