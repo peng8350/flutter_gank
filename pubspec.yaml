@@ -23,6 +23,7 @@ dependencies:
   # android complie error
   #flutter_webview_plugin: 0.3.5
 
+  webview_flutter: 0.3.10
   photo_view: 0.4.2
 
   shared_preferences: ^0.5.3+2

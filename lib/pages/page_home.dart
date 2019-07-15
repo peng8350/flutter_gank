@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage>
 
   Map _dataMap;
 
-  AnimationController _appBarOpcity ;
+  AnimationController _appBarOpcity;
 
   List<String> categories = [];
 
@@ -50,11 +50,9 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     // TODO: implement initState
-    _appBarOpcity = AnimationController(vsync: this,value: 1.0);
+    _appBarOpcity = AnimationController(vsync: this, value: 1.0);
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels <= 200) {
-        _appBarOpcity.value = (100.0-_scrollController.position.pixels) / 100.0;
-      }
+      _appBarOpcity.value = (100.0 - _scrollController.position.pixels) / 100.0;
       setState(() {});
     });
     _fetch();
@@ -79,7 +77,7 @@ class _HomePageState extends State<HomePage>
       list.insert(0, HomeItem(info: new GankInfo.fromJson(map)));
     }
     return SliverStickyHeader(
-      overlapsContent:true,
+      overlapsContent: true,
       header: Container(
         height: 40.0,
         color: Color.fromRGBO(244, 244, 244, 0.8),
@@ -158,7 +156,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-
     return Stack(
       children: <Widget>[
         Scrollbar(
@@ -184,8 +181,7 @@ class _HomePageState extends State<HomePage>
           child: FadeTransition(
             child: Container(
               child: AppBar(
-                backgroundColor:
-                Colors.transparent,
+                backgroundColor: Colors.transparent,
                 leading: widget.leading,
                 elevation: 0,
                 title: Row(
@@ -204,7 +200,7 @@ class _HomePageState extends State<HomePage>
             ),
             opacity: _appBarOpcity,
           ),
-          ignoring: _appBarOpcity.value==0.0,
+          ignoring: _appBarOpcity.value == 0.0,
         )
       ],
     );

@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class WebActivity extends StatelessWidget {
 
@@ -16,14 +17,11 @@ class WebActivity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
-//    return  new WebviewScaffold(
-//        url: url,
-//        enableAppScheme: true,
-//
-//        appBar: new AppBar(
-//          title: new Text("浏览器"),
-//        ),
-//      );
+    return  Scaffold(
+      body: WebView(
+        initialUrl: url,
+      ),
+      appBar: AppBar(title: Text("浏览器"),),
+    );
   }
 }
