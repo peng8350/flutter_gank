@@ -8,6 +8,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
+import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/constant/strings.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:flutter_gank/utils/utils_indicator.dart';
@@ -18,23 +19,179 @@ import 'package:flutter_gank/utils/utils_http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/scheduler.dart';
 
-class GankPage extends StatefulWidget {
+import '../App.dart';
+
+
+class GankPage extends StatefulWidget{
+  final Widget leading;
+
+  GankPage({this.leading});
+
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _GankPageState();
+  }
+}
+
+class _GankPageState extends State<GankPage> with SingleTickerProviderStateMixin{
+  bool _isSearching = false;
+  int _gankSelectIndex = 0;
+  TabController _tabController;
+  List<GlobalKey<_GankRefreshViewState>> _gankKeys = [];
+  final List<String> _gankTitles = [
+    STRING_GANK_WEB,
+    STRING_GANK_ANDROID,
+    STRING_GANK_IOS,
+    STRING_GANK_TUIJIAN,
+    STRING_GANK_EXTRA,
+    STRING_GANK_APP,
+    STRING_GANK_VIDEO
+  ];
+
+  @override
+  void initState() {
+    // TODO: implement initState|
+    for (int i = 0; i < 7; i++) _gankKeys.add(new GlobalKey());
+    _tabController = new TabController(length: 7, vsync: this, initialIndex: 0);
+    _tabController.addListener(() {
+      _gankSelectIndex = _tabController.index;
+      setState(() {});
+    });
+    super.initState();
+  }
+
+  Widget _buildViewPagerIndicator() {
+    return  TabBar(
+      indicatorColor: Theme.of(context).primaryColor,
+      isScrollable: true,
+      labelColor: Colors.white,
+      tabs: <Widget>[
+        new Tab(text: STRING_GANK_WEB),
+        new Tab(text: STRING_GANK_ANDROID),
+        new Tab(text: STRING_GANK_IOS),
+        new Tab(text: STRING_GANK_TUIJIAN),
+        new Tab(text: STRING_GANK_EXTRA),
+        new Tab(text: STRING_GANK_APP),
+        new Tab(text: STRING_GANK_VIDEO)
+      ],
+      controller: _tabController,
+    );
+  }
+
+  Widget _buildSearch() {
+      return new InkWell(
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        child: new Container(
+          alignment: Alignment.center,
+          child: _isSearching
+              ? new Text('取消',
+              style: new TextStyle(
+                  inherit: true,
+                  color: App.of(context).night ? NIGHT_TEXT : Colors.white))
+              : new Icon(
+            Icons.search,
+            color: App.of(context).night ? NIGHT_TEXT : Colors.white,
+            size: 25.0,
+          ),
+          margin: new EdgeInsets.all(10.0),
+        ),
+        onTap: () {
+          _isSearching = !_isSearching;
+          setState(() {});
+        },
+      );
+
+  }
+
+  void _onSearch(String text) {
+    for (GlobalKey<_GankRefreshViewState> key in _gankKeys) {
+      key.currentState.searchGank(text);
+    }
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      body: NestedScrollView(
+        headerSliverBuilder: (c,_){
+          return [SliverAppBar(
+            title: Text("干货"),
+            floating: true,
+            snap: true,
+            pinned: true,
+            expandedHeight:kBottomNavigationBarHeight+kToolbarHeight,
+            leading: widget.leading,
+            actions: <Widget>[_buildSearch()],
+            bottom:_buildViewPagerIndicator() ,
+          )];
+        },
+        body: TabBarView(
+          children: <Widget>[
+            _GankRefreshView(
+              key: _gankKeys[0],
+              title: _gankTitles[0],
+              isSeaching: _isSearching,
+            ),
+            _GankRefreshView(
+              key: _gankKeys[1],
+              title: _gankTitles[1],
+              isSeaching: _isSearching,
+            ),
+            _GankRefreshView(
+              key: _gankKeys[2],
+              title: _gankTitles[2],
+              isSeaching: _isSearching,
+            ),
+            _GankRefreshView(
+              key: _gankKeys[3],
+              title: _gankTitles[3],
+              isSeaching: _isSearching,
+            ),
+            _GankRefreshView(
+              key: _gankKeys[4],
+              title: _gankTitles[4],
+              isSeaching: _isSearching,
+            ),
+            _GankRefreshView(
+              key: _gankKeys[5],
+              title: _gankTitles[5],
+              isSeaching: _isSearching,
+            ),
+            _GankRefreshView(
+              key: _gankKeys[6],
+              title: _gankTitles[6],
+              isSeaching: _isSearching,
+            )
+          ],
+          controller: _tabController,
+        ),
+      ),
+    );
+  }
+
+}
+
+class _GankRefreshView extends StatefulWidget {
   final String title;
 
   final bool isSeaching;
 
-  GankPage({this.title, Key key, this.isSeaching}) : super(key: key);
+  _GankRefreshView({this.title, Key key, this.isSeaching}) : super(key: key);
 
   @override
-  GankPageState createState() => new GankPageState();
+  _GankRefreshViewState createState() => new _GankRefreshViewState();
 }
 
-class GankPageState extends State<GankPage>
+class _GankRefreshViewState extends State<_GankRefreshView>
     with HttpUtils,  DbUtils,AutomaticKeepAliveClientMixin {
   List<GankInfo> _dataList = [];
   List<GankInfo> _searchList = [];
   RefreshController _refreshController;
-  ScrollController _scrollController;
   int _pageIndex = 1;
   final ValueNotifier<double> offsetLis = new ValueNotifier(0.0);
 
@@ -144,7 +301,6 @@ class GankPageState extends State<GankPage>
       return SmartRefresher(
         controller: _refreshController,
         child: new ListView.builder(
-          controller: _scrollController,
           itemBuilder: (context, index) => new GankItem(
             info: _dataList[index],
             onChange: () {
@@ -160,7 +316,6 @@ class GankPageState extends State<GankPage>
       );
     else
       return new ListView.builder(
-        controller: _scrollController,
         itemBuilder: (context, index) => new GankItem(
               info: _searchList[index],
               onChange: () {
@@ -189,7 +344,6 @@ class GankPageState extends State<GankPage>
     // TODO: implement initState
     super.initState();
     _refreshController = new RefreshController();
-    _scrollController = new ScrollController(keepScrollOffset: true);
     if(_dataList?.length==0) {
       getList("Gank", "type = ?", [widget.title]).then((List<dynamic> list) {
         if (list.isEmpty) {

@@ -30,99 +30,105 @@ class MainActivity extends StatefulWidget {
 
 class _MainActivityState extends State<MainActivity>
     with TickerProviderStateMixin, DbUtils {
-  final List<String> _gankTitles = [
-    STRING_GANK_WEB,
-    STRING_GANK_ANDROID,
-    STRING_GANK_IOS,
-    STRING_GANK_TUIJIAN,
-    STRING_GANK_EXTRA,
-    STRING_GANK_APP,
-    STRING_GANK_VIDEO
-  ];
+
   MenuController _menuController;
 
-  TabController _tabController;
+
 
   int selectIndex = 0;
 
-  int _gankSelectIndex = 0;
+
 
   bool isCard = false;
 
-  bool _isSearching = false;
+
 
   int _lastClickTime = 0;
 
   final GlobalKey<ScaffoldState> _scffoldKey = new GlobalKey();
 
-  List<GlobalKey<GankPageState>> _gankPageKeys = [];
+
 
   final PageController _pageController = PageController(initialPage: 0);
 
-  Widget _buildRight() {
-    if (selectIndex == 1) {
-      return new InkWell(
-        highlightColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        child: new Container(
-          alignment: Alignment.center,
-          child: _isSearching
-              ? new Text('取消',
-                  style: new TextStyle(
-                      inherit: true,
-                      color: App.of(context).night ? NIGHT_TEXT : Colors.white))
-              : new Icon(
-                  Icons.search,
-                  color: App.of(context).night ? NIGHT_TEXT : Colors.white,
-                  size: 25.0,
-                ),
-          margin: new EdgeInsets.all(10.0),
-        ),
-        onTap: () {
-          _isSearching = !_isSearching;
-          setState(() {});
-        },
-      );
-    } else if (selectIndex == 2) {
-      return new InkWell(
-        highlightColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        onTap: () {
-          isCard = !isCard;
-          setState(() {});
-        },
-        child: new Container(
-          alignment: Alignment.center,
-          margin: new EdgeInsets.only(right: 10.0),
-          child: new Text(isCard ? "缩略图" : "卡片",
-              style: new TextStyle(
-                  inherit: true,
-                  color: App.of(context).night ? NIGHT_TEXT : Colors.white)),
-        ),
-      );
-    }
-    return null;
+  //打开RResideMenu按钮
+  _buildLeading() {
+    return InkWell(
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      child: new Icon(Icons.menu,
+          color:
+          App.of(context).night ? NIGHT_TEXT : Colors.white),
+      onTap: () {
+        _menuController.openMenu(true);
+      },
+    );
   }
 
-  Widget _buildViewPagerIndicator() {
-    return selectIndex == 1
-        ? new TabBar(
-            indicatorColor: Theme.of(context).primaryColor,
-            isScrollable: true,
-            labelColor: Colors.white,
-            tabs: <Widget>[
-              new Tab(text: STRING_GANK_WEB),
-              new Tab(text: STRING_GANK_ANDROID),
-              new Tab(text: STRING_GANK_IOS),
-              new Tab(text: STRING_GANK_TUIJIAN),
-              new Tab(text: STRING_GANK_EXTRA),
-              new Tab(text: STRING_GANK_APP),
-              new Tab(text: STRING_GANK_VIDEO)
-            ],
-            controller: _tabController,
-          )
-        : null;
-  }
+//  Widget _buildRight() {
+//    if (selectIndex == 1) {
+//      return new InkWell(
+//        highlightColor: Colors.transparent,
+//        splashColor: Colors.transparent,
+//        child: new Container(
+//          alignment: Alignment.center,
+//          child: _isSearching
+//              ? new Text('取消',
+//                  style: new TextStyle(
+//                      inherit: true,
+//                      color: App.of(context).night ? NIGHT_TEXT : Colors.white))
+//              : new Icon(
+//                  Icons.search,
+//                  color: App.of(context).night ? NIGHT_TEXT : Colors.white,
+//                  size: 25.0,
+//                ),
+//          margin: new EdgeInsets.all(10.0),
+//        ),
+//        onTap: () {
+//          _isSearching = !_isSearching;
+//          setState(() {});
+//        },
+//      );
+//    } else if (selectIndex == 2) {
+//      return new InkWell(
+//        highlightColor: Colors.transparent,
+//        splashColor: Colors.transparent,
+//        onTap: () {
+//          isCard = !isCard;
+//          setState(() {});
+//        },
+//        child: new Container(
+//          alignment: Alignment.center,
+//          margin: new EdgeInsets.only(right: 10.0),
+//          child: new Text(isCard ? "缩略图" : "卡片",
+//              style: new TextStyle(
+//                  inherit: true,
+//                  color: App.of(context).night ? NIGHT_TEXT : Colors.white)),
+//        ),
+//      );
+//    }
+//    return null;
+//  }
+
+//  Widget _buildViewPagerIndicator() {
+//    return selectIndex == 1
+//        ? new TabBar(
+//            indicatorColor: Theme.of(context).primaryColor,
+//            isScrollable: true,
+//            labelColor: Colors.white,
+//            tabs: <Widget>[
+//              new Tab(text: STRING_GANK_WEB),
+//              new Tab(text: STRING_GANK_ANDROID),
+//              new Tab(text: STRING_GANK_IOS),
+//              new Tab(text: STRING_GANK_TUIJIAN),
+//              new Tab(text: STRING_GANK_EXTRA),
+//              new Tab(text: STRING_GANK_APP),
+//              new Tab(text: STRING_GANK_VIDEO)
+//            ],
+//            controller: _tabController,
+//          )
+//        : null;
+//  }
 
   Widget _buildBody() {
 
@@ -133,56 +139,8 @@ class _MainActivityState extends State<MainActivity>
         controller: _pageController,
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
-          new HomePage(leading: new InkWell(
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            child: new Icon(Icons.menu,
-                color:
-                App.of(context).night ? NIGHT_TEXT : Colors.white),
-            onTap: () {
-              _menuController.openMenu(true);
-            },
-          ),),
-          TabBarView(
-            children: <Widget>[
-              new GankPage(
-                key: _gankPageKeys[0],
-                title: _gankTitles[0],
-                isSeaching: _isSearching,
-              ),
-              GankPage(
-                key: _gankPageKeys[1],
-                title: _gankTitles[1],
-                isSeaching: _isSearching,
-              ),
-              new GankPage(
-                key: _gankPageKeys[2],
-                title: _gankTitles[2],
-                isSeaching: _isSearching,
-              ),
-              GankPage(
-                key: _gankPageKeys[3],
-                title: _gankTitles[3],
-                isSeaching: _isSearching,
-              ),
-              GankPage(
-                key: _gankPageKeys[4],
-                title: _gankTitles[4],
-                isSeaching: _isSearching,
-              ),
-              GankPage(
-                key: _gankPageKeys[5],
-                title: _gankTitles[5],
-                isSeaching: _isSearching,
-              ),
-              GankPage(
-                key: _gankPageKeys[6],
-                title: _gankTitles[6],
-                isSeaching: _isSearching,
-              )
-            ],
-            controller: _tabController,
-          ),
+          new HomePage(leading: _buildLeading(),),
+          GankPage(leading: _buildLeading(),),
           new GirlPage(isCard: isCard),
           new LikePage(),
           new SettingPage()
@@ -297,11 +255,7 @@ class _MainActivityState extends State<MainActivity>
         ]);
   }
 
-  void _onSearch(String text) {
-    for (GlobalKey<GankPageState> key in _gankPageKeys) {
-      key.currentState.searchGank(text);
-    }
-  }
+
 
   Future<bool> _doubleExit() {
     int nowTime = new DateTime.now().microsecondsSinceEpoch;
@@ -377,13 +331,8 @@ class _MainActivityState extends State<MainActivity>
   void initState() {
     // TODO: implement initState
     super.initState();
-    for (int i = 0; i < 7; i++) _gankPageKeys.add(new GlobalKey());
-    _tabController = new TabController(length: 7, vsync: this, initialIndex: 0);
-    _tabController.addListener(() {
-      _gankSelectIndex = _tabController.index;
-      setState(() {});
-    });
-    _menuController =
-        new MenuController(vsync: this, direction: ScrollDirection.LEFT);
+    _menuController = MenuController(vsync: this);
   }
+
+
 }
