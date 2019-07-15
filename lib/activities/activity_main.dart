@@ -90,23 +90,7 @@ class _MainActivityState extends State<MainActivity>
 //        },
 //      );
 //    } else if (selectIndex == 2) {
-//      return new InkWell(
-//        highlightColor: Colors.transparent,
-//        splashColor: Colors.transparent,
-//        onTap: () {
-//          isCard = !isCard;
-//          setState(() {});
-//        },
-//        child: new Container(
-//          alignment: Alignment.center,
-//          margin: new EdgeInsets.only(right: 10.0),
-//          child: new Text(isCard ? "缩略图" : "卡片",
-//              style: new TextStyle(
-//                  inherit: true,
-//                  color: App.of(context).night ? NIGHT_TEXT : Colors.white)),
-//        ),
-//      );
-//    }
+
 //    return null;
 //  }
 
@@ -133,8 +117,9 @@ class _MainActivityState extends State<MainActivity>
   Widget _buildBody() {
 
     return RefreshConfiguration(
-      maxOverScrollExtent: 100.0,
+      maxOverScrollExtent: double.infinity,
       maxUnderScrollExtent:  TargetPlatform.android==defaultTargetPlatform?0.0:100.0,
+//      enableScrollWhenTwoLevel: false,
       child: PageView(
         controller: _pageController,
         physics: NeverScrollableScrollPhysics(),
@@ -183,7 +168,6 @@ class _MainActivityState extends State<MainActivity>
             ),
           );
         },
-        loadStyle: LoadStyle.ShowWhenLoading,
       ),
     );
   }

@@ -32,6 +32,7 @@ class _GankPhotoActivityState extends State<GankPhotoActivity> {
     return Container(
       height: MediaQuery.of(context).size.height*0.66,
       child: new PhotoView(
+        heroTag: url,
         imageProvider: CachedNetworkImageProvider(url),
         loadingChild: new Image.asset(
           "images/empty.png",

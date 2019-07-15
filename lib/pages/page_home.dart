@@ -13,6 +13,7 @@ import 'package:flutter_gank/utils/utils_http.dart';
 import 'package:flutter_gank/widget/cached_pic.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
 import 'package:flutter_gank/widget/sliver_image_header.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -45,30 +46,30 @@ class _HomePageState extends State<HomePage>
   ScrollController _scrollController = ScrollController();
 
   RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController(initialRefresh: false);
+  Future _initFuture;
 
   @override
   void initState() {
     // TODO: implement initState
+    _initFuture = _fetch();
     _appBarOpcity = AnimationController(vsync: this, value: 1.0);
     _scrollController.addListener(() {
       _appBarOpcity.value = (100.0 - _scrollController.position.pixels) / 100.0;
+      if(_appBarOpcity.value==0.0)
       setState(() {});
     });
-    _fetch();
     super.initState();
   }
 
-  void _fetch() async {
+  Future<void> _fetch() async {
     Map dateJson = await getToMap("http://gank.io/api/today");
     _dataMap = dateJson;
     categories = [];
     for (String s in _dataMap["category"]) {
       categories.add(s);
     }
-    setState(() {});
-
-    _refreshController.refreshCompleted();
+    return categories;
   }
 
   Widget _buildGroupByCategory(String category) {
@@ -90,18 +91,18 @@ class _HomePageState extends State<HomePage>
                 category == 'Android'
                     ? Icons.android
                     : category == '休息视频'
-                        ? Icons.video_label
-                        : category == 'App'
-                            ? Icons.phone_android
-                            : category == '福利'
-                                ? Icons.tag_faces
-                                : category == '拓展资源'
-                                    ? Icons.filter_none
-                                    : category == '前端'
-                                        ? Icons.language
-                                        : category == 'iOS'
-                                            ? Icons.insert_emoticon
-                                            : Icons.layers,
+                    ? Icons.video_label
+                    : category == 'App'
+                    ? Icons.phone_android
+                    : category == '福利'
+                    ? Icons.tag_faces
+                    : category == '拓展资源'
+                    ? Icons.filter_none
+                    : category == '前端'
+                    ? Icons.language
+                    : category == 'iOS'
+                    ? Icons.insert_emoticon
+                    : Icons.layers,
                 color: Colors.grey,
                 size: 18.0),
             new Container(
@@ -119,10 +120,20 @@ class _HomePageState extends State<HomePage>
   }
 
   void _onRefresh() {
-    _fetch();
+    _fetch().then((_){
+      _refreshController.refreshCompleted();
+      setState(() {
+
+      });
+    }).catchError((e){
+      _refreshController.refreshFailed();
+      setState(() {
+
+      });
+    });
+
   }
 
-  void _onLoading() {}
 
   Widget _buildContent() {
     if (_dataMap == null) {
@@ -156,57 +167,121 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Scrollbar(
-          child: SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: false,
-            header: CustomHeader(
-              height: 0.0,
-              builder: (c, m) {
-                return Container();
+    return FutureBuilder(
+      future: _initFuture,
+      builder: (c, shot) {
+        print(shot.hasError);
+        switch (shot.connectionState) {
+
+          case ConnectionState.none:
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+            return SpinKitWave(
+              itemBuilder: (context,index){
+                return DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                );
               },
-            ),
-            child: _buildContent() ??
-                ListView(
-                  children: <Widget>[Container()],
-                ),
-            controller: _refreshController,
-            onRefresh: _onRefresh,
-            onLoading: _onLoading,
-          ),
-        ),
-        IgnorePointer(
-          child: FadeTransition(
-            child: Container(
-              child: AppBar(
-                backgroundColor: Colors.transparent,
-                leading: widget.leading,
-                elevation: 0,
-                title: Row(
-                  children: <Widget>[
-                    Text("首页"),
-                    Container(
-                      width: 10.0,
+            );
+          case ConnectionState.done:
+            if (shot.hasError){
+              return Center(child: RaisedButton(
+                child: Text("网络连接错误!点击重试!"),
+                color: Theme.of(context).primaryColor,
+                onPressed:() {
+                  _initFuture = _fetch();
+                  setState(() {
+
+                  });
+                },
+              ),);
+            }
+            return Stack(
+              children: <Widget>[
+                Scrollbar(
+                  child: SmartRefresher(
+                    header: LinkHeader(
+                      linkKey: linkKey,
                     ),
-                    _refreshController.headerStatus == RefreshStatus.refreshing
-                        ? CupertinoActivityIndicator()
-                        : Container(),
-                  ],
+                    child: _buildContent() ??
+                        ListView(
+                          children: <Widget>[Container()],
+                        ),
+                    controller: _refreshController,
+                    onRefresh: _onRefresh,
+                  ),
                 ),
-              ),
-              height: kToolbarHeight,
-            ),
-            opacity: _appBarOpcity,
-          ),
-          ignoring: _appBarOpcity.value == 0.0,
-        )
-      ],
+                IgnorePointer(
+                  child: FadeTransition(
+                    child: Container(
+                      child: AppBar(
+                        backgroundColor: Colors.transparent,
+                        leading: widget.leading,
+                        elevation: 0,
+                        title: Row(
+                          children: <Widget>[
+                            Text("首页"),
+                            Container(
+                              width: 10.0,
+                            ),
+                            _AppBarRefreshIndicator(key: linkKey,)
+                          ],
+                        ),
+                      ),
+                      height: kToolbarHeight,
+                    ),
+                    opacity: _appBarOpcity,
+                  ),
+                  ignoring: _appBarOpcity.value == 0.0,
+                )
+              ],
+            );
+        }
+        return null; // unreachable
+
+
+      },
     );
   }
 
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
+}
+
+class _AppBarRefreshIndicator extends StatefulWidget{
+
+  _AppBarRefreshIndicator({Key key}) :super(key:key);
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _AppBarRefreshIndicatorState();
+  }
+
+}
+
+class _AppBarRefreshIndicatorState extends State<_AppBarRefreshIndicator> with RefreshProcessor{
+  RefreshStatus _mode=RefreshStatus.idle;
+
+  @override
+  void onModeChange(RefreshStatus mode) {
+    // TODO: implement onModeChange
+    super.onModeChange(mode);
+    _mode = mode;
+    setState(() {
+
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    if(_mode==RefreshStatus.canRefresh||RefreshStatus.refreshing==_mode){
+      return CupertinoActivityIndicator(animating: RefreshStatus.refreshing==_mode,);
+    }
+    return Container();
+  }
+
 }

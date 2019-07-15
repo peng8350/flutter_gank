@@ -234,9 +234,10 @@ class GirlCardItem extends StatefulWidget {
   final String who;
   final String url;
   final bool isLike;
+  final int index;
   final Function onChangeVal;
 
-  GirlCardItem({this.time, this.url, this.who, this.isLike, this.onChangeVal});
+  GirlCardItem({this.time, this.url, this.who, this.isLike, this.onChangeVal,this.index});
 
   @override
   _GirlCardItemState createState() => new _GirlCardItemState();
@@ -263,6 +264,7 @@ class _GirlCardItemState extends State<GirlCardItem> {
             children: <Widget>[
               new CachedPic(
                 url: widget.url,
+                index: widget.index,
               ),
               new Container(
                 height: 40.0,

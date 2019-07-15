@@ -14,6 +14,7 @@ import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:flutter_gank/utils/utils_indicator.dart';
 import 'package:flutter_gank/widget/CircleClipper.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
+import 'package:flutter_gank/widget/search_bar.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_gank/utils/utils_http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -120,7 +121,11 @@ class _GankPageState extends State<GankPage> with SingleTickerProviderStateMixin
       body: NestedScrollView(
         headerSliverBuilder: (c,_){
           return [SliverAppBar(
-            title: Text("干货"),
+            title: _isSearching
+                      ? new SearchBar(
+                          onChangeText: _onSearch,
+                        )
+                      : Text("干货"),
             floating: true,
             snap: true,
             pinned: true,

@@ -29,14 +29,17 @@ class _CachedPicState extends State<CachedPic> {
   Widget _buildGirlItem() {
     return GestureDetector(
       child: Card(
-        child: FadeInImage(
-          image: CachedNetworkImageProvider(
-            widget.url,
+        child: Hero(
+          child: FadeInImage(
+            image: CachedNetworkImageProvider(
+              widget.url,
+            ),
+            placeholder: AssetImage(
+              widget.placeholder,
+            ),
+            fit: BoxFit.cover,
           ),
-          placeholder: AssetImage(
-            widget.placeholder,
-          ),
-          fit: BoxFit.cover,
+          tag: widget.url,
         ),
       ),
       onTap: () {

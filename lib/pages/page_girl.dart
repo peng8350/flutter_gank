@@ -4,6 +4,7 @@
  * Time: 2018/5/22 下午1:16
  */
 
+import 'package:flutter_gank/constant/colors.dart';
 import 'package:flutter_gank/utils/utils_db.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +17,8 @@ import 'package:flutter_gank/widget/cached_pic.dart';
 import 'package:flutter_gank/widget/item_gank.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter/scheduler.dart';
+
+import '../App.dart';
 
 class GirlPage extends StatefulWidget {
 //  final bool isCard;
@@ -33,6 +36,7 @@ class GirlPage extends StatefulWidget {
 
 class GirlPageState extends State<GirlPage>
     with IndicatorFactory, HttpUtils, DbUtils, AutomaticKeepAliveClientMixin {
+  bool _isCard = false;
   List<GirlInfo> _dataList = [];
 
   RefreshController _refreshController;
@@ -162,21 +166,41 @@ class GirlPageState extends State<GirlPage>
     update("Girl", _dataList[index].toMap(), "id = ? ", [_dataList[index].id]);
   }
 
+  Widget _buildRight() {
+    return new InkWell(
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      onTap: () {
+        _isCard = !_isCard;
+        setState(() {});
+      },
+      child: new Container(
+        alignment: Alignment.center,
+        margin: new EdgeInsets.only(right: 10.0),
+        child: new Text(_isCard ? "缩略图" : "卡片",
+            style: new TextStyle(
+                inherit: true,
+                color: App.of(context).night ? NIGHT_TEXT : Colors.white)),
+      ),
+    );
+  }
+
   Widget _buildList() {
-//    if (widget.isCard) {
-//      return new ListView.builder(
-//          controller: _scrollController,
-//          itemCount: _dataList.length,
-//          itemBuilder: (context, index) => new GirlCardItem(
-//                who: _dataList[index].who,
-//                time: _dataList[index].desc,
-//                url: _dataList[index].url,
-//                isLike: _dataList[index].like,
-//                onChangeVal: () {
-//                  _onClickLike(index);
-//                },
-//              ));
-//    }
+    if (_isCard) {
+      return new ListView.builder(
+          controller: _scrollController,
+          itemCount: _dataList.length,
+          itemBuilder: (context, index) => new GirlCardItem(
+                who: _dataList[index].who,
+                index: index,
+                time: _dataList[index].desc,
+                url: _dataList[index].url,
+                isLike: _dataList[index].like,
+                onChangeVal: () {
+                  _onClickLike(index);
+                },
+              ));
+    }
     return StaggeredGridView.countBuilder(
       crossAxisCount: 4,
       itemCount: _dataList.length,
@@ -226,6 +250,7 @@ class GirlPageState extends State<GirlPage>
       appBar: AppBar(
         title: Text("妹子"),
         leading: widget.leading,
+        actions: <Widget>[_buildRight()],
       ),
     );
   }
