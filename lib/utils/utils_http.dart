@@ -5,13 +5,10 @@
  */
 import 'dart:async';
 import 'package:flutter_gank/bean/info_gank.dart';
-import 'package:http/http.dart' as http ;
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class HttpUtils {
-
-
-
   Future<Map> getToMap(String url, [Map params]) async {
     http.Response response = await http.get(url, headers: params);
     return json.decode(response.body.toString());
@@ -51,7 +48,4 @@ class HttpUtils {
 
     return toGirlList(responseStr);
   }
-
-
-
 }

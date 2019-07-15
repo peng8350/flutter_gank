@@ -4,7 +4,6 @@
  * Time: 2018/5/21 下午10:43
  */
 
-
 const String STRING_APP_NAME = "GankIo";
 
 const String STRING_HOME = '首页';

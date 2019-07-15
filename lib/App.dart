@@ -84,7 +84,6 @@ class AppState extends State<App> {
           scaffoldBackgroundColor: _isNight ? NIGHT_COLOR_BG : COLOR_BG,
           dialogBackgroundColor: _isNight ? NIGHT_COLOR_BG : COLOR_BG,
           canvasColor: _isNight ? NIGHT_ITEM_BG : Colors.white,
-
           bottomAppBarColor: Colors.grey,
           dividerColor: _isNight ? NIGHT_COLOR_DIVIDER : COLOR_DIVIDER,
           textTheme: new TextTheme(
@@ -109,4 +108,3 @@ class AppState extends State<App> {
     );
   }
 }
-

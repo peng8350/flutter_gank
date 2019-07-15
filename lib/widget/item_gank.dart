@@ -9,6 +9,7 @@ import 'package:flutter_gank/App.dart';
 import 'package:flutter_gank/activities/activity_web.dart';
 import 'package:flutter_gank/bean/info_gank.dart';
 import 'package:flutter_gank/constant/colors.dart';
+import 'package:flutter_gank/pages/page_girl.dart';
 import 'package:flutter_gank/widget/cached_pic.dart';
 
 class GankItem extends StatefulWidget {
@@ -237,7 +238,13 @@ class GirlCardItem extends StatefulWidget {
   final int index;
   final Function onChangeVal;
 
-  GirlCardItem({this.time, this.url, this.who, this.isLike, this.onChangeVal,this.index});
+  GirlCardItem(
+      {this.time,
+      this.url,
+      this.who,
+      this.isLike,
+      this.onChangeVal,
+      this.index});
 
   @override
   _GirlCardItemState createState() => new _GirlCardItemState();
@@ -265,6 +272,8 @@ class _GirlCardItemState extends State<GirlCardItem> {
               new CachedPic(
                 url: widget.url,
                 index: widget.index,
+                viewList:
+                    GirlPage.of(context).getPhotoListByIndex(widget.index),
               ),
               new Container(
                 height: 40.0,
@@ -332,22 +341,26 @@ class HomeItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     final time = info.publishedAt;
-    final desc= info.desc;
+    final desc = info.desc;
     return new Material(
       child: new Container(
         child: new ListTile(
-          title: new Text("● $desc",style: Theme.of(context).textTheme.body1,),
-          trailing: new Text(time.substring(0,10),style: Theme.of(context).textTheme.body2),
+          title: new Text(
+            "● $desc",
+            style: Theme.of(context).textTheme.body1,
+          ),
+          trailing: new Text(time.substring(0, 10),
+              style: Theme.of(context).textTheme.body2),
           enabled: true,
-          onTap: (){
+          onTap: () {
             Navigator.of(context).push(new MaterialPageRoute(
                 builder: (context) => new WebActivity(info.url)));
           },
-
         ),
         decoration: new BoxDecoration(
-          border: new Border(bottom: new BorderSide(color: Theme.of(context).dividerColor,width: 0.4))
-        ),
+            border: new Border(
+                bottom: new BorderSide(
+                    color: Theme.of(context).dividerColor, width: 0.4))),
       ),
     );
   }

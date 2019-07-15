@@ -8,20 +8,19 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebActivity extends StatelessWidget {
-
   final String url;
 
-  WebActivity(String url):this.url = url;
-
-
+  WebActivity(String url) : this.url = url;
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       body: WebView(
         initialUrl: url,
       ),
-      appBar: AppBar(title: Text("浏览器"),),
+      appBar: AppBar(
+        title: Text("浏览器"),
+      ),
     );
   }
 }

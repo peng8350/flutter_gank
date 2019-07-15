@@ -17,7 +17,7 @@ class SettingPage extends StatefulWidget {
   final Widget leading;
   final Color themeColor;
 
-  SettingPage({this.themeColor,this.leading});
+  SettingPage({this.themeColor, this.leading});
 
   @override
   _SettingPageState createState() => new _SettingPageState();
@@ -47,7 +47,10 @@ class _SettingPageState extends State<SettingPage> {
       String title, IconData icon, Color iconColor, Function onClick) {
     return new SettingItem(
         iconBgColor: iconColor,
-        title: new Text(title,style: Theme.of(context).textTheme.subhead,),
+        title: new Text(
+          title,
+          style: Theme.of(context).textTheme.subhead,
+        ),
         icon: new Icon(
           icon,
           color: Colors.white,
@@ -59,16 +62,15 @@ class _SettingPageState extends State<SettingPage> {
   void _clickAboutMe() {
     showDialog(
         context: context,
-
         child: new SimpleDialog(
             title: new Text("作者"),
-
             children: <Widget>[new AboutMeDialog()],
             contentPadding: new EdgeInsets.all(10.0)));
   }
 
   void _clickEmail() {
-    Scaffold.of(context).showSnackBar(new SnackBar(content: new Text('该功能未实现,只是占位而已...')));
+    Scaffold.of(context)
+        .showSnackBar(new SnackBar(content: new Text('该功能未实现,只是占位而已...')));
   }
 
   void _clickShare() {
@@ -83,10 +85,10 @@ class _SettingPageState extends State<SettingPage> {
         title: const Text('选择主题颜色'),
         content: new SingleChildScrollView(
           child: ColorPicker(
-             pickerColor:_currentColor,
+            pickerColor: _currentColor,
             onColorChanged: (color) => setState(() {
-                  _currentColor = color;
-                }),
+              _currentColor = color;
+            }),
             enableLabel: true,
             pickerAreaHeightPercent: 0.8,
           ),
@@ -114,26 +116,26 @@ class _SettingPageState extends State<SettingPage> {
               decoration: new BoxDecoration(
                   border: new Border(
                       bottom:
-                      const BorderSide(color: COLOR_DIVIDER, width: 0.4)))),
+                          const BorderSide(color: COLOR_DIVIDER, width: 0.4)))),
           _buildSwitch("夜间模式", Icons.brightness_2, Colors.blueGrey,
               App.of(context).night, (val) {
-                preferences.setBool("isNight", val);
-                App.of(context).night = val;
-              }),
+            preferences.setBool("isNight", val);
+            App.of(context).night = val;
+          }),
           _buildSwitch(
               "没有数据自动加载更多", Icons.wb_cloudy, Colors.orangeAccent, autoRefresh,
-                  (val) {
-                this.autoRefresh = val;
-                preferences.setBool("autoRefresh", autoRefresh);
-                setState(() {});
-              }),
+              (val) {
+            this.autoRefresh = val;
+            preferences.setBool("autoRefresh", autoRefresh);
+            setState(() {});
+          }),
           new Container(
             height: 30.0,
             decoration: new BoxDecoration(
                 border: new Border(
                     top: const BorderSide(color: COLOR_DIVIDER, width: 0.4),
                     bottom:
-                    const BorderSide(color: COLOR_DIVIDER, width: 0.4))),
+                        const BorderSide(color: COLOR_DIVIDER, width: 0.4))),
           ),
           _buildInter(
               "主题颜色", Icons.border_color, Colors.cyanAccent, _clickColorSelect),
@@ -163,5 +165,4 @@ class _SettingPageState extends State<SettingPage> {
       autoRefresh = preferences.getBool("autoRefresh") ?? false;
     });
   }
-
 }

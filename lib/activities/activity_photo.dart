@@ -30,7 +30,7 @@ class _GankPhotoActivityState extends State<GankPhotoActivity> {
 
   Widget _buildImg(String url) {
     return Container(
-      height: MediaQuery.of(context).size.height*0.66,
+      height: MediaQuery.of(context).size.height * 0.66,
       child: new PhotoView(
         heroTag: url,
         imageProvider: CachedNetworkImageProvider(url),

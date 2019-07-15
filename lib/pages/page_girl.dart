@@ -51,7 +51,7 @@ class GirlPageState extends State<GirlPage>
     List<String> photList = [];
     int page = index ~/ 5;
     for (int i = page * 5; i < (page + 1) * 5; i++) {
-      photList.add(_dataList[i].url);
+      if (_dataList[i] != null) photList.add(_dataList[i].url);
     }
     return photList;
   }
@@ -205,6 +205,7 @@ class GirlPageState extends State<GirlPage>
       crossAxisCount: 4,
       itemCount: _dataList.length,
       itemBuilder: (context, index) => new CachedPic(
+        viewList: getPhotoListByIndex(index),
         url: _dataList[index].url,
         index: index,
       ),

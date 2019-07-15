@@ -19,15 +19,16 @@ class _SpalshActivityState extends State<SpalshActivity>
   Widget build(BuildContext context) {
     return new Scaffold(
       body: new Container(
-
         decoration: new BoxDecoration(
-            image: new DecorationImage(image: new AssetImage("images/splash.jpg"))
-        ),
+            image: new DecorationImage(
+                image: new AssetImage("images/splash.jpg"))),
         alignment: Alignment.center,
         child: new ScaleTransition(
             scale: _controller,
             alignment: Alignment.center,
-            child: new Text('干货集中营',style: new TextStyle(inherit: true,color: Colors.white70,fontSize: 16.0))),
+            child: new Text('干货集中营',
+                style: new TextStyle(
+                    inherit: true, color: Colors.white70, fontSize: 16.0))),
       ),
     );
   }
@@ -45,7 +46,6 @@ class _SpalshActivityState extends State<SpalshActivity>
     open().then((val) {
       _controller.animateTo(2.0).then((ccc) {
         Navigator.of(context).pushReplacementNamed("main");
-
       });
     });
   }

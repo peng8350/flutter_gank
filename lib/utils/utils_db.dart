@@ -29,22 +29,22 @@ class DbUtils {
 
   final _lock = new Lock();
 
-
-  Future open() async  {
+  Future open() async {
     if (db == null) {
       await _lock.synchronized(() async {
         // Check again once entering the synchronized block
         if (db == null) {
-          Directory documentsDirectory = await getApplicationDocumentsDirectory();
+          Directory documentsDirectory =
+              await getApplicationDocumentsDirectory();
           String path = join(documentsDirectory.path, "demo.db");
           db = await openDatabase(path, version: 2,
               onCreate: (Database db, int version) async {
-                // When creating the db, create the table
-                await db.execute(
-                    "create table Gank (id text primary key, img text, source text, type text, desc text, url text, publishedAt text, who text, like integer)");
-                await db.execute(
-                    "create table Girl (id text primary key, url text, publishedAt text,  who text, like integer)");
-              });
+            // When creating the db, create the table
+            await db.execute(
+                "create table Gank (id text primary key, img text, source text, type text, desc text, url text, publishedAt text, who text, like integer)");
+            await db.execute(
+                "create table Girl (id text primary key, url text, publishedAt text,  who text, like integer)");
+          });
         }
       });
     }
@@ -54,8 +54,8 @@ class DbUtils {
     return db.insert(table, map);
   }
 
-  Future<int> update(
-      String table, Map map, [String whereSql, List<String> params]) async {
+  Future<int> update(String table, Map map,
+      [String whereSql, List<String> params]) async {
     return await db.update(table, map, where: whereSql, whereArgs: params);
   }
 
@@ -73,7 +73,10 @@ class DbUtils {
   Future<List<dynamic>> getList(String table,
       [String whereSql, List<String> params]) async {
     List<Map> maps = await db.query(table,
-        columns: ["*"], where: whereSql, whereArgs: params,orderBy: "publishedAt desc");
+        columns: ["*"],
+        where: whereSql,
+        whereArgs: params,
+        orderBy: "publishedAt desc");
     return maps;
   }
 

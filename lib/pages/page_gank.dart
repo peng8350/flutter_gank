@@ -22,12 +22,10 @@ import 'package:flutter/scheduler.dart';
 
 import '../App.dart';
 
-
-class GankPage extends StatefulWidget{
+class GankPage extends StatefulWidget {
   final Widget leading;
 
   GankPage({this.leading});
-
 
   @override
   State<StatefulWidget> createState() {
@@ -36,7 +34,8 @@ class GankPage extends StatefulWidget{
   }
 }
 
-class _GankPageState extends State<GankPage> with SingleTickerProviderStateMixin{
+class _GankPageState extends State<GankPage>
+    with SingleTickerProviderStateMixin {
   bool _isSearching = false;
   int _gankSelectIndex = 0;
   TabController _tabController;
@@ -64,7 +63,7 @@ class _GankPageState extends State<GankPage> with SingleTickerProviderStateMixin
   }
 
   Widget _buildViewPagerIndicator() {
-    return  TabBar(
+    return TabBar(
       indicatorColor: Theme.of(context).primaryColor,
       isScrollable: true,
       labelColor: Colors.white,
@@ -82,29 +81,28 @@ class _GankPageState extends State<GankPage> with SingleTickerProviderStateMixin
   }
 
   Widget _buildSearch() {
-      return new InkWell(
-        highlightColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        child: new Container(
-          alignment: Alignment.center,
-          child: _isSearching
-              ? new Text('取消',
-              style: new TextStyle(
-                  inherit: true,
-                  color: App.of(context).night ? NIGHT_TEXT : Colors.white))
-              : new Icon(
-            Icons.search,
-            color: App.of(context).night ? NIGHT_TEXT : Colors.white,
-            size: 25.0,
-          ),
-          margin: new EdgeInsets.all(10.0),
-        ),
-        onTap: () {
-          _isSearching = !_isSearching;
-          setState(() {});
-        },
-      );
-
+    return new InkWell(
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      child: new Container(
+        alignment: Alignment.center,
+        child: _isSearching
+            ? new Text('取消',
+                style: new TextStyle(
+                    inherit: true,
+                    color: App.of(context).night ? NIGHT_TEXT : Colors.white))
+            : new Icon(
+                Icons.search,
+                color: App.of(context).night ? NIGHT_TEXT : Colors.white,
+                size: 25.0,
+              ),
+        margin: new EdgeInsets.all(10.0),
+      ),
+      onTap: () {
+        _isSearching = !_isSearching;
+        setState(() {});
+      },
+    );
   }
 
   void _onSearch(String text) {
@@ -113,27 +111,28 @@ class _GankPageState extends State<GankPage> with SingleTickerProviderStateMixin
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       body: NestedScrollView(
-        headerSliverBuilder: (c,_){
-          return [SliverAppBar(
-            title: _isSearching
-                      ? new SearchBar(
-                          onChangeText: _onSearch,
-                        )
-                      : Text("干货"),
-            floating: true,
-            snap: true,
-            pinned: true,
-            expandedHeight:kBottomNavigationBarHeight+kToolbarHeight,
-            leading: widget.leading,
-            actions: <Widget>[_buildSearch()],
-            bottom:_buildViewPagerIndicator() ,
-          )];
+        headerSliverBuilder: (c, _) {
+          return [
+            SliverAppBar(
+              title: _isSearching
+                  ? new SearchBar(
+                      onChangeText: _onSearch,
+                    )
+                  : Text("干货"),
+              floating: true,
+              snap: true,
+              pinned: true,
+              expandedHeight: kBottomNavigationBarHeight + kToolbarHeight,
+              leading: widget.leading,
+              actions: <Widget>[_buildSearch()],
+              bottom: _buildViewPagerIndicator(),
+            )
+          ];
         },
         body: TabBarView(
           children: <Widget>[
@@ -178,7 +177,6 @@ class _GankPageState extends State<GankPage> with SingleTickerProviderStateMixin
       ),
     );
   }
-
 }
 
 class _GankRefreshView extends StatefulWidget {
@@ -193,7 +191,7 @@ class _GankRefreshView extends StatefulWidget {
 }
 
 class _GankRefreshViewState extends State<_GankRefreshView>
-    with HttpUtils,  DbUtils,AutomaticKeepAliveClientMixin {
+    with HttpUtils, DbUtils, AutomaticKeepAliveClientMixin {
   List<GankInfo> _dataList = [];
   List<GankInfo> _searchList = [];
   RefreshController _refreshController;
@@ -208,15 +206,13 @@ class _GankRefreshViewState extends State<_GankRefreshView>
       for (int i = 0; i < newData.length; i++) {
         if (newData[i].id == _dataList[0].id) {
           return i;
-        }
-        else{
-          int j = i+1;
+        } else {
+          int j = i + 1;
           //是否存在
-          while(j<_dataList.length&&_dataList[j].desc==newData[j].desc){
-            if(_dataList[j].id!=newData[i].id){
+          while (j < _dataList.length && _dataList[j].desc == newData[j].desc) {
+            if (_dataList[j].id != newData[i].id) {
               j++;
-            }
-            else{
+            } else {
               return i;
             }
           }
@@ -229,8 +225,7 @@ class _GankRefreshViewState extends State<_GankRefreshView>
   void _refreshNewData() {
     getGankfromNet(URL_GANK_FETCH + widget.title + "/20/1")
         .then((List<GankInfo> data) {
-
-      for (int i = _catchEndPos(data)-1; i >= 0; i--) {
+      for (int i = _catchEndPos(data) - 1; i >= 0; i--) {
         _dataList.insert(0, data[i]);
         insert("Gank", data[i].toMap()).then((val) {}).catchError((error) {});
       }
@@ -250,10 +245,9 @@ class _GankRefreshViewState extends State<_GankRefreshView>
         .then((List<GankInfo> data) {
       if (data.isEmpty) {
         //空数据
-        SchedulerBinding.instance.addPostFrameCallback((_){
+        SchedulerBinding.instance.addPostFrameCallback((_) {
           _refreshController.loadNoData();
         });
-
       } else {
         for (GankInfo item in data) {
           _dataList.add(item);
@@ -261,19 +255,16 @@ class _GankRefreshViewState extends State<_GankRefreshView>
         }
         _pageIndex++;
 
-        SchedulerBinding.instance.addPostFrameCallback((_){
+        SchedulerBinding.instance.addPostFrameCallback((_) {
           _refreshController.loadComplete();
-
         });
         setState(() {});
       }
       return false;
     }).catchError((error) {
-
       return false;
     });
   }
-
 
   void _onClickLike(GankInfo item) {
     item.like = !item.like;
@@ -284,10 +275,9 @@ class _GankRefreshViewState extends State<_GankRefreshView>
 
   void _onRefresh() {
     _refreshNewData();
-
   }
 
-  void _onLoad(){
+  void _onLoad() {
     _fetchMoreData();
   }
 
@@ -322,18 +312,18 @@ class _GankRefreshViewState extends State<_GankRefreshView>
     else
       return new ListView.builder(
         itemBuilder: (context, index) => new GankItem(
-              info: _searchList[index],
-              onChange: () {
-                _onClickLike(_searchList[index]);
-              },
-            ),
+          info: _searchList[index],
+          onChange: () {
+            _onClickLike(_searchList[index]);
+          },
+        ),
         itemCount: _searchList.length,
       );
   }
 
   @override
   Widget build(BuildContext context) {
-      return _buildContent();
+    return _buildContent();
   }
 
   @override
@@ -343,13 +333,12 @@ class _GankRefreshViewState extends State<_GankRefreshView>
     super.dispose();
   }
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _refreshController = new RefreshController();
-    if(_dataList?.length==0) {
+    if (_dataList?.length == 0) {
       getList("Gank", "type = ?", [widget.title]).then((List<dynamic> list) {
         if (list.isEmpty) {
           SharedPreferences.getInstance().then((SharedPreferences preferences) {
@@ -371,5 +360,4 @@ class _GankRefreshViewState extends State<_GankRefreshView>
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
-
 }

@@ -6,28 +6,24 @@ import 'package:flutter/material.dart';
  */
 
 class ArcIndicator extends StatefulWidget {
-
   final ValueNotifier offsetLis;
 
   final Color color;
 
-  ArcIndicator({this.color,this.offsetLis});
+  ArcIndicator({this.color, this.offsetLis});
 
   @override
   _ArcIndicatorState createState() => new _ArcIndicatorState();
 }
 
 class _ArcIndicatorState extends State<ArcIndicator> {
-
-  Function _update ;
+  Function _update;
 
   @override
   void initState() {
     // TODO: implement initState
-    _update =  (){
-      setState(() {
-
-      });
+    _update = () {
+      setState(() {});
     };
     widget.offsetLis.addListener(_update);
 
@@ -54,14 +50,14 @@ class _ArcIndicatorState extends State<ArcIndicator> {
   }
 }
 
-class ArcClipper extends CustomClipper<Path>{
+class ArcClipper extends CustomClipper<Path> {
   final double offset;
   ArcClipper({this.offset});
   @override
   Path getClip(Size size) {
     // TODO: implement getClip
     final Path path = new Path();
-    path.cubicTo(0.0, 0.0, size.width/2, offset*2.3, size.width , 0.0 );
+    path.cubicTo(0.0, 0.0, size.width / 2, offset * 2.3, size.width, 0.0);
     path.close();
     return path;
   }
@@ -71,7 +67,4 @@ class ArcClipper extends CustomClipper<Path>{
     // TODO: implement shouldReclip
     return this != oldClipper;
   }
-
-
-
 }

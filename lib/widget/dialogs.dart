@@ -81,7 +81,8 @@ class AboutMeDialog extends StatelessWidget {
     for (String s in tags)
       widgets.add(new Container(
         decoration: new BoxDecoration(
-            color: randomColors[random.nextInt(7)], borderRadius: new BorderRadius.circular(10.0)),
+            color: randomColors[random.nextInt(7)],
+            borderRadius: new BorderRadius.circular(10.0)),
         padding: new EdgeInsets.all(5.0),
         child: new Text(
           s,
@@ -89,7 +90,6 @@ class AboutMeDialog extends StatelessWidget {
         ),
       ));
     return new Container(
-
       child: new Column(
         children: <Widget>[
           new CircleAvatar(
@@ -120,7 +120,6 @@ class AboutMeDialog extends StatelessWidget {
           )
         ],
       ),
-
     );
   }
 }

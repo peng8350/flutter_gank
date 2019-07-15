@@ -30,24 +30,13 @@ class MainActivity extends StatefulWidget {
 
 class _MainActivityState extends State<MainActivity>
     with TickerProviderStateMixin, DbUtils {
-
   MenuController _menuController;
 
-
-
   int selectIndex = 0;
-
-
-
-  bool isCard = false;
-
-
 
   int _lastClickTime = 0;
 
   final GlobalKey<ScaffoldState> _scffoldKey = new GlobalKey();
-
-
 
   final PageController _pageController = PageController(initialPage: 0);
 
@@ -57,78 +46,38 @@ class _MainActivityState extends State<MainActivity>
       highlightColor: Colors.transparent,
       splashColor: Colors.transparent,
       child: new Icon(Icons.menu,
-          color:
-          App.of(context).night ? NIGHT_TEXT : Colors.white),
+          color: App.of(context).night ? NIGHT_TEXT : Colors.white),
       onTap: () {
         _menuController.openMenu(true);
       },
     );
   }
 
-//  Widget _buildRight() {
-//    if (selectIndex == 1) {
-//      return new InkWell(
-//        highlightColor: Colors.transparent,
-//        splashColor: Colors.transparent,
-//        child: new Container(
-//          alignment: Alignment.center,
-//          child: _isSearching
-//              ? new Text('取消',
-//                  style: new TextStyle(
-//                      inherit: true,
-//                      color: App.of(context).night ? NIGHT_TEXT : Colors.white))
-//              : new Icon(
-//                  Icons.search,
-//                  color: App.of(context).night ? NIGHT_TEXT : Colors.white,
-//                  size: 25.0,
-//                ),
-//          margin: new EdgeInsets.all(10.0),
-//        ),
-//        onTap: () {
-//          _isSearching = !_isSearching;
-//          setState(() {});
-//        },
-//      );
-//    } else if (selectIndex == 2) {
-
-//    return null;
-//  }
-
-//  Widget _buildViewPagerIndicator() {
-//    return selectIndex == 1
-//        ? new TabBar(
-//            indicatorColor: Theme.of(context).primaryColor,
-//            isScrollable: true,
-//            labelColor: Colors.white,
-//            tabs: <Widget>[
-//              new Tab(text: STRING_GANK_WEB),
-//              new Tab(text: STRING_GANK_ANDROID),
-//              new Tab(text: STRING_GANK_IOS),
-//              new Tab(text: STRING_GANK_TUIJIAN),
-//              new Tab(text: STRING_GANK_EXTRA),
-//              new Tab(text: STRING_GANK_APP),
-//              new Tab(text: STRING_GANK_VIDEO)
-//            ],
-//            controller: _tabController,
-//          )
-//        : null;
-//  }
-
   Widget _buildBody() {
-
     return RefreshConfiguration(
       maxOverScrollExtent: double.infinity,
-      maxUnderScrollExtent:  TargetPlatform.android==defaultTargetPlatform?0.0:100.0,
+      maxUnderScrollExtent:
+          TargetPlatform.android == defaultTargetPlatform ? 0.0 : 100.0,
 //      enableScrollWhenTwoLevel: false,
       child: PageView(
         controller: _pageController,
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
-          new HomePage(leading: _buildLeading(),),
-          GankPage(leading: _buildLeading(),),
-          new GirlPage(leading: _buildLeading(),),
-          new LikePage(leading: _buildLeading(),),
-          new SettingPage(leading: _buildLeading(),)
+          new HomePage(
+            leading: _buildLeading(),
+          ),
+          GankPage(
+            leading: _buildLeading(),
+          ),
+          new GirlPage(
+            leading: _buildLeading(),
+          ),
+          new LikePage(
+            leading: _buildLeading(),
+          ),
+          new SettingPage(
+            leading: _buildLeading(),
+          )
         ],
       ),
       springDescription:
@@ -239,8 +188,6 @@ class _MainActivityState extends State<MainActivity>
         ]);
   }
 
-
-
   Future<bool> _doubleExit() {
     int nowTime = new DateTime.now().microsecondsSinceEpoch;
     if (_lastClickTime != 0 && nowTime - _lastClickTime > 1500) {
@@ -267,31 +214,6 @@ class _MainActivityState extends State<MainActivity>
               controller: _menuController,
               leftScaffold: _buildMiddleMenu(),
               child: new Scaffold(
-//                appBar: new AppBar(
-//                  title: _isSearching && selectIndex == 1
-//                      ? new SearchBar(
-//                          onChangeText: _onSearch,
-//                        )
-//                      : new Text(
-//                          selectIndex == 0
-//                              ? STRING_HOME
-//                              : selectIndex == 1
-//                                  ? STRING_GANK
-//                                  : selectIndex == 2
-//                                      ? STRING_GIRL
-//                                      : selectIndex == 3
-//                                          ? STRING_LIKE
-//                                          : selectIndex == 4
-//                                              ? STRING_SETTING
-//                                              : STRING_ABOUTME,
-//                          style: new TextStyle(
-//                              inherit: true,
-//                              color: App.of(context).night
-//                                  ? NIGHT_TEXT
-//                                  : Colors.white)),
-//                  bottom: _buildViewPagerIndicator(),
-//                  actions: _buildRight() != null ? [_buildRight()] : null,
-//                ),
                 body: _buildBody(),
               ),
               decoration: new BoxDecoration(
@@ -317,6 +239,4 @@ class _MainActivityState extends State<MainActivity>
     super.initState();
     _menuController = MenuController(vsync: this);
   }
-
-
 }

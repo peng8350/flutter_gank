@@ -94,6 +94,20 @@ class _LikePageState extends State<LikePage> with DbUtils {
     );
   }
 
+  List<String> getPhotoListByIndex(int index) {
+    List<String> photList = [];
+    int page = index ~/ 5;
+    for (int i = page * 5;
+        i <
+            (_girlList.length < ((page + 1) * 5)
+                ? _girlList.length
+                : (page + 1) * 5);
+        i++) {
+      photList.add(_girlList[i].url);
+    }
+    return photList;
+  }
+
   void _cancelLike(int index) {
     _girlList[index].like = false;
     update("Girl", _girlList[index].toMap(), " id = ? ", [_girlList[index].id]);
@@ -114,23 +128,29 @@ class _LikePageState extends State<LikePage> with DbUtils {
               return new Center(child: new Text('网络异常!!!'));
             } else
               return new GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,crossAxisSpacing: 5.0,mainAxisSpacing: 5.0),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 5.0,
+                    mainAxisSpacing: 5.0),
                 itemCount: _girlList.length,
                 itemBuilder: (context, index) => new GestureDetector(
-                      child: new CachedPic(url: _girlList[index].url),
-
-                      onLongPress: () {
-                        PersistentBottomSheetController sheetController;
-                        Function closeFun = () {
-                          sheetController.close();
-                        };
-                        sheetController = showBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return _buildBottomSheet(index, closeFun);
-                            });
-                      },
-                    ),
+                  child: new CachedPic(
+                    url: _girlList[index].url,
+                    index: index,
+                    viewList: getPhotoListByIndex(index),
+                  ),
+                  onLongPress: () {
+                    PersistentBottomSheetController sheetController;
+                    Function closeFun = () {
+                      sheetController.close();
+                    };
+                    sheetController = showBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return _buildBottomSheet(index, closeFun);
+                        });
+                  },
+                ),
               );
           }
         },
@@ -219,7 +239,10 @@ class _LikePageState extends State<LikePage> with DbUtils {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        children: <Widget>[new Flexible(child: _buildContent()), _buildBottom()],
+        children: <Widget>[
+          new Flexible(child: _buildContent()),
+          _buildBottom()
+        ],
       ),
       appBar: AppBar(
         title: Text("收藏"),
@@ -323,10 +346,12 @@ class _GankGroupState extends State<GankGroup>
       },
       initiallyExpanded: true,
       trailing: new Icon(
-        Icons.keyboard_arrow_right,color: Colors.grey,
+        Icons.keyboard_arrow_right,
+        color: Colors.grey,
       ),
       leading: new RotationTransition(
-          turns: _controller, child: new Icon(Icons.arrow_drop_down_circle,color: Colors.grey)),
+          turns: _controller,
+          child: new Icon(Icons.arrow_drop_down_circle, color: Colors.grey)),
     );
   }
 }

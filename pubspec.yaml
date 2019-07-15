@@ -1,7 +1,7 @@
 name: flutter_gank
 description: This is a Gank App both Android and Ios
 
-version: 1.0.0+1
+version: 1.0.1
 
 dependencies:
 

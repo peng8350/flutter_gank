@@ -14,18 +14,23 @@ import 'package:cached_network_image/cached_network_image.dart';
 class CachedPic extends StatefulWidget {
   final String url;
 
+  final List<String> viewList;
+
   final int index;
 
   final String placeholder;
 
-  CachedPic({this.url, this.placeholder: "images/empty.png", this.index: 0});
+  CachedPic(
+      {this.viewList,
+      this.url,
+      this.placeholder: "images/empty.png",
+      this.index: 0});
 
   @override
   _CachedPicState createState() => new _CachedPicState();
 }
 
 class _CachedPicState extends State<CachedPic> {
-
   Widget _buildGirlItem() {
     return GestureDetector(
       child: Card(
@@ -45,8 +50,7 @@ class _CachedPicState extends State<CachedPic> {
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (c) {
           return GankPhotoActivity(
-              urls: GirlPage.of(context).getPhotoListByIndex(widget.index),
-              initIndex: widget.index % 5);
+              urls: widget.viewList, initIndex: widget.index % 5);
         }));
       },
     );

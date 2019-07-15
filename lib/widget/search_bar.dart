@@ -25,21 +25,25 @@ class SearchBar extends StatelessWidget {
       style: Theme.of(context).textTheme.body1,
       decoration: new InputDecoration(
         labelStyle: Theme.of(context).textTheme.body1,
-          hintText: "search Gank",
-          enabled: true,
-          filled: true,
-          hintStyle: new TextStyle(inherit: true,color: const Color(0xdddddddd)),
-          prefixIcon: const Icon(Icons.search,color:Colors.white,size: 18.0,),
-          suffixIcon: new InkWell(
-            child: new Icon(Icons.clear,color: Colors.white,size: 16.0),
-            onTap: (){
-              _controller.clear();
-              onChangeText("");
-            },
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-          ),
-          ),
+        hintText: "search Gank",
+        enabled: true,
+        filled: true,
+        hintStyle: new TextStyle(inherit: true, color: const Color(0xdddddddd)),
+        prefixIcon: const Icon(
+          Icons.search,
+          color: Colors.white,
+          size: 18.0,
+        ),
+        suffixIcon: new InkWell(
+          child: new Icon(Icons.clear, color: Colors.white, size: 16.0),
+          onTap: () {
+            _controller.clear();
+            onChangeText("");
+          },
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
+        ),
+      ),
     );
   }
 }

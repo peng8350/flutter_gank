@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage>
   ScrollController _scrollController = ScrollController();
 
   RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
+      RefreshController(initialRefresh: false);
   Future _initFuture;
 
   @override
@@ -56,8 +56,7 @@ class _HomePageState extends State<HomePage>
     _appBarOpcity = AnimationController(vsync: this, value: 1.0);
     _scrollController.addListener(() {
       _appBarOpcity.value = (100.0 - _scrollController.position.pixels) / 100.0;
-      if(_appBarOpcity.value==0.0)
-      setState(() {});
+      print(_appBarOpcity);
     });
     super.initState();
   }
@@ -91,18 +90,18 @@ class _HomePageState extends State<HomePage>
                 category == 'Android'
                     ? Icons.android
                     : category == '休息视频'
-                    ? Icons.video_label
-                    : category == 'App'
-                    ? Icons.phone_android
-                    : category == '福利'
-                    ? Icons.tag_faces
-                    : category == '拓展资源'
-                    ? Icons.filter_none
-                    : category == '前端'
-                    ? Icons.language
-                    : category == 'iOS'
-                    ? Icons.insert_emoticon
-                    : Icons.layers,
+                        ? Icons.video_label
+                        : category == 'App'
+                            ? Icons.phone_android
+                            : category == '福利'
+                                ? Icons.tag_faces
+                                : category == '拓展资源'
+                                    ? Icons.filter_none
+                                    : category == '前端'
+                                        ? Icons.language
+                                        : category == 'iOS'
+                                            ? Icons.insert_emoticon
+                                            : Icons.layers,
                 color: Colors.grey,
                 size: 18.0),
             new Container(
@@ -120,20 +119,14 @@ class _HomePageState extends State<HomePage>
   }
 
   void _onRefresh() {
-    _fetch().then((_){
+    _fetch().then((_) {
       _refreshController.refreshCompleted();
-      setState(() {
-
-      });
-    }).catchError((e){
+      setState(() {});
+    }).catchError((e) {
       _refreshController.refreshFailed();
-      setState(() {
-
-      });
+      setState(() {});
     });
-
   }
-
 
   Widget _buildContent() {
     if (_dataMap == null) {
@@ -170,14 +163,12 @@ class _HomePageState extends State<HomePage>
     return FutureBuilder(
       future: _initFuture,
       builder: (c, shot) {
-        print(shot.hasError);
         switch (shot.connectionState) {
-
           case ConnectionState.none:
           case ConnectionState.active:
           case ConnectionState.waiting:
             return SpinKitWave(
-              itemBuilder: (context,index){
+              itemBuilder: (context, index) {
                 return DecoratedBox(
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
@@ -186,17 +177,17 @@ class _HomePageState extends State<HomePage>
               },
             );
           case ConnectionState.done:
-            if (shot.hasError){
-              return Center(child: RaisedButton(
-                child: Text("网络连接错误!点击重试!"),
-                color: Theme.of(context).primaryColor,
-                onPressed:() {
-                  _initFuture = _fetch();
-                  setState(() {
-
-                  });
-                },
-              ),);
+            if (shot.hasError) {
+              return Center(
+                child: RaisedButton(
+                  child: Text("网络连接错误!点击重试!"),
+                  color: Theme.of(context).primaryColor,
+                  onPressed: () {
+                    _initFuture = _fetch();
+                    setState(() {});
+                  },
+                ),
+              );
             }
             return Stack(
               children: <Widget>[
@@ -213,7 +204,7 @@ class _HomePageState extends State<HomePage>
                     onRefresh: _onRefresh,
                   ),
                 ),
-                IgnorePointer(
+                Offstage(
                   child: FadeTransition(
                     child: Container(
                       child: AppBar(
@@ -226,7 +217,9 @@ class _HomePageState extends State<HomePage>
                             Container(
                               width: 10.0,
                             ),
-                            _AppBarRefreshIndicator(key: linkKey,)
+                            _AppBarRefreshIndicator(
+                              key: linkKey,
+                            )
                           ],
                         ),
                       ),
@@ -234,14 +227,12 @@ class _HomePageState extends State<HomePage>
                     ),
                     opacity: _appBarOpcity,
                   ),
-                  ignoring: _appBarOpcity.value == 0.0,
+                  offstage: _appBarOpcity.value == 0.0,
                 )
               ],
             );
         }
         return null; // unreachable
-
-
       },
     );
   }
@@ -251,37 +242,36 @@ class _HomePageState extends State<HomePage>
   bool get wantKeepAlive => true;
 }
 
-class _AppBarRefreshIndicator extends StatefulWidget{
-
-  _AppBarRefreshIndicator({Key key}) :super(key:key);
+class _AppBarRefreshIndicator extends StatefulWidget {
+  _AppBarRefreshIndicator({Key key}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
     return _AppBarRefreshIndicatorState();
   }
-
 }
 
-class _AppBarRefreshIndicatorState extends State<_AppBarRefreshIndicator> with RefreshProcessor{
-  RefreshStatus _mode=RefreshStatus.idle;
+class _AppBarRefreshIndicatorState extends State<_AppBarRefreshIndicator>
+    with RefreshProcessor {
+  RefreshStatus _mode = RefreshStatus.idle;
 
   @override
   void onModeChange(RefreshStatus mode) {
     // TODO: implement onModeChange
     super.onModeChange(mode);
     _mode = mode;
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    if(_mode==RefreshStatus.canRefresh||RefreshStatus.refreshing==_mode){
-      return CupertinoActivityIndicator(animating: RefreshStatus.refreshing==_mode,);
+    if (_mode == RefreshStatus.canRefresh ||
+        RefreshStatus.refreshing == _mode) {
+      return CupertinoActivityIndicator(
+        animating: RefreshStatus.refreshing == _mode,
+      );
     }
     return Container();
   }
-
 }
